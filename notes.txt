@@ -1,2 +1,5 @@
 1. Registration in Databricks
 2. MLlib has features for classification, regression, collaborative filtering, clustering, and decomposition (SVD and PCA) (http://www.kdnuggets.com/2014/07/mllib-apache-spark-component-machine-learning.html)
+3. Aprendizaje no supervisado: Reducción de la dimensionalidad. Proyectar los datos desde un espacio de alta dimensionalidad (d >> 10) a dos o tres dimensiones para visualizar los datos. O a un rango inferior (d' < 20) para aplicar otras técnicas de regresión o clasificación.
+4. http://scikit-learn.org/stable/modules/decomposition.html#principal-component-analysis-pca
+5. http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html#sklearn.decomposition.PCA
