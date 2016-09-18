@@ -1,0 +1,2 @@
+1. Registration in Databricks
+2. MLlib has features for classification, regression, collaborative filtering, clustering, and decomposition (SVD and PCA) (http://www.kdnuggets.com/2014/07/mllib-apache-spark-component-machine-learning.html)
