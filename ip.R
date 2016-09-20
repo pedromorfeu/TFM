@@ -25,8 +25,10 @@ head(data)
 
 summary(data[, seq(2,15)])
 var(data[, seq(2,3)])
+var(data[, c("Svo","ACPx")])
 
 summary(data$Svo)
 mean(data$Svo)
 var(data$Svo)
+var(data$ACPx)
 sd(data$Svo)
