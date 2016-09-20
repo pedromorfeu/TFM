@@ -17,12 +17,14 @@ print(a)
 # plt.show()
 
 
-sns.plt.figure()
-sns.plt.title("covariance_X")
-sns.heatmap(a, annot=True, fmt=".2f")
+f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
-sns.plt.figure()
-sns.plt.title("covariance_inverse_X")
-sns.heatmap(a, annot=True, fmt=".2f")
+# sns.plt.figure()
+ax1.set_title("covariance_X")
+sns.heatmap(a, annot=False, fmt=".2f", robust=True, ax=ax1)
+
+# sns.plt.figure()
+ax2.set_title("covariance_inverse_X")
+sns.heatmap(a, annot=False, fmt=".2f", robust=True, ax=ax2)
 
 sns.plt.show()

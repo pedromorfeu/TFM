@@ -2,22 +2,15 @@ from sklearn.decomposition import PCA
 from sklearn import covariance
 
 from pandas import read_csv
-
 from datetime import datetime, time
-
 import seaborn as sns
-
 import matplotlib.pyplot as plt
-
 import numpy as np
-
 import time
-
 import locale
-
 import re
 
-from util import parse_dates, parse_date
+from util import parse_dates, parse_date, plot_covariance_heatmaps
 
 
 start_time = time.time()
@@ -40,7 +33,7 @@ print("X.dtype", X.dtype)
 print("X.shape", X.shape)
 print("X", X[:5, :], sep="\n")
 
-pca = PCA(n_components=5)
+pca = PCA(n_components=2)
 new_X = pca.fit_transform(X)
 
 print("new_X.shape", new_X.shape)
@@ -58,26 +51,11 @@ print("covariance_X.shape", covariance_X.shape)
 # print("covariance_X", covariance_X, sep="\n")
 covariance_X = covariance_X.astype(float)
 
+
 covariance_inverse_X = covariance.empirical_covariance(inverse_X)
 print("covariance_inverse_X.shape", covariance_inverse_X.shape)
 # print("covariance_inverse_X", covariance_inverse_X, sep="\n")
 covariance_inverse_X = covariance_inverse_X.astype(float)
 
 
-sns.plt.figure()
-sns.plt.title("covariance_X")
-sns.heatmap(covariance_X, annot=True, fmt=".2f")
-
-sns.plt.figure()
-sns.plt.title("covariance_inverse_X")
-sns.heatmap(covariance_inverse_X, annot=True, fmt=".2f")
-
-sns.plt.show()
-
-# plt.figure()
-# plt.imshow(covariance_X, cmap='Reds', interpolation='nearest')
-#
-# plt.figure()
-# plt.imshow(covariance_inverse_X, cmap='Reds', interpolation='nearest')
-#
-# plt.show()
+plot_covariance_heatmaps(covariance_X, covariance_inverse_X)
