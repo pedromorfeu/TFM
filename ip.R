@@ -1,7 +1,8 @@
-data <- read.csv2("ip.txt", sep = "\t", header = T, strip.white = T, blank.lines.skip=T, skip = 2)
+data <- read.csv2("ip.txt", sep = "\t", header = F, strip.white = T, blank.lines.skip=T, skip = 2)
 head(data)
 
 colnames(data) <- c("Tiempoinicio", "APHu", "APVs", "ACPv", "ZSx", "ZUs", "H7x", "H1x", "H2x", "H6x", "H3x", "H4x", "H5x", "ACPx", "Svo")
+head(data)
 
 data$APHu <- as.numeric(data$APHu)
 data$APVs <- as.numeric(data$APHu)
@@ -19,4 +20,13 @@ data$ACPx <- as.numeric(data$ACPx)
 data$Svo <- as.numeric(data$Svo)
 str(data)
 
-data[is.na(data$Svo),]
+data[is.na(data),]
+head(data)
+
+summary(data[, seq(2,15)])
+var(data[, seq(2,3)])
+
+summary(data$Svo)
+mean(data$Svo)
+var(data$Svo)
+sd(data$Svo)
