@@ -29,6 +29,8 @@ print(data.values[:5, :])
 # ignore first field (date) by now
 X = data.values[:,1:]
 
+X = X.astype(float)
+
 print("X.dtype", X.dtype)
 print("X.shape", X.shape)
 print("X", X[:5, :], sep="\n")
@@ -46,16 +48,16 @@ inverse_X = pca.inverse_transform(new_X)
 print("inverse_X.shape", inverse_X.shape)
 print("inverse_X", inverse_X[:5, ], sep="\n")
 
-covariance_X = covariance.empirical_covariance(X)
+covariance_X = np.cov(np.transpose(X))#covariance.empirical_covariance(X)
 print("covariance_X.shape", covariance_X.shape)
 # print("covariance_X", covariance_X, sep="\n")
-covariance_X = covariance_X.astype(float)
+# covariance_X = covariance_X.astype(float)
 
 
-covariance_inverse_X = covariance.empirical_covariance(inverse_X)
+covariance_inverse_X = np.cov(np.transpose(inverse_X))#covariance.empirical_covariance(inverse_X)
 print("covariance_inverse_X.shape", covariance_inverse_X.shape)
 # print("covariance_inverse_X", covariance_inverse_X, sep="\n")
-covariance_inverse_X = covariance_inverse_X.astype(float)
+# covariance_inverse_X = covariance_inverse_X.astype(float)
 
 
 plot_covariance_heatmaps(covariance_X, covariance_inverse_X)

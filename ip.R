@@ -32,3 +32,24 @@ mean(data$Svo)
 var(data$Svo)
 var(data$ACPx)
 sd(data$Svo)
+cov(data[, seq(2,5)], data[, seq(2,5)])
+diag(data)
+
+
+#create vectors -- these will be our columns
+a <- c(1,2,3,4,5,6)
+b <- c(2,3,5,6,1,9)
+c <- c(3,5,5,5,10,8)
+d <- c(10,20,30,40,50,55)
+e <- c(7,8,9,4,6,10)
+
+#create matrix from vectors
+M <- cbind(a,b,c,d,e)
+M
+
+cov(M)
+
+a <- c()
+b <- c()
+c <- c()
+M <- cbind(a,b)
