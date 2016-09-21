@@ -6,3 +6,8 @@
 6. "If we're going to only see the data along one dimension, though, it might be better to make that dimension the principal component with most variation. We don't lose much by dropping PC2 since it contributes the least to the variation in the data set." (http://setosa.io/ev/principal-component-analysis/)
 
 
+TODO:
+- asignatura "Taller lenguajes programación" - numpy + matplotlib
+- asignatura "Ampliación lenguajes programación" - numpy + matplotlib
+- Bishop http://www.miketipping.com/papers/met-mppca.pdf
+- Bblio José Ramón
