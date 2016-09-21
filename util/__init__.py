@@ -31,11 +31,11 @@ def plot_covariance_heatmaps(covariance_X, covariance_inverse_X):
 
     # sns.plt.figure()
     ax1.set_title("covariance_X")
-    sns.heatmap(covariance_X, annot=False, fmt=".2f", robust=True, ax=ax1, cmap="Paired")
+    sns.heatmap(covariance_X, annot=True, fmt=".2f", robust=True, ax=ax1, cmap="Reds")
 
     # sns.plt.figure()
     ax2.set_title("covariance_inverse_X")
-    sns.heatmap(covariance_inverse_X, annot=False, fmt=".2f", robust=True, ax=ax2, cmap="Paired")
+    sns.heatmap(covariance_inverse_X, annot=True, fmt=".2f", robust=True, ax=ax2, cmap="Reds")
 
     sns.plt.show()
 
