@@ -3,3 +3,10 @@
 3. Aprendizaje no supervisado: Reducción de la dimensionalidad. Proyectar los datos desde un espacio de alta dimensionalidad (d >> 10) a dos o tres dimensiones para visualizar los datos. O a un rango inferior (d' < 20) para aplicar otras técnicas de regresión o clasificación.
 4. http://scikit-learn.org/stable/modules/decomposition.html#principal-component-analysis-pca
 5. http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html#sklearn.decomposition.PCA
+
+
+TODO:
+- asignatura "Taller lenguajes programación" - numpy + matplotlib
+- asignatura "Ampliación lenguajes programación" - numpy + matplotlib
+- Bishop http://www.miketipping.com/papers/met-mppca.pdf
+- Bblio José Ramón
