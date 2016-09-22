@@ -1,5 +1,6 @@
-from sklearn.decomposition import PCA
 from sklearn import covariance
+from sklearn.decomposition import PCA
+from sklearn.mixture import GMM
 
 from pandas import read_csv
 from datetime import datetime, time
@@ -11,6 +12,9 @@ import locale
 import re
 
 from util import parse_dates, parse_date, plot_covariance_heatmaps
+
+N_COMPONENTS = 5
+NEW_DATA_SIZE = 1000000
 
 
 start_time = time.time()
@@ -35,26 +39,39 @@ print("X.dtype", X.dtype)
 print("X.shape", X.shape)
 print("X", X[:5, :], sep="\n")
 
-pca = PCA(n_components=2)
+pca = PCA(n_components=N_COMPONENTS)
 new_X = pca.fit_transform(X)
 
 print("new_X.shape", new_X.shape)
 print("new_X", new_X[:5, ], sep="\n")
+print("...")
+print(new_X[-5:, ], sep="\n")
 
-print("pca.explained_variance_ratio_", pca.explained_variance_ratio_)
+# *** Generate data ***
+
+rs = np.random.RandomState(1)
+gmm = GMM()
+gmm.fit(new_X)
+generated_X = gmm.sample(NEW_DATA_SIZE, random_state=rs)
+
+print("generated_X.shape", generated_X.shape)
+print("generated_X", generated_X[:5, ], sep="\n")
+print("...")
+print(generated_X[-5:, ], sep="\n")
+
+new_X =  np.vstack((new_X, generated_X))
+
 
 inverse_X = pca.inverse_transform(new_X)
 
 print("inverse_X.shape", inverse_X.shape)
 print("inverse_X", inverse_X[:5, ], sep="\n")
 
-covariance_X = np.corrcoef(np.transpose(X))#covariance.empirical_covariance(X)
-print("covariance_X.shape", covariance_X.shape)
-# print("covariance_X", covariance_X, sep="\n")
+correlation_X = np.corrcoef(np.transpose(X))
+print("covariance_X.shape", correlation_X.shape)
 
-covariance_inverse_X = np.corrcoef(np.transpose(inverse_X))#covariance.empirical_covariance(inverse_X)
-print("covariance_inverse_X.shape", covariance_inverse_X.shape)
-# print("covariance_inverse_X", covariance_inverse_X, sep="\n")
+correlation_inverse_X = np.corrcoef(np.transpose(inverse_X))
+print("covariance_inverse_X.shape", correlation_inverse_X.shape)
 
 
-plot_covariance_heatmaps(covariance_X, covariance_inverse_X)
+plot_covariance_heatmaps(correlation_X, correlation_inverse_X, annotation=False)
