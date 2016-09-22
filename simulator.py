@@ -31,9 +31,17 @@ print(data.values[:5, :])
 
 
 # ignore first field (date) by now
-X = data.values[:,1:]
+X = data.values[:, 1:]
 
 X = X.astype(float)
+
+plt.plot(X[:2], "o")
+# plt.boxplot(X[:2, :])
+plt.legend(data.columns[1:3])
+plt.ylim(50)
+
+plt.show()
+exit()
 
 print("X.dtype", X.dtype)
 print("X.shape", X.shape)

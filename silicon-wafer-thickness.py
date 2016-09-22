@@ -6,10 +6,14 @@ import numpy as np
 # http://datasets.connectmv.com/info/silicon-wafer-thickness
 raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
 N, K = raw.shape
+print(N, K)
+print(raw[:5, :])
 
 # Preprocessing: mean center and scale the data columns to unit variance
 X = raw - raw.mean(axis=0)
+print(X.shape)
 X = X / X.std(axis=0)
+print(X.shape)
 
 # Verify the centering and scaling
 X.mean(axis=0)  # array([ -3.92198351e-17,  -1.74980803e-16, ...
@@ -20,13 +24,20 @@ A = 2
 
 # We could of course use SVD ...
 u, d, v = np.linalg.svd(X)
+print(u.shape)
+print(d.shape)
+print(v.shape)
+print(v)
 
 # Transpose the "v" array from SVD, which contains the loadings, but retain
 # only the first A columns
 svd_P = v.T[:, range(0, A)]
+print(v.T)
+print(v.T[:, range(0, A)])
 
 # Compute the scores from the loadings:
 svd_T = np.dot(X, svd_P)
+print(svd_T.shape)
 
 # But what if we really only wanted calculate A=2 components (imagine SVD on
 # a really big data set where N and K &gt;&gt; 1000). This is why will use the NIPALS,
@@ -36,6 +47,7 @@ nipals_T = np.zeros((N, A))
 nipals_P = np.zeros((K, A))
 
 tolerance = 1E-10
+# for each component
 for a in range(A):
 
     t_a_guess = np.random.rand(N, 1) * 2

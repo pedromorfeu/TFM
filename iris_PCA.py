@@ -1,3 +1,4 @@
+from docutils.nodes import label
 from sklearn import datasets
 from sklearn.decomposition import PCA
 from sklearn import covariance
@@ -50,3 +51,11 @@ print("covariance_inverse_X", covariance_inverse_X, sep="\n")
 # # sns.plt.text(0, 0, covariance_inverse_X[0,0])
 #
 # sns.plt.show()
+
+
+print(X[:5,])
+
+plt.plot(X, "o")
+plt.legend(["a","b","c","d"])
+
+plt.show()

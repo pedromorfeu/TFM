@@ -35,6 +35,7 @@ sd(data$Svo)
 cov(data[, seq(2,5)], data[, seq(2,5)])
 diag(data)
 
+plot(data)
 
 #create vectors -- these will be our columns
 a <- c(1,2,3,4,5,6)
@@ -49,7 +50,13 @@ M
 
 cov(M)
 
-a <- c()
-b <- c()
-c <- c()
-M <- cbind(a,b)
+a <- c(7,4,6,8,8,7,5,9,7,8)
+b <- c(4,1,3,6,5,2,3,5,4,2)
+c <- c(3,8,5,1,7,9,3,8,5,2)
+M <- cbind(a,b,c)
+M
+
+cov(M)
+
+plot(data$APHu)
+boxplot(data$APHu)
