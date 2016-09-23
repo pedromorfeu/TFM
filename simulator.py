@@ -35,13 +35,13 @@ X = data.values[:, 1:]
 
 X = X.astype(float)
 
-plt.plot(X[:2], "o")
-# plt.boxplot(X[:2, :])
-plt.legend(data.columns[1:3])
-plt.ylim(50)
-
-plt.show()
-exit()
+# plt.plot(X[:2], "o")
+# # plt.boxplot(X[:2, :])
+# plt.legend(data.columns[1:3])
+# plt.ylim(50)
+#
+# plt.show()
+# exit()
 
 print("X.dtype", X.dtype)
 print("X.shape", X.shape)
@@ -76,10 +76,10 @@ print("inverse_X.shape", inverse_X.shape)
 print("inverse_X", inverse_X[:5, ], sep="\n")
 
 correlation_X = np.corrcoef(np.transpose(X))
-print("covariance_X.shape", correlation_X.shape)
+print("correlation_X.shape", correlation_X.shape)
 
 correlation_inverse_X = np.corrcoef(np.transpose(inverse_X))
-print("covariance_inverse_X.shape", correlation_inverse_X.shape)
+print("correlation_inverse_X.shape", correlation_inverse_X.shape)
 
 
 plot_covariance_heatmaps(correlation_X, correlation_inverse_X, annotation=False)

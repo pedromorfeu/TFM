@@ -25,17 +25,17 @@ def parse_date(date_string):
     return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
 
 
-def plot_covariance_heatmaps(covariance_X, covariance_inverse_X, annotation=False, color_map="Reds"):
+def plot_covariance_heatmaps(correlation_X, correlation_inverse_X, annotation=False, color_map="Reds"):
     # sns.plt.clf()
     f, (ax1, ax2) = sns.plt.subplots(1, 2, figsize=(12, 5))
 
     # sns.plt.figure()
-    ax1.set_title("covariance_X")
-    sns.heatmap(covariance_X, annot=annotation, fmt=".2f", robust=True, ax=ax1, cmap=color_map)
+    ax1.set_title("correlation_X")
+    sns.heatmap(correlation_X, annot=annotation, fmt=".2f", robust=True, ax=ax1, cmap=color_map)
 
     # sns.plt.figure()
-    ax2.set_title("covariance_inverse_X")
-    sns.heatmap(covariance_inverse_X, annot=annotation, fmt=".2f", robust=True, ax=ax2, cmap=color_map)
+    ax2.set_title("correlation_inverse_X")
+    sns.heatmap(correlation_inverse_X, annot=annotation, fmt=".2f", robust=True, ax=ax2, cmap=color_map)
 
     sns.plt.show()
 
