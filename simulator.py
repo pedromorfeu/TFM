@@ -66,12 +66,12 @@ print(new_X[-5:, ], sep="\n")
 mus = np.mean(new_X, axis=0)
 sigmas = np.std(new_X, axis=0)
 
-
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
 for i in range(N_COMPONENTS):
     # calculate normal distribution by component and store it in column i
-    generated_X[:, i] = np.random.normal(mus[i], sigmas[i], NEW_DATA_SIZE)
-
+    # generated_X[:, i] = np.random.normal(mus[i], sigmas[i], NEW_DATA_SIZE)
+    # alternative:
+    generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
 
 print("generated_X.shape", generated_X.shape)
 print("generated_X", generated_X[:5, ], sep="\n")

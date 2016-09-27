@@ -12,8 +12,10 @@ print(raw[:5, :])
 # Preprocessing: mean center and scale the data columns to unit variance
 X = raw - raw.mean(axis=0)
 print(X.shape)
+print(X[:5, :])
 X = X / X.std(axis=0)
 print(X.shape)
+print(X[:5, :])
 
 # Verify the centering and scaling
 X.mean(axis=0)  # array([ -3.92198351e-17,  -1.74980803e-16, ...
@@ -38,6 +40,7 @@ print(v.T[:, range(0, A)])
 # Compute the scores from the loadings:
 svd_T = np.dot(X, svd_P)
 print(svd_T.shape)
+print(svd_T[:5,])
 
 # But what if we really only wanted calculate A=2 components (imagine SVD on
 # a really big data set where N and K &gt;&gt; 1000). This is why will use the NIPALS,
@@ -108,7 +111,7 @@ nipals_P / svd_P
 from matplotlib import pylab
 
 pylab.plot(SPE_X, 'r.-')  # see how observation 154 is inconsistent
-pylab.plot(Hot_T2, 'k.-')  # observations 38, 39,110, and 154 are outliers
+pylab.plot(Hot_T2, 'b.-')  # observations 38, 39,110, and 154 are outliers
 
 # And we should also plot the scores:
 pylab.figure()
