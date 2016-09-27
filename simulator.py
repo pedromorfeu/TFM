@@ -11,7 +11,7 @@ import time
 import locale
 import re
 
-from util import parse_dates, parse_date, plot_covariance_heatmaps
+from util import parse_dates, parse_date, plot_correlation_heatmaps
 
 N_COMPONENTS = 5
 NEW_DATA_SIZE = 1000000
@@ -32,7 +32,6 @@ print(data.values[:5, :])
 
 # ignore first field (date) by now
 X = data.values[:, 1:]
-
 X = X.astype(float)
 
 # plt.plot(X[:2], "o")
@@ -92,5 +91,8 @@ print("correlation_X.shape", correlation_X.shape)
 correlation_inverse_X = np.corrcoef(np.transpose(inverse_X))
 print("correlation_inverse_X.shape", correlation_inverse_X.shape)
 
+print("covariance", np.cov(generated_X.T))
 
-plot_covariance_heatmaps(correlation_X, correlation_inverse_X, annotation=False)
+plot_correlation_heatmaps(correlation_X, correlation_inverse_X, annotation=False)
+
+plot_correlation_heatmaps(np.cov(X.T), np.cov(generated_X.T), annotation=False)

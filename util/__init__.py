@@ -25,7 +25,7 @@ def parse_date(date_string):
     return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
 
 
-def plot_covariance_heatmaps(correlation_X, correlation_inverse_X, annotation=False, color_map="Reds"):
+def plot_correlation_heatmaps(correlation_X, correlation_inverse_X, annotation=False, color_map="Reds"):
     # sns.plt.clf()
     f, (ax1, ax2) = sns.plt.subplots(1, 2, figsize=(12, 5))
 

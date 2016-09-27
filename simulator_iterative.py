@@ -2,9 +2,20 @@
 
 import numpy as np
 
+from pandas import read_csv
+
+from util import parse_dates, parse_date
+
 # Download the CSV data file from:
 # http://datasets.connectmv.com/info/silicon-wafer-thickness
-raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
+# raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
+
+raw = read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
+                skip_blank_lines=True, na_values="")
+raw = raw.values[:, 1:]
+raw = raw.astype(float)
+
+
 N, K = raw.shape
 print(N, K)
 print(raw[:5, :])
@@ -22,7 +33,7 @@ X.mean(axis=0)  # array([ -3.92198351e-17,  -1.74980803e-16, ...
 X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
 # We are going to calculate only 2 principal components
-A = 2
+A = 5
 
 # We could of course use SVD ...
 u, d, v = np.linalg.svd(X)
@@ -53,8 +64,8 @@ tolerance = 1E-10
 # for each component
 for a in range(A):
 
+    print("Loop", a)
     t_a_guess = np.random.rand(N, 1) * 2
-    # t_a: score
     t_a = t_a_guess + 1.0
     itern = 0
 
