@@ -57,20 +57,31 @@ print(new_X[-5:, ], sep="\n")
 
 # *** Generate data ***
 
-rs = np.random.RandomState(1)
-gmm = GMM()
-gmm.fit(new_X)
-generated_X = gmm.sample(NEW_DATA_SIZE, random_state=rs)
+# rs = np.random.RandomState(1)
+# gmm = GMM()
+# gmm.fit(new_X)
+# generated_X = gmm.sample(NEW_DATA_SIZE, random_state=rs)
+
+
+mus = np.mean(new_X, axis=0)
+sigmas = np.std(new_X, axis=0)
+
+
+generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
+for i in range(N_COMPONENTS):
+    # calculate normal distribution by component and store it in column i
+    generated_X[:, i] = np.random.normal(mus[i], sigmas[i], NEW_DATA_SIZE)
+
 
 print("generated_X.shape", generated_X.shape)
 print("generated_X", generated_X[:5, ], sep="\n")
 print("...")
 print(generated_X[-5:, ], sep="\n")
 
-new_X =  np.vstack((new_X, generated_X))
+# new_X =  np.vstack((new_X, generated_X))
 
 
-inverse_X = pca.inverse_transform(new_X)
+inverse_X = pca.inverse_transform(generated_X)
 
 print("inverse_X.shape", inverse_X.shape)
 print("inverse_X", inverse_X[:5, ], sep="\n")
