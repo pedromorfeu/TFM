@@ -57,8 +57,6 @@ print("U", U[:5, :])
 print("...")
 print(U[-5:, ], sep="\n")
 
-exit()
-
 # Transpose the "v" array from SVD, which contains the loadings, but retain
 # only the first A columns
 svd_P = v.T[:, range(0, A)]
@@ -110,10 +108,10 @@ for a in range(A):
 
         if itern % 100 == 0:
             print("diff", np.linalg.norm(t_a_guess - t_a))
-            pylab.plot(t_a, 'r-')
-            pylab.plot(t_a_guess, 'g--')
-            pylab.title("Loop" + str(a))
-            pylab.show()
+            # pylab.plot(t_a, 'r-')
+            # pylab.plot(t_a_guess, 'g--')
+            # pylab.title("Loop" + str(a))
+            # pylab.show()
 
     # We've converged, or reached the limit on the number of iteration
 
@@ -125,11 +123,11 @@ for a in range(A):
     nipals_P[:, a] = p_a.ravel()
 
 print("nipals_T", nipals_T[:5, :])
-print("nipals_P", nipals_P[:5, :])
-print("nipals_T.T", nipals_T.T[:5, :])
-print("nipals_P.T", nipals_P.T[:5, :])
-print("X", X[:5, :])
+print("...")
+print(nipals_T[-5:, ], sep="\n")
 
+
+exit()
 
 # PCA also has two very important outputs we should calculate:
 
