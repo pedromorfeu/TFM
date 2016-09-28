@@ -6,6 +6,10 @@ from pandas import read_csv
 
 from util import parse_dates, parse_date
 
+from matplotlib import pylab
+
+from datetime import datetime
+
 # Download the CSV data file from:
 # http://datasets.connectmv.com/info/silicon-wafer-thickness
 # raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
@@ -18,13 +22,13 @@ raw = raw.astype(float)
 
 N, K = raw.shape
 print(N, K)
-print(raw[:5, :])
+print("raw", raw[:5, :])
 
 # Preprocessing: mean center and scale the data columns to unit variance
 X = raw - raw.mean(axis=0)
 print(X.shape)
 print(X[:5, :])
-X = X / X.std(axis=0)
+# X = X / X.std(axis=0)
 print(X.shape)
 print(X[:5, :])
 
@@ -33,25 +37,38 @@ X.mean(axis=0)  # array([ -3.92198351e-17,  -1.74980803e-16, ...
 X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
 # We are going to calculate only 2 principal components
-A = 5
+A = 2
 
 # We could of course use SVD ...
+print(str(datetime.now()), "Calculating SVD...")
 u, d, v = np.linalg.svd(X)
+print(str(datetime.now()), "Done")
 print(u.shape)
 print(d.shape)
 print(v.shape)
-print(v)
+print("v", v)
+
+# U, S, V = self._fit(X)
+# U = U[:, :self.n_components_]
+# U *= S[:self.n_components_]
+U = u[:, :2]
+U *= d[:2]
+print("U", U[:5, :])
+print("...")
+print(U[-5:, ], sep="\n")
+
+exit()
 
 # Transpose the "v" array from SVD, which contains the loadings, but retain
 # only the first A columns
 svd_P = v.T[:, range(0, A)]
 print(v.T)
-print(v.T[:, range(0, A)])
+print("v.T", v.T[:, range(0, A)])
 
 # Compute the scores from the loadings:
 svd_T = np.dot(X, svd_P)
 print(svd_T.shape)
-print(svd_T[:5,])
+print("svd_T", svd_T[:5, :])
 
 # But what if we really only wanted calculate A=2 components (imagine SVD on
 # a really big data set where N and K &gt;&gt; 1000). This is why will use the NIPALS,
@@ -64,7 +81,7 @@ tolerance = 1E-10
 # for each component
 for a in range(A):
 
-    print("Loop", a)
+    print(str(datetime.now()),"Loop", a)
     t_a_guess = np.random.rand(N, 1) * 2
     t_a = t_a_guess + 1.0
     itern = 0
@@ -91,6 +108,13 @@ for a in range(A):
 
         itern += 1
 
+        if itern % 100 == 0:
+            print("diff", np.linalg.norm(t_a_guess - t_a))
+            pylab.plot(t_a, 'r-')
+            pylab.plot(t_a_guess, 'g--')
+            pylab.title("Loop" + str(a))
+            pylab.show()
+
     # We've converged, or reached the limit on the number of iteration
 
     # Deflate the part of the data in X that we've explained with t_a and p_a
@@ -100,11 +124,19 @@ for a in range(A):
     nipals_T[:, a] = t_a.ravel()
     nipals_P[:, a] = p_a.ravel()
 
+print("nipals_T", nipals_T[:5, :])
+print("nipals_P", nipals_P[:5, :])
+print("nipals_T.T", nipals_T.T[:5, :])
+print("nipals_P.T", nipals_P.T[:5, :])
+print("X", X[:5, :])
+
+
 # PCA also has two very important outputs we should calculate:
 
 # The SPE_X, squared prediction error to the X-space is the residual distance
 # from the model to each data point.
 SPE_X = np.sum(X ** 2, axis=1)
+print("SPE_X", X[:5, :])
 
 # And Hotelling's T2, the directed distance from the model center to
 # each data point.
@@ -120,7 +152,6 @@ nipals_P / svd_P
 
 # But since PCA is such a visual tool, we should plot the SPE_X and
 # Hotelling's T2 values
-from matplotlib import pylab
 
 pylab.plot(SPE_X, 'r.-')  # see how observation 154 is inconsistent
 pylab.plot(Hot_T2, 'b.-')  # observations 38, 39,110, and 154 are outliers

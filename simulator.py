@@ -13,7 +13,7 @@ import re
 
 from util import parse_dates, parse_date, plot_correlation_heatmaps
 
-N_COMPONENTS = 5
+N_COMPONENTS = 2
 NEW_DATA_SIZE = 1000000
 
 
@@ -53,6 +53,8 @@ print("new_X.shape", new_X.shape)
 print("new_X", new_X[:5, ], sep="\n")
 print("...")
 print(new_X[-5:, ], sep="\n")
+
+exit()
 
 # *** Generate data ***
 
