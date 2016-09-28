@@ -11,7 +11,7 @@ import time
 import locale
 import re
 
-from util import parse_dates, parse_date, plot_correlation_heatmaps
+from util import parse_dates, parse_date, plot_correlation_heatmaps, print_matrix
 
 N_COMPONENTS = 2
 NEW_DATA_SIZE = 1000000
@@ -50,11 +50,10 @@ pca = PCA(n_components=N_COMPONENTS)
 new_X = pca.fit_transform(X)
 
 print("new_X.shape", new_X.shape)
-print("new_X", new_X[:5, ], sep="\n")
-print("...")
-print(new_X[-5:, ], sep="\n")
+print_matrix("new_X", new_X)
 
-exit()
+# invert
+inverted_X = pca.inverse_transform(new_X)
 
 # *** Generate data ***
 
@@ -75,17 +74,15 @@ for i in range(N_COMPONENTS):
     generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
 
 print("generated_X.shape", generated_X.shape)
-print("generated_X", generated_X[:5, ], sep="\n")
-print("...")
-print(generated_X[-5:, ], sep="\n")
+print_matrix("generated_X", generated_X)
 
 # new_X =  np.vstack((new_X, generated_X))
 
-
+# invert
 inverse_X = pca.inverse_transform(generated_X)
 
 print("inverse_X.shape", inverse_X.shape)
-print("inverse_X", inverse_X[:5, ], sep="\n")
+print_matrix("inverse_X", inverse_X)
 
 correlation_X = np.corrcoef(np.transpose(X))
 print("correlation_X.shape", correlation_X.shape)
@@ -98,3 +95,9 @@ print("covariance", np.cov(generated_X.T))
 plot_correlation_heatmaps(correlation_X, correlation_inverse_X, annotation=False)
 
 plot_correlation_heatmaps(np.cov(X.T), np.cov(generated_X.T), annotation=False)
+
+
+from matplotlib.mlab import PCA
+pc = PCA(X, standardize=False)
+
+print(pc)

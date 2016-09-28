@@ -46,3 +46,8 @@ def plot_correlation_heatmaps(correlation_X, correlation_inverse_X, annotation=F
 # plt.imshow(covariance_inverse_X, cmap='Reds', interpolation='nearest')
 #
 # plt.show()
+
+def print_matrix(name, matrix):
+    print(name, matrix[:5, :], sep="\n")
+    print("...")
+    print(matrix[-5:, ], sep="\n")

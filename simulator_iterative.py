@@ -1,13 +1,9 @@
 # Limitations: does not handle missing data
 
 import numpy as np
-
 from pandas import read_csv
-
-from util import parse_dates, parse_date
-
+from util import parse_dates, parse_date, print_matrix
 from matplotlib import pylab
-
 from datetime import datetime
 
 # Download the CSV data file from:
@@ -22,7 +18,7 @@ raw = raw.astype(float)
 
 N, K = raw.shape
 print(N, K)
-print("raw", raw[:5, :])
+print_matrix("raw", raw)
 
 # Preprocessing: mean center and scale the data columns to unit variance
 X = raw - raw.mean(axis=0)
@@ -37,11 +33,11 @@ X.mean(axis=0)  # array([ -3.92198351e-17,  -1.74980803e-16, ...
 X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
 # We are going to calculate only 2 principal components
-A = 2
+A = 5
 
 # We could of course use SVD ...
 print(str(datetime.now()), "Calculating SVD...")
-u, d, v = np.linalg.svd(X)
+u, d, v = np.linalg.svd(X[:, :])
 print(str(datetime.now()), "Done")
 print(u.shape)
 print(d.shape)
@@ -53,20 +49,23 @@ print("v", v)
 # U *= S[:self.n_components_]
 U = u[:, :2]
 U *= d[:2]
-print("U", U[:5, :])
-print("...")
-print(U[-5:, ], sep="\n")
+print_matrix("U", U)
 
 # Transpose the "v" array from SVD, which contains the loadings, but retain
 # only the first A columns
 svd_P = v.T[:, range(0, A)]
-print(v.T)
-print("v.T", v.T[:, range(0, A)])
+print(svd_P.shape)
+print_matrix("svd_P", svd_P)
 
 # Compute the scores from the loadings:
 svd_T = np.dot(X, svd_P)
 print(svd_T.shape)
-print("svd_T", svd_T[:5, :])
+print_matrix("svd_T", svd_T)
+
+# invert
+XX = np.dot(svd_T, svd_P.T) + np.mean(raw, axis=0)
+print_matrix("XX", XX)
+
 
 # But what if we really only wanted calculate A=2 components (imagine SVD on
 # a really big data set where N and K &gt;&gt; 1000). This is why will use the NIPALS,
@@ -122,12 +121,16 @@ for a in range(A):
     nipals_T[:, a] = t_a.ravel()
     nipals_P[:, a] = p_a.ravel()
 
-print("nipals_T", nipals_T[:5, :])
-print("...")
-print(nipals_T[-5:, ], sep="\n")
+# scores
+print_matrix("nipals_P", nipals_P)
 
+# loadings
+print_matrix("nipals_T", nipals_T)
 
-exit()
+# invert matrix
+XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
+print_matrix("XX", XX)
+
 
 # PCA also has two very important outputs we should calculate:
 
