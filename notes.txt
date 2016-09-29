@@ -4,7 +4,10 @@
 4. http://scikit-learn.org/stable/modules/decomposition.html#principal-component-analysis-pca
 5. http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html#sklearn.decomposition.PCA
 6. "If we're going to only see the data along one dimension, though, it might be better to make that dimension the principal component with most variation. We don't lose much by dropping PC2 since it contributes the least to the variation in the data set." (http://setosa.io/ev/principal-component-analysis/)
-
+7. http://www.real-statistics.com/students-t-distribution/two-sample-t-test-uequal-variances/
+8. http://www.real-statistics.com/multivariate-statistics/boxs-test-equality-covariance-matrices/boxs-test-basic-concepts/
+9. https://cran.r-project.org/web/packages/Hotelling/Hotelling.pdf
+10. 
 
 TODO:
 - asignatura "Taller lenguajes programación" - numpy + matplotlib
