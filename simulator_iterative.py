@@ -2,7 +2,7 @@
 
 import numpy as np
 from pandas import read_csv
-from util import parse_dates, parse_date, print_matrix
+from util import *
 from matplotlib import pylab
 from datetime import datetime
 
@@ -12,6 +12,7 @@ from datetime import datetime
 
 raw = read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
                 skip_blank_lines=True, na_values="")
+columns = raw.columns.values
 raw = raw.values[:, 1:]
 raw = raw.astype(float)
 
@@ -37,7 +38,7 @@ A = 5
 
 # We could of course use SVD ...
 print(str(datetime.now()), "Calculating SVD...")
-u, d, v = np.linalg.svd(X[:, :])
+u, d, v = np.linalg.svd(X[:1000, :])
 print(str(datetime.now()), "Done")
 print(u.shape)
 print(d.shape)
@@ -127,10 +128,24 @@ print_matrix("nipals_P", nipals_P)
 # loadings
 print_matrix("nipals_T", nipals_T)
 
+
+# *** Generate data ***
+mus = np.mean(nipals_T, axis=0)
+sigmas = np.std(nipals_T, axis=0)
+
+generated_X = np.zeros((100000, 5))
+for i in range(5):
+    # calculate normal distribution by component and store it in column i
+    generated_X[:, i] = np.random.normal(mus[i], sigmas[i], 100000)
+    # alternative:
+    # generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
+
 # invert matrix
-XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
+XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
+# XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 
+save_matrix("inverse_X.csv", XX, columns[1:])
 
 # PCA also has two very important outputs we should calculate:
 

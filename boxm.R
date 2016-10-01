@@ -26,7 +26,8 @@ cov.Mtest=function(x,ina,a=0.05) {
   for (i in 1:k) {
     mat[,,i]=cov(x[ina==i,])
     pame[i]=det(mat[,,i]) ## the detemirnant of each covariance matrix
-    mat1[,,i]=(nu[i]-1)*cov(x[ina==i,])  }
+    mat1[,,i]=(nu[i]-1)*cov(x[ina==i,])  
+  }
   ## the next 2 lines calculate the pooled covariance matrix
   Sp=apply(mat1,1:2,sum)
   Sp=Sp/(n-k)

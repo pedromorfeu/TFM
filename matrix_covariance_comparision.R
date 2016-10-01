@@ -40,5 +40,10 @@ all <- rbind(box_data, box_inverted_data)
 # str(all)
 # summary(all)
 
+
 boxM(data = all[, -15], grouping = all[, 15])
+
+# cov.Mtest(all[, -15], all[, 15])
+# BoxMTest(all[, -15], factor(all[, 15]))
+
 
