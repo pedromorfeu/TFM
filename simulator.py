@@ -3,44 +3,32 @@ from sklearn.decomposition import PCA
 from sklearn.mixture import GMM
 
 from pandas import read_csv
-from datetime import datetime, time
+from datetime import datetime
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 import locale
 import re
+import os
 
-from util import parse_dates, parse_date, plot_correlation_heatmaps, print_matrix
+from util import print_matrix, save_matrix, parse_dates, plot_correlation_heatmaps
 
-N_COMPONENTS = 2
-NEW_DATA_SIZE = 1000000
+N_COMPONENTS = 5
+NEW_DATA_SIZE = 100000
 
-
-start_time = time.time()
 
 data = read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
                 skip_blank_lines=True, na_values="")
 
-print("--- %s seconds ---" % (time.time() - start_time))
-print("--- %.2f minutes ---" % ((time.time() - start_time)/60))
-
 # print(data)
+print(data.columns.values)
 print(data.values.shape)
 print(data.values[:5, :])
-
 
 # ignore first field (date) by now
 X = data.values[:, 1:]
 X = X.astype(float)
-
-# plt.plot(X[:2], "o")
-# # plt.boxplot(X[:2, :])
-# plt.legend(data.columns[1:3])
-# plt.ylim(50)
-#
-# plt.show()
-# exit()
 
 print("X.dtype", X.dtype)
 print("X.shape", X.shape)
@@ -51,9 +39,6 @@ new_X = pca.fit_transform(X)
 
 print("new_X.shape", new_X.shape)
 print_matrix("new_X", new_X)
-
-# invert
-inverted_X = pca.inverse_transform(new_X)
 
 # *** Generate data ***
 
@@ -84,6 +69,8 @@ inverse_X = pca.inverse_transform(generated_X)
 print("inverse_X.shape", inverse_X.shape)
 print_matrix("inverse_X", inverse_X)
 
+save_matrix("inverse_X.csv", inverse_X, data.columns.values[1:])
+
 correlation_X = np.corrcoef(np.transpose(X))
 print("correlation_X.shape", correlation_X.shape)
 
@@ -95,9 +82,10 @@ print("covariance", np.cov(generated_X.T))
 plot_correlation_heatmaps(correlation_X, correlation_inverse_X, annotation=False)
 
 plot_correlation_heatmaps(np.cov(X.T), np.cov(generated_X.T), annotation=False)
+#
+#
+# from matplotlib.mlab import PCA
+# pc = PCA(X, standardize=False)
+#
+# print(pc)
 
-
-from matplotlib.mlab import PCA
-pc = PCA(X, standardize=False)
-
-print(pc)

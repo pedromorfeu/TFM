@@ -1,8 +1,10 @@
-from datetime import datetime, time
+from datetime import datetime
 import numpy as np
 import re
 import locale
 import seaborn as sns
+import os
+
 
 print(locale.getdefaultlocale())
 locale.setlocale(locale.LC_TIME, "spanish")
@@ -47,7 +49,30 @@ def plot_correlation_heatmaps(correlation_X, correlation_inverse_X, annotation=F
 #
 # plt.show()
 
+
 def print_matrix(name, matrix):
     print(name, matrix[:5, :], sep="\n")
     print("...")
     print(matrix[-5:, ], sep="\n")
+
+
+def save_matrix(filename, matrix, columns_names=None):
+    print(str(datetime.now()), "Saving matrix...")
+
+    folder = "generated"
+    os.makedirs(folder, exist_ok=True)
+
+    f = open(os.path.join(folder, filename), "w")
+    if columns_names is not None:
+        for i in range(len(columns_names)):
+            f.write(columns_names[i])
+            f.write("\t") if i < len(columns_names) - 1 else None
+        f.write("\n")
+
+    for i in range(matrix.shape[0]):
+        for j in range(matrix.shape[1]):
+            f. write(str(matrix[i, j]))
+            f.write("\t") if j < matrix.shape[1]-1 else None
+        f.write("\n")
+    f.close()
+    print(str(datetime.now()), "Saved")
