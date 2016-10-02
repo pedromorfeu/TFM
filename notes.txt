@@ -11,9 +11,13 @@
 11. http://www.ibm.com/support/knowledgecenter/SSLVMB_24.0.0/spss/tutorials/glmm_patlos_homcov.html
 12. http://oak.ucc.nau.edu/rh232/courses/EPS625/Handouts/Interpreting%20the%20One-way%20MANOVA.pdf
 13. "one first chooses a model (the null hypothesis) and a threshold value for p, called the significance level of the test, traditionally 5% or 1% [6] and denoted as α. If the p-value is less than or equal to the chosen significance level (α), the test suggests that the observed data is inconsistent with the null hypothesis, so the null hypothesis must be rejected." (https://en.wikipedia.org/wiki/P-value)
-14. "The following assumptions are made when using T2 1. Each population follows the multivariate normal distribution. 2. The two samples are independent. 3. The two covariance matrices are equal" (http://ncss.wpengine.netdna-cdn.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Hotellings_Two-Sample_T2.pdf)
+14. "The following assumptions are made when using T2: 1. Each population follows the multivariate normal distribution. 2. The two samples are independent. 3. The two covariance matrices are equal" (http://ncss.wpengine.netdna-cdn.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Hotellings_Two-Sample_T2.pdf)
 15. "Box's M tests "the assumption ... that the vector of the dependent variables follow a multivariate normal distribution, and the variance-covariance matrices are equal across the cells formed by the between-subjects effects." (SPSS 14 Help - Tutorial)" (https://en.wikiversity.org/wiki/Box%27s_M)
 16. "When a P value is less than or equal to the significance level, you reject the null hypothesis." (http://blog.minitab.com/blog/adventures-in-statistics/understanding-hypothesis-tests:-significance-levels-alpha-and-p-values-in-statistics)
+17. "The p-value for the test is less than 0.0001 indicating that we reject the null hypothesis." (http://sites.stat.psu.edu/~ajw13/stat505/fa06/11_2sampHotel/11_2sampHotel_assump.html)
+18. "Hotelling's T2 Statistic: If the observed T2 value is 'large' we reject H0:mu=mu0" (http://www.public.iastate.edu/~maitra/stat501/lectures/InferenceForMeans-Hotelling.pdf)
+19. "Checking out the Box’s M test we find that the test is significant (which means that there are significant differences among the regions in the covariance matrices)" (https://www.google.es/url?sa=t&rct=j&q=&esrc=s&source=web&cd=6&ved=0ahUKEwiJn9P2_rvPAhVJfiYKHeW_A8AQFgg8MAU&url=http%3A%2F%2Fwww-bcf.usc.edu%2F~mmclaugh%2F550x%2FPPTslides%2FWeekElevenSlides%2FMANOVA.ppt&usg=AFQjCNGuG6lhm_BflMGHKaNLQYzrIYNKwg&sig2=Qw-dDc-JHFODF2_NwFtM0w&cad=rja)
+
 
 TODO:
 - asignatura "Taller lenguajes programación" - numpy + matplotlib

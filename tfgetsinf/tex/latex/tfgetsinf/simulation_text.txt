@@ -1,0 +1,46 @@
+Título: Simulación de datos de sensores industriales
+----------------------------------------------------
+
+
+Abstract
+--------
+
+Los entornos industriales hacen uso de sensores para obtener mediciones de varios factores en su cadena de producción. En las fases iniciales, la cantidad de datos generados es pequeña, por lo que no es significativa para poder aplicar técnicas de Big Data. El proyecto descrito en este documento busca simular mayor cantidad de datos a través de los pocos datos generados por sensores industriales. La primera tarea en análisis de datos es la ingestión del dataset, que en este caso no tiene mayor dificultad técnica al tratarse de un dataset pequeño. Posteriormente se procede a la respectiva limpieza, para normalizar los datos y así poder aplicar cálculos precisos sobre los mismos.
+Las técnicas para obtener conocimiento del dataset que se proponen son del ambito de Machine Learning. En este caso se tratan de técnicas de aprendizaje no supervisado (unsupervised learning), pues el dataset no contiene  características con etiqueta. Se pretende obtener nuevo conocimiento de los datos al aplicar la reducción de dimensionalidad, a través de un método conocido por Principal Component Analysis o simplemente PCA. Este método transforma espacios multidimensionales en espacios ortogonales más reducidos, proyectando los datos sin perder información. Esto permite tener mayor claridad sobre los datos, mayor capacidad de visualización y reducción de ruido. Con los datos proyectados en el nuevo espacio ortogonal, el objetivo es generar nuevos datos y luego re-proyectar al espacio original, con todas las características.
+La simulación de datos se hace a través de muestreo con distribución normal para cada componente principal. Se usan los restantes componentes para generar ruido. Como hay una característica de tipo fecha, tiene sentido usar técnicas basadas en séries temporales, para aprender la regularidad de generación de las muestras. Se propone la aplicación de modelos ARIMA para el aprendizaje de la série temporal.
+Una vez generados los nuevos datos, se aplican técnicas estadísticas para evaluar su concordancia con los datos iniciales. El estadístico Hotelling T-squared ofrece un test de las médias multivariantes de diferentes poblaciones. Y el Box's M test evalua la homogeneidad de matrices de varianzas-covarianzas. De esta forma se comparan los dos espacios de datos, el original y el simulado.
+
+
+Introducción
+------------
+Este proyecto tiene como fuente de datos uno o varios sensores de un mecanizado de injección de plástico. Los sensores efectuan mediciones de varios factores con una regularidad temporal, generando así muestras de datos en determinados intervalos de tiempo. En este caso de estudo, la frecuencia de las mediciones no es constante y existen varias interrupciones, constituyendo un dataset con poco volumen. Las técnicas de Big Data, en particular Machine Learning, necesitan gran cantidad de datos para poder inducir modelos matemáticos que los expliquen. Cuanto más datos mejor, lo que garantiza un aprendizaje más robusto y fiable.
+La fase inicial del análisis es la ingesta de los datos. El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el locale España, lo que exige una adaptación de los algoritmos de parsing.
+La solución propuesta para simular datos empieza con la proyección de los datos del espacio multivariante original a un espacio ortogonal más reducido. Esta técnica de Machine Learning se conoce por PCA (Principal Component Analysis). PCA pertenece a la familia de aprendizaje no supervisado (unsupervised learning), donde no existen etiquetas o clases a predecir. Los datos de entrenamiento son simplemente observaciones, sin estar clasificados. Las técnicas de unsupervised learning se usan para descubrir grupos de similitud (clusters) en los datos; o para determinar la distribución de los datos en el espacio original; o también, que interesa a este estudio, para proyectar los datos en espacios de menos dimensiones.
+Pocas dimensiones suelen ofrecer mejor insight sobre los datos. Como primera ventaja, permiten la aplicación de técnicas de visualización - resulta muy difícil visualizar datos en más de 3 dimensiones (incluso en 3 dimensiones puede ser difícil). Además, las componentes que no son pricipales suelen ser ruido, con lo que se puede atenuar los efectos de este.
+PCA decompone el dataset en una série de componentes ortogonales que explican la variabilidad.
+
+
+Dataset
+-------
+El dataset está constituido por 19797 observaciones de 15 variables. Los sensores registran la fecha y hora de cada muestra, así que la primera variable es de tipo fecha/hora. Las restantes variables corresponden a las métricas de varios factores y son de tipo numérico. No hay datos faltantes, sin embargo las fechas tienen un formato inválido.
+Los datos recogidos por los sensores corresponden a períodos cortos y interrumpidos, que se limitan a pocos días de los meses de octubre de 2015 y marzo, abril, mayo y junio de 2016.
+TODO
+
+- Limpieza
+----------
+El formato de las fechas no es adecuado, lo que ha obligado a algún trabajo de limpieza. El formato de mes está abreviado y en castellano pero no es adecuado según los standards.
+TODO
+
+Desarrollo
+----------
+TODO: PCA - how it works
+
+Evaluación de los modelos
+-------------------------
+TODO
+
+Conclusión
+----------
+TODO
+
+

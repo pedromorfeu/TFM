@@ -12,7 +12,9 @@ data <- data[!is.na(data$APHu),]
 # head(data)
 # str(data)
 # summary(data)
-
+sd(data[, 1])
+apply(data, 2, sd)
+apply(data, 2, mean)
 
 inverted_data <- read.csv2("generated/inverse_X.csv", sep = "\t", header=T, stringsAsFactors = F, 
                            colClasses = rep("numeric", 14), dec = ".")
@@ -22,6 +24,7 @@ inverted_data <- read.csv2("generated/inverse_X.csv", sep = "\t", header=T, stri
 
 # Hotelling T2
 res = hotelling.test(x = data, y = inverted_data)
+#res = hotelling.stat(x = data, y = inverted_data)
 res
 
 
