@@ -55,9 +55,9 @@
 % les paraules clau i el resum en els tres idiomes                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\keywords{machine learning, big data, PCA} % Paraules clau 
-         {machine learning, big data, PCA}              % Palabras clave
-         {machine learning, big data, PCA}        % Key words
+\keywords{Machine learning, Big Data, PCA} % Paraules clau 
+         {Machine learning, Big Data, PCA}              % Palabras clave
+         {Machine learning, Big Data, PCA}        % Key words
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                              INICI DEL DOCUMENT                             %
@@ -72,7 +72,7 @@
 \begin{abstract}[spanish]
 Los entornos industriales hacen uso de sensores para obtener mediciones de varios factores en su cadena de producción. En las fases iniciales, la cantidad de datos generados es pequeña, por lo que no es significativa para poder aplicar técnicas de Big Data. El proyecto descrito en este documento busca simular mayor cantidad de datos a través de los pocos datos generados por sensores industriales. La primera tarea en análisis de datos es la ingestión del dataset, que en este caso no tiene mayor dificultad técnica al tratarse de un dataset pequeño. Posteriormente se procede a la respectiva limpieza, para normalizar los datos y así poder aplicar cálculos precisos sobre los mismos.
 
-Las técnicas para obtener conocimiento del dataset que se proponen son del ambito de Machine Learning. En este caso se tratan de técnicas de aprendizaje no supervisado (unsupervised learning), pues el dataset no contiene  características con etiqueta. Se pretende obtener nuevo conocimiento de los datos al aplicar la reducción de dimensionalidad, a través de un método conocido por Principal Component Analysis o simplemente PCA. Este método transforma espacios multidimensionales en espacios ortogonales más reducidos, proyectando los datos sin perder información. Esto permite tener mayor claridad sobre los datos, mayor capacidad de visualización y reducción de ruido. Con los datos proyectados en el nuevo espacio ortogonal, el objetivo es generar nuevos datos y luego re-proyectar al espacio original, con todas las características.
+Las técnicas para obtener conocimiento del dataset que se proponen son del ambito de Machine Learning. En este caso se tratan de técnicas de aprendizaje no supervisado (unsupervised learning), pues el dataset no contiene  características con etiqueta. Se pretende obtener nuevo conocimiento de los datos al aplicar la reducción de dimensionalidad, a través de un método conocido por Principal Component Analysis o simplemente PCA. Este método transforma espacios multidimensionales en espacios ortogonales más reducidos, proyectando los datos sin perder información. Esto permite tener mayor claridad sobre los datos, mayor capacidad de visualización y reducción de ruido. Con los datos proyectados en el nuevo espacio ortogonal, el objectivo es generar nuevos datos y luego re-proyectar al espacio original, con todas las características.
 
 La simulación de datos se hace a través de muestreo con distribución normal para cada componente principal. Se usan los restantes componentes para generar ruido. Como hay una característica de tipo fecha, tiene sentido usar técnicas basadas en séries temporales, para aprender la regularidad de generación de las muestras. Se propone la aplicación de modelos ARIMA para el aprendizaje de la série temporal.
 
@@ -86,16 +86,25 @@ Una vez generados los nuevos datos, se aplican técnicas estadísticas para eval
 %\end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                  STATE OF THE ART                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Estado del Arte}
+
+TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                              CONTINGUT DEL TREBALL                          %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \mainmatter
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                  INTRODUCCIO                                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Introducci\'o}
+\chapter{Introducci\'on}
 
 Este proyecto tiene como fuente de datos uno o varios sensores de un mecanizado de injección de plástico. Los sensores efectuan mediciones de varios factores con una regularidad temporal, generando así muestras de datos en determinados intervalos de tiempo. En este caso de estudo, la frecuencia de las mediciones no es constante y existen varias interrupciones, constituyendo un dataset con poco volumen. Las técnicas de Big Data, en particular Machine Learning, necesitan gran cantidad de datos para poder inducir modelos matemáticos que los expliquen. Cuanto más datos mejor, lo que garantiza un aprendizaje más robusto y fiable.
 

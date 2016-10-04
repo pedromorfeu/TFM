@@ -119,12 +119,13 @@
      
 
 \addto\captionsspanish{%
-     \renewcommand{\titulacioname}{Grado en Ingenier\'\i a Inform\'atica}
-     \renewcommand{\tfgname}{Trabajo fin de grado}
+     \renewcommand{\titulacioname}{M\'aster en Big Data Analytics}
+     \renewcommand{\tfgname}{Trabajo de fin de M\'aster}
      \renewcommand{\authorname}{Autor}
      \renewcommand{\tutorname}{Tutor}
      \renewcommand{\coursename}{Curso}
      \renewcommand{\keywordsname}{Palabras clave}
+     \renewcommand{\abstractname}{Abstract}
      \renewcommand{\tablename}{Tabla}
      \renewcommand{\listtablename}{\'Indice de tablas}
      \renewcommand{\algorithmname}{Algoritmo}

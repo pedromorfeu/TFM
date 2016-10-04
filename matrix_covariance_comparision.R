@@ -25,7 +25,7 @@ inverted_data <- read.csv2("generated/inverse_X.csv", sep = "\t", header=T, stri
 # Hotelling T2
 res = hotelling.test(x = data, y = inverted_data)
 #res = hotelling.stat(x = data, y = inverted_data)
-res
+print(res)
 
 
 # Box's M
@@ -44,7 +44,8 @@ all <- rbind(box_data, box_inverted_data)
 # summary(all)
 
 
-boxM(data = all[, -15], grouping = all[, 15])
+res_box <- boxM(data = all[, -15], grouping = all[, 15])
+#print(res_box) 
 
 # cov.Mtest(all[, -15], all[, 15])
 # BoxMTest(all[, -15], factor(all[, 15]))

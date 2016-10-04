@@ -72,7 +72,9 @@ print_matrix("XX", XX)
 # a really big data set where N and K &gt;&gt; 1000). This is why will use the NIPALS,
 # nonlinear iterative partial least squares, method.
 
+# scores
 nipals_T = np.zeros((N, A))
+# loadings
 nipals_P = np.zeros((K, A))
 
 tolerance = 1E-10
@@ -122,10 +124,9 @@ for a in range(A):
     nipals_T[:, a] = t_a.ravel()
     nipals_P[:, a] = p_a.ravel()
 
-# scores
-print_matrix("nipals_P", nipals_P)
-
 # loadings
+print_matrix("nipals_P", nipals_P)
+# scores
 print_matrix("nipals_T", nipals_T)
 
 
@@ -133,14 +134,14 @@ print_matrix("nipals_T", nipals_T)
 mus = np.mean(nipals_T, axis=0)
 sigmas = np.std(nipals_T, axis=0)
 
-generated_X = np.zeros((100000, 5))
-for i in range(5):
+generated_X = np.zeros((100000, A))
+for i in range(A):
     # calculate normal distribution by component and store it in column i
     generated_X[:, i] = np.random.normal(mus[i], sigmas[i], 100000)
     # alternative:
     # generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
 
-# invert matrix
+# invert matrix: dot product between random data and the loadings, nipals_P
 XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
 # XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
@@ -169,15 +170,15 @@ nipals_P / svd_P
 # But since PCA is such a visual tool, we should plot the SPE_X and
 # Hotelling's T2 values
 
-pylab.plot(SPE_X, 'r.-')  # see how observation 154 is inconsistent
-pylab.plot(Hot_T2, 'b.-')  # observations 38, 39,110, and 154 are outliers
-
-# And we should also plot the scores:
-pylab.figure()
-pylab.plot(nipals_T[:, 0], nipals_T[:, 1], '.')
-pylab.grid()
-
-pylab.show()
+# pylab.plot(SPE_X, 'r.-')  # see how observation 154 is inconsistent
+# pylab.plot(Hot_T2, 'b.-')  # observations 38, 39,110, and 154 are outliers
+#
+# # And we should also plot the scores:
+# pylab.figure()
+# pylab.plot(nipals_T[:, 0], nipals_T[:, 1], '.')
+# pylab.grid()
+#
+# pylab.show()
 
 # Confirm the outliers in the raw data, giving one extra point above and below
 raw[37:41, :]

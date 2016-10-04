@@ -17,7 +17,13 @@
 17. "The p-value for the test is less than 0.0001 indicating that we reject the null hypothesis." (http://sites.stat.psu.edu/~ajw13/stat505/fa06/11_2sampHotel/11_2sampHotel_assump.html)
 18. "Hotelling's T2 Statistic: If the observed T2 value is 'large' we reject H0:mu=mu0" (http://www.public.iastate.edu/~maitra/stat501/lectures/InferenceForMeans-Hotelling.pdf)
 19. "Checking out the Box’s M test we find that the test is significant (which means that there are significant differences among the regions in the covariance matrices)" (https://www.google.es/url?sa=t&rct=j&q=&esrc=s&source=web&cd=6&ved=0ahUKEwiJn9P2_rvPAhVJfiYKHeW_A8AQFgg8MAU&url=http%3A%2F%2Fwww-bcf.usc.edu%2F~mmclaugh%2F550x%2FPPTslides%2FWeekElevenSlides%2FMANOVA.ppt&usg=AFQjCNGuG6lhm_BflMGHKaNLQYzrIYNKwg&sig2=Qw-dDc-JHFODF2_NwFtM0w&cad=rja)
+20. "Large variances have important dynamics. This assumption also encompasses the belief that the data has a high SNR. Hence, principal components with larger associated variances represent interesting dynamics, while those with lower variancees represent noise." (PCA-Tutorial-Intuition_jp.pdf)
 
+21. Noise (https://www.cs.cmu.edu/~bapoczos/other_presentations/PCA_24_10_2009.pdf)
+
+
+Email:
+Una vez constatemos que ambas poblaciones pueden considerarse estadísticamente idénticas deberías de pasar a generar muestras a periodos más o menos regulares. Pero atención, como los datos seguirán algún tipo de patrón temporal debería de aprenderse la serie temporal para cada componente principal previamente y generar cada componente con la serie aprendida para ella, también se debería de generar algo de ruido en la señal, dicho ruido podría establecerse por ejemplo a partir de: el error de predicción de la serie o mediante las componentes principales que hayamos dejado.
 
 TODO:
 - asignatura "Taller lenguajes programación" - numpy + matplotlib
