@@ -8,6 +8,14 @@ data <- data[!is.na(data$APHu),]
 data[is.na(data),]
 head(data)
 
+Sys.setlocale("LC_TIME", "spanish")
+
+data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
+data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
+
+head(data)
+
+boxplot(data[1:10, "APHu"]~data[1:10, "Tiempoinicio"])
 
 summary(data[, seq(2,15)])
 var(data[, seq(2,3)])
