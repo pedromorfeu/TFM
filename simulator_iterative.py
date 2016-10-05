@@ -137,10 +137,12 @@ sigmas = np.std(nipals_T, axis=0)
 generated_X = np.zeros((100000, A))
 for i in range(A):
     # calculate normal distribution by component and store it in column i
-    generated_X[:, i] = np.random.normal(mus[i], sigmas[i], 100000)
+    # generated_X[:, i] = np.random.normal(mus[i], sigmas[i], 100000)
     # alternative:
-    # generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
-
+    # generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(100000)
+    # generate random
+    generated_X[:, i] = mus[i] + sigmas[i] * np.random.rand(1, 100000)
+    
 # invert matrix: dot product between random data and the loadings, nipals_P
 XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
 # XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
