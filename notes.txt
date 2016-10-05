@@ -21,7 +21,9 @@
 21. Noise (https://www.cs.cmu.edu/~bapoczos/other_presentations/PCA_24_10_2009.pdf)
 22. Monte Carlo: "repeated random sampling to obtain numerical results"; "Monte Carlo–based predictions of failure, cost overruns and schedule overruns are routinely better than human intuition or alternative "soft" methods."; "In principle, Monte Carlo methods can be used to solve any problem having a probabilistic interpretation" (https://en.wikipedia.org/wiki/Monte_Carlo_method)
 23. "In statistics, a moving average is a calculation to analyze data points by creating series of averages of different subsets of the full data set"; "Given a series of numbers and a fixed subset size, the first element of the moving average is obtained by taking the average of the initial fixed subset of the number series. Then the subset is modified by "shifting forward"; that is, excluding the first number of the series and including the next number following the original subset in the series. This creates a new subset of numbers, which is averaged. This process is repeated over the entire data series"; "In financial applications a simple moving average (SMA) is the unweighted mean of the previous n data" (https://en.wikipedia.org/wiki/Moving_average)
-
+24. ARIMA: "The I (for "integrated") indicates that the data values have been replaced with the difference between their values and the previous values" (https://en.wikipedia.org/wiki/Autoregressive_integrated_moving_average)
+25. Regression: "The phenomenon was that the heights of descendants of tall ancestors tend to regress down towards a normal average (a phenomenon also known as regression toward the mean)" (https://en.wikipedia.org/wiki/Regression_analysis#History)
+26. "In MA model, noise / shock quickly vanishes with time. The AR model has a much lasting effect of the shock." (https://www.analyticsvidhya.com/blog/2015/12/complete-tutorial-time-series-modeling/)
 
 PCA selecciona las componentes de mayor varianza.
 PCA elige la componente que más maximiza la varianza, luego la siguiente y así sucesivamente.

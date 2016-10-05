@@ -1,3 +1,14 @@
+#install.packages("zoo")
+#install.packages("xts")
+#install.packages("tseries")
+#install.packages("forecast")
+library(zoo)
+library(xts)
+library(tseries)
+library(forecast)
+#detach("package:xts", unload = T)
+#detach("package:zoo", unload = T)
+
 data <- read.csv2("ip.txt", sep = "\t", header = T, stringsAsFactors = F, strip.white = T, blank.lines.skip=T,
                   colClasses = c("character", rep("numeric", 14)), dec=".")
 data <- data[!is.na(data$APHu),]
@@ -8,14 +19,37 @@ data <- data[!is.na(data$APHu),]
 data[is.na(data),]
 head(data)
 
+# Time series
 Sys.setlocale("LC_TIME", "spanish")
 
 data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
 data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
-
 head(data)
 
-boxplot(data[1:10, "APHu"]~data[1:10, "Tiempoinicio"])
+dataTs <- xts(data[2:15], order.by = data$Tiempoinicio)
+
+head(dataTs)
+class(dataTs)
+start(dataTs)
+end(dataTs)
+frequency(dataTs)
+
+summary(dataTs$APHu)
+str(dataTs$APHu)
+
+plot(dataTs$APHu)
+abline(reg = lm(dataTs$APHu~time(dataTs$APHu)))
+
+cycle(dataTs)
+plot(aggregate(dataTs, FUN = mean, by = dataTs$APHu))
+
+boxplot(dataTs$APHu~cycle(dataTs$APHu))
+
+# fit an ARIMA model of order P, D, Q
+fit <- arima(myts, order=c(p, d, q))
+adf.test(dataTs$APHu)             
+ndiffs(dataTs$APHu)
+
 
 summary(data[, seq(2,15)])
 var(data[, seq(2,3)])
