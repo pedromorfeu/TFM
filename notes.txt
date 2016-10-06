@@ -23,17 +23,28 @@
 23. "In statistics, a moving average is a calculation to analyze data points by creating series of averages of different subsets of the full data set"; "Given a series of numbers and a fixed subset size, the first element of the moving average is obtained by taking the average of the initial fixed subset of the number series. Then the subset is modified by "shifting forward"; that is, excluding the first number of the series and including the next number following the original subset in the series. This creates a new subset of numbers, which is averaged. This process is repeated over the entire data series"; "In financial applications a simple moving average (SMA) is the unweighted mean of the previous n data" (https://en.wikipedia.org/wiki/Moving_average)
 24. ARIMA: "The I (for "integrated") indicates that the data values have been replaced with the difference between their values and the previous values" (https://en.wikipedia.org/wiki/Autoregressive_integrated_moving_average)
 25. Regression: "The phenomenon was that the heights of descendants of tall ancestors tend to regress down towards a normal average (a phenomenon also known as regression toward the mean)" (https://en.wikipedia.org/wiki/Regression_analysis#History)
-26. "In MA model, noise / shock quickly vanishes with time. The AR model has a much lasting effect of the shock." (https://www.analyticsvidhya.com/blog/2015/12/complete-tutorial-time-series-modeling/)
+26. ARIMA: "In MA model, noise / shock quickly vanishes with time. The AR model has a much lasting effect of the shock." (https://www.analyticsvidhya.com/blog/2015/12/complete-tutorial-time-series-modeling/)
+27. Stochastic process: "A stochastic process is a random process evolving with time." (https://en.wikipedia.org/wiki/Stochastic_process)
+28. Stationary: "A stationary process is a stochastic process whose parameters such as mean and variance, if they are present, also do not change over time."; "Since Stationarity is an assumption underlying many statistical procedures used in time series analysis, non-stationary data is often transformed to become stationary."; "is not a function of time"; "As an example, white noise is stationary. The sound of a cymbal clashing, if hit only once, is not stationary because the acoustic power of the clash (and hence its variance) diminishes with time. However, it would be possible to invent a stochastic process describing when the cymbal is hit, such that the overall response would form a stationary process." (https://en.wikipedia.org/wiki/Stationary_process)
+29. PCA: PCA selecciona las componentes de mayor varianza. PCA elige la componente que más maximiza la varianza, luego la siguiente y así sucesivamente. Hemos de tener en cuenta que la primera componente es la que más varianza explica, la segunda es la siguiente en explicación habiendo quitado la varianza de la primera. Orthogonal projection of data onto lower-dimension linear space that:
+    • maximizes variance of projected data (purple line)
+    • minimizes mean squared distance between
+        • data point and
+        • projections (sum of blue lines) (see Bishop diagram)
+30. Autoregressive models: "In an autoregression model, we forecast the variable of interest using a linear combination of past values of the variable." (https://www.otexts.org/fpp/8/3)
+31. Moving average models: "Rather than use past values of the forecast variable in a regression, a moving average model uses past forecast errors in a regression-like model." (https://www.otexts.org/fpp/8/4)
+32. Stationarity and differencing: "This shows one way to make a time series stationary — compute the differences between consecutive observations. This is known as differencing."; "Transformations such as logarithms can help to stabilize the variance of a time series. Differencing can help stabilize the mean of a time series by removing changes in the level of a time series, and so eliminating trend and seasonality. As well as looking at the time plot of the data, the ACF plot is also useful for identifying non-stationary time series. For a stationary time series, the ACF will drop to zero relatively quickly, while the ACF of non-stationary data decreases slowly." (https://www.otexts.org/fpp/8/1)
+33. Avoid seasonality? Because the metrics frequency isn't regular.
+34. Time series Modelling procedure:
+    "1. Plot the data. Identify any unusual observations.
+    2. If necessary, transform the data (using a Box-Cox transformation) to stabilize the variance.
+    3. If the data are non-stationary: take first differences of the data until the data are stationary.
+    4. Examine the ACF/PACF: Is an AR(pp) or MA(qq) model appropriate?
+    5. Try your chosen model(s), and use the AICc to search for a better model.
+    6. Check the residuals from your chosen model by plotting the ACF of the residuals, and doing a portmanteau test of the residuals. If they do not look like white noise, try a modified model.
+    7. Once the residuals look like white noise, calculate forecasts."
+    (https://www.otexts.org/fpp/8/7)
 
-PCA selecciona las componentes de mayor varianza.
-PCA elige la componente que más maximiza la varianza, luego la siguiente y así sucesivamente.
-Hemos de tener en cuenta que la primera componente es la que más varianza explica, la segunda es la siguiente en explicación habiendo quitado la varianza de la primera
-
-Orthogonal projection of data onto lower-dimension linear space that:
-• maximizes variance of projected data (purple line)
-• minimizes mean squared distance between
-    • data point and
-    • projections (sum of blue lines) (see Bishop diagram)
 
 Email:
 Una vez constatemos que ambas poblaciones pueden considerarse estadísticamente idénticas deberías de pasar a generar muestras a periodos más o menos regulares. Pero atención, como los datos seguirán algún tipo de patrón temporal debería de aprenderse la serie temporal para cada componente principal previamente y generar cada componente con la serie aprendida para ella, también se debería de generar algo de ruido en la señal, dicho ruido podría establecerse por ejemplo a partir de: el error de predicción de la serie o mediante las componentes principales que hayamos dejado.

@@ -40,6 +40,8 @@ str(dataTs$APHu)
 plot(dataTs$APHu)
 abline(reg = lm(dataTs$APHu~time(dataTs$APHu)))
 
+acf(dataTs$APHu)
+
 cycle(dataTs)
 plot(aggregate(dataTs, FUN = mean, by = dataTs$APHu))
 
@@ -47,8 +49,62 @@ boxplot(dataTs$APHu~cycle(dataTs$APHu))
 
 # fit an ARIMA model of order P, D, Q
 fit <- arima(myts, order=c(p, d, q))
+
+#The null-hypothesis for an ADF test is that the data are 
+#non-stationary. So large p-values are indicative of 
+#non-stationarity, and small p-values suggest stationarity. 
+#Using the usual 5% threshold, differencing is required if 
+#the p-value is greater than 0.05.
 adf.test(dataTs$APHu)             
-ndiffs(dataTs$APHu)
+
+#Another popular unit root test is the 
+#Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test. 
+#This reverses the hypotheses, so the null-hypothesis is 
+#that the data are stationary. In this case, small p-values 
+#(e.g., less than 0.05) suggest that differencing is required.
+kpss.test(dataTs$APHu)
+
+#A useful R function is ndiffs() which uses these tests to 
+#determine the appropriate number of first differences 
+#required for a non-seasonal time series.
+#The following code can be used to find how to make a 
+#seasonal series stationary. The resulting series stored as 
+#xstar has been differenced appropriately.
+#seasonal
+ns <- ndiffs(dataTs$APHu)
+if(ns > 0) {
+  xstar <- diff(dataTs$APHu, lag=frequency(dataTs$APHu), differences=ns)
+} else {
+  xstar <- dataTs$APHu
+}
+#non-seasonal
+nd <- ndiffs(dataTs$APHu)
+if(nd > 0) {
+  xstar <- diff(dataTs$APHu, differences=nd)
+}
+
+Acf(xstar, main="")
+Pacf(xstar, main="")
+
+#The following R code was used to automatically select a model.
+fit <- auto.arima(xstar, seasonal=FALSE)
+
+#plot 1 by 1
+par(mfrow=c(1,1))
+#forecast: h - Number of periods for forecasting
+#forecast: include - include X observations of the original series in your plot
+plot(forecast(fit,h=10),include=80)
+
+
+#The ACF plot of the residuals from the ARIMA(3,1,1) model shows 
+#all correlations within the threshold limits indicating that 
+#the residuals are behaving like white noise. 
+#A portmanteau test returns a large p-value, also suggesting 
+#the residuals are white noise.
+fit1 <- Arima(xstar, order=c(2,0,0))
+Acf(residuals(fit1))
+Box.test(residuals(fit1), lag=24, fitdf=4, type="Ljung")
+
 
 
 summary(data[, seq(2,15)])
