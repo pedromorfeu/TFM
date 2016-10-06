@@ -40,6 +40,8 @@ str(dataTs$APHu)
 plot(dataTs$APHu)
 abline(reg = lm(dataTs$APHu~time(dataTs$APHu)))
 
+#Correlation plots. Following are the ACF plots for the series
+#the decay of ACF chart is very slow, which means that the population is not stationary
 acf(dataTs$APHu)
 
 cycle(dataTs)
@@ -83,11 +85,15 @@ if(nd > 0) {
   xstar <- diff(dataTs$APHu, differences=nd)
 }
 
+par(mfrow=c(1,2))
+#there are three spikes in the ACF and then no significant spikes thereafter
 Acf(xstar, main="")
+#In the PACF, there are three spikes decreasing with the lag, and then no significant spikes thereafter
 Pacf(xstar, main="")
 
 #The following R code was used to automatically select a model.
 fit <- auto.arima(xstar, seasonal=FALSE)
+fit 
 
 #plot 1 by 1
 par(mfrow=c(1,1))

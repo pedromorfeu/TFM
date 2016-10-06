@@ -44,7 +44,7 @@
     6. Check the residuals from your chosen model by plotting the ACF of the residuals, and doing a portmanteau test of the residuals. If they do not look like white noise, try a modified model.
     7. Once the residuals look like white noise, calculate forecasts."
     (https://www.otexts.org/fpp/8/7)
-
+35. Time series: "TS different from say a regular regression problem? It is time dependent. So the basic assumption of a linear regression model that the observations are independent doesn’t hold in this case."; "The underlying principle is to model or estimate the trend and seasonality in the series and remove those from the series to get a stationary series. Then statistical forecasting techniques can be implemented on this series. The final step would be to convert the forecasted values into the original scale by applying trend and seasonality constraints back."; "Smoothing refers to taking rolling estimates, i.e. considering the past few instances. " (https://www.analyticsvidhya.com/blog/2016/02/time-series-forecasting-codes-python/)
 
 Email:
 Una vez constatemos que ambas poblaciones pueden considerarse estadísticamente idénticas deberías de pasar a generar muestras a periodos más o menos regulares. Pero atención, como los datos seguirán algún tipo de patrón temporal debería de aprenderse la serie temporal para cada componente principal previamente y generar cada componente con la serie aprendida para ella, también se debería de generar algo de ruido en la señal, dicho ruido podría establecerse por ejemplo a partir de: el error de predicción de la serie o mediante las componentes principales que hayamos dejado.

@@ -1,7 +1,7 @@
 # Limitations: does not handle missing data
 
 import numpy as np
-from pandas import read_csv
+import pandas as pd
 from util import *
 from matplotlib import pylab
 from datetime import datetime
@@ -10,8 +10,8 @@ from datetime import datetime
 # http://datasets.connectmv.com/info/silicon-wafer-thickness
 # raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
 
-raw = read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
-                skip_blank_lines=True, na_values="")
+raw = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
+               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 columns = raw.columns.values
 raw = raw.values[:, 1:]
 raw = raw.astype(float)
