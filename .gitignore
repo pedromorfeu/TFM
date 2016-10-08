@@ -5,3 +5,4 @@ util/__pycache__/
 .RHistory
 numpy_matplotlib
 generated/
+.ipynb_checkpoints/
