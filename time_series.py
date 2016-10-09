@@ -38,33 +38,22 @@ plt.plot(timeseries["2015-10"])
 plt.plot(timeseries["2015-10"], 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
 
 
+# Resample by second ('s') and interpolate
+interpolate = timeseries.resample('s').mean().interpolate()
+
+plt.plot(interpolate)
+plt.plot(interpolate, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+
+
+# to 45 minute frequency and forward fill
+converted = timeseries.asfreq('15s', method='pad')
+plt.plot(converted)
+plt.plot(converted, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+
+
 # We can check stationarity using the following:
 #     Plotting Rolling Statistics: We can plot the moving average or moving variance and see if it varies with time. By moving average/variance I mean that at any instant ‘t’, we’ll take the average/variance of the last year, i.e. last 12 months. But again this is more of a visual technique.
 #     Dickey-Fuller Test: This is one of the statistical tests for checking stationarity. Here the null hypothesis is that the TS is non-stationary. The test results comprise of a Test Statistic and some Critical Values for difference confidence levels. If the ‘Test Statistic’ is less than the ‘Critical Value’, we can reject the null hypothesis and say that the series is stationary.
-
-def test_stationarity(_timeseries, _plot=False):
-    # Determing rolling statistics
-    # rolmean = pd.rolling_mean(timeseries, window=12)
-    rolmean = _timeseries.rolling(min_periods=1, window=2, center=False).mean()
-    # rolstd = pd.rolling_std(timeseries, window=12)
-    rolstd = _timeseries.rolling(min_periods=1, window=2, center=False).std()
-
-    if _plot:
-        # Plot rolling statistics:
-        orig = plt.plot(_timeseries, color='blue', label='Original')
-        mean = plt.plot(rolmean, color='red', label='Rolling Mean')
-        std = plt.plot(rolstd, color='black', label='Rolling Std')
-        plt.legend(loc='best')
-        plt.title('Rolling Mean & Standard Deviation')
-        plt.show()
-
-    # Perform Dickey-Fuller test:
-    print('Results of Dickey-Fuller Test:')
-    dftest = adfuller(_timeseries, autolag='AIC')
-    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic', 'p-value', '#Lags Used', 'Number of Observations Used'])
-    for key, value in dftest[4].items():
-        dfoutput['Critical Value (%s)' % key] = value
-    print(dfoutput)
 
 test_stationarity(timeseries)
 
@@ -94,7 +83,9 @@ ts_log = np.log(timeseries)
 print("Missing values:", not np.all(np.isfinite(ts_log)))
 ts_log.dropna(inplace=True)
 print("Missing values:", not np.all(np.isfinite(ts_log)))
+
 plt.plot(ts_log)
+plt.plot(ts_log, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
 
 # Clean ts_log (NaN and infinites)
 ts_log
@@ -121,6 +112,11 @@ print("Missing values:", not np.all(np.isfinite(moving_avg)))
 plt.plot(ts_log)
 plt.plot(moving_avg, color='red')
 
+# Markers plot
+plt.plot(ts_log, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
+plt.plot(moving_avg, '^', markersize=6, markeredgewidth=1, alpha=0.5)
+
+
 ts_log_moving_avg_diff = ts_log.sub(moving_avg)
 print("Missing values:", not np.all(np.isfinite(ts_log_moving_avg_diff)))
 ts_log_moving_avg_diff.dropna(inplace=True)
@@ -143,6 +139,7 @@ test_stationarity(ts_log_ewma_diff)
 
 ### Differencing
 # One of the most common methods of dealing with both trend and seasonality is differencing.
+# In this technique, we take the difference of the observation at a particular instant with that at the previous instant.
 ts_log_diff = ts_log.sub(ts_log.shift())
 print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
 ts_log_diff.dropna(inplace=True)
@@ -152,6 +149,11 @@ print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
 # This appears to have reduced trend considerably. Lets verify using our plots:
 test_stationarity(ts_log_diff)
 
+# Markers plot
+plt.plot(ts_log, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
+plt.plot(ts_log_diff, '^', markersize=6, markeredgewidth=1, alpha=0.5)
+
+ts_log_diff["2015-12"]
 
 decomposition = seasonal_decompose(ts_log, freq=1)
 
@@ -230,17 +232,30 @@ plt.tight_layout()
 model = ARIMA(ts_log, order=(1, 1, 0))
 results_ARIMA = model.fit(disp=-1)
 
-print("Missing values:", not np.all(np.isfinite(results_ARIMA.fittedvalues)))
-np.any(np.isinf(results_ARIMA.fittedvalues))
-np.any(np.isnan(results_ARIMA.fittedvalues))
+predictions = results_ARIMA.fittedvalues
+predictions = results_ARIMA.predict(start=1, end=30000)
+
+results_ARIMA.plot_predict(start=1, end=30000)
+
+# Markers plot
+plt.xlim(0, 40000)
+plt.plot(ts_log_diff, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
+plt.plot(predictions, '^', markersize=6, markeredgewidth=1, alpha=0.7)
+error = predictions-ts_log_diff
+plt.title('RSS: %.4f'% sum((error)**2))
+
+print("Missing values:", not np.all(np.isfinite(predictions)))
+np.any(np.isinf(predictions))
+np.any(np.isnan(predictions))
 
 plt.plot(ts_log_diff)
-plt.plot(results_ARIMA.fittedvalues, color='red')
-error = results_ARIMA.fittedvalues-ts_log_diff
+plt.plot(predictions, color='red')
+error = predictions-ts_log_diff
 plt.title('RSS: %.4f'% sum((error)**2))
 
 
-predictions_ARIMA_diff = pd.Series(results_ARIMA.fittedvalues, copy=True)
+
+predictions_ARIMA_diff = pd.Series(predictions, copy=True)
 print(predictions_ARIMA_diff.head())
 
 predictions_ARIMA_diff_cumsum = predictions_ARIMA_diff.cumsum()
@@ -266,8 +281,11 @@ predictions_ARIMA.index[np.isnan(predictions_ARIMA)]
 print("Missing values:", not np.all(np.isfinite(predictions_ARIMA)))
 
 plt.clf()
-plt.plot(timeseries)
-plt.plot(predictions_ARIMA)
+# Markers plot
+plt.plot(timeseries, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
+plt.plot(predictions_ARIMA, '^', markersize=6, markeredgewidth=1, alpha=0.7)
+# plt.plot(timeseries)
+# plt.plot(predictions_ARIMA)
 error = predictions_ARIMA-timeseries
 print("Missing values:", not np.all(np.isfinite(error)))
 error.index[np.isinf(error)]
@@ -275,3 +293,11 @@ error.index[np.isnan(error)]
 error.dropna(inplace=True)
 plt.title('RMSE: %.4f'% np.sqrt(sum(error**2)/len(timeseries)))
 plt.show()
+
+type(model)
+type(results_ARIMA)
+
+
+
+results_ARIMA.plot_predict(start=1, end=30000)
+

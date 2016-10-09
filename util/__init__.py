@@ -1,10 +1,12 @@
-from datetime import datetime
 import numpy as np
 import re
 import locale
 import seaborn as sns
 import os
-
+import pandas as pd
+from matplotlib import pyplot as plt
+from datetime import datetime
+from statsmodels.tsa.stattools import adfuller
 
 print(locale.getdefaultlocale())
 locale.setlocale(locale.LC_TIME, "spanish")
@@ -76,3 +78,28 @@ def save_matrix(filename, matrix, columns_names=None):
         f.write("\n")
     f.close()
     print(str(datetime.now()), "Saved")
+
+
+def test_stationarity(_timeseries, _plot=False):
+    # Determing rolling statistics
+    # rolmean = pd.rolling_mean(timeseries, window=12)
+    rolmean = _timeseries.rolling(min_periods=1, window=2, center=False).mean()
+    # rolstd = pd.rolling_std(timeseries, window=12)
+    rolstd = _timeseries.rolling(min_periods=1, window=2, center=False).std()
+
+    if _plot:
+        # Plot rolling statistics:
+        orig = plt.plot(_timeseries, color='blue', label='Original')
+        mean = plt.plot(rolmean, color='red', label='Rolling Mean')
+        std = plt.plot(rolstd, color='black', label='Rolling Std')
+        plt.legend(loc='best')
+        plt.title('Rolling Mean & Standard Deviation')
+        plt.show()
+
+    # Perform Dickey-Fuller test:
+    print('Results of Dickey-Fuller Test:')
+    dftest = adfuller(_timeseries, autolag='AIC')
+    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic', 'p-value', '#Lags Used', 'Number of Observations Used'])
+    for key, value in dftest[4].items():
+        dfoutput['Critical Value (%s)' % key] = value
+    print(dfoutput)
