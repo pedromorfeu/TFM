@@ -83,15 +83,15 @@ def save_matrix(filename, matrix, columns_names=None):
 def test_stationarity(_timeseries, _plot=False):
     # Determing rolling statistics
     # rolmean = pd.rolling_mean(timeseries, window=12)
-    rolmean = _timeseries.rolling(min_periods=1, window=2, center=False).mean()
+    rolmean = _timeseries.rolling(min_periods=1, window=10, center=False).mean()
     # rolstd = pd.rolling_std(timeseries, window=12)
-    rolstd = _timeseries.rolling(min_periods=1, window=2, center=False).std()
+    rolstd = _timeseries.rolling(min_periods=1, window=10, center=False).std()
 
     if _plot:
         # Plot rolling statistics:
         orig = plt.plot(_timeseries, color='blue', label='Original')
         mean = plt.plot(rolmean, color='red', label='Rolling Mean')
-        std = plt.plot(rolstd, color='black', label='Rolling Std')
+        # std = plt.plot(rolstd, color='black', label='Rolling Std')
         plt.legend(loc='best')
         plt.title('Rolling Mean & Standard Deviation')
         plt.show()
