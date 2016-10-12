@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 from util import *
 from matplotlib import pyplot as plt
 from datetime import datetime
@@ -25,7 +26,7 @@ print(data["2015-10-06 22:01:20"])
 print(data["2015-10-06"])
 print(data["2015-10-06":"2015-11-06"])
 
-timeseries = data["APHu"]
+timeseries = data["Svo"]
 print(timeseries.head())
 
 plt.plot(timeseries)
@@ -94,6 +95,13 @@ plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markered
 
 test_stationarity(timeseries_sample, _plot=True)
 
+rolmean = timeseries_sample.rolling(min_periods=1, window=20, center=False).mean()
+orig = plt.plot(timeseries_sample, color='blue', label='Original')
+mean = plt.plot(rolmean, color='red', label='Rolling Mean')
+plt.legend(loc='best')
+plt.title('Rolling Mean & Standard Deviation')
+plt.show()
+
 # ['APHu', 'APVs', 'ACPv', 'ZSx', 'ZUs', 'H7x', 'H1x', 'H2x', 'H6x', 'H3x', 'H4x', 'H5x', 'ACPx', 'Svo']
 # test_stationarity(raw["APHu"])
 # test_stationarity(raw["APVs"])
@@ -146,7 +154,6 @@ moving_avg.dropna(inplace=True)
 print("Missing values:", not np.all(np.isfinite(moving_avg)))
 plt.plot(ts_log)
 plt.plot(moving_avg, color='red')
-
 # Markers plot
 plt.plot(ts_log, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
 plt.plot(moving_avg, '^', markersize=6, markeredgewidth=1, alpha=0.5)
@@ -157,8 +164,7 @@ print("Missing values:", not np.all(np.isfinite(ts_log_moving_avg_diff)))
 ts_log_moving_avg_diff.dropna(inplace=True)
 print("Missing values:", not np.all(np.isfinite(ts_log_moving_avg_diff)))
 ts_log_moving_avg_diff.head(12)
-
-test_stationarity(ts_log_moving_avg_diff)
+test_stationarity(ts_log_moving_avg_diff, _plot=True)
 
 # This looks like a much better series. The rolling values appear to be varying slightly but there is no specific trend. Also, the test statistic is smaller than the 1% critical values so we can say with 99% confidence that this is a stationary series.
 
@@ -166,10 +172,9 @@ test_stationarity(ts_log_moving_avg_diff)
 expwighted_avg = ts_log.ewm(halflife=12).mean()
 plt.plot(ts_log)
 plt.plot(expwighted_avg, color='red')
-
 ts_log_ewma_diff = ts_log.sub(expwighted_avg)
 print("Missing values:", not np.all(np.isfinite(ts_log_ewma_diff)))
-test_stationarity(ts_log_ewma_diff)
+test_stationarity(ts_log_ewma_diff, _plot=True)
 
 
 ### Differencing
@@ -179,18 +184,13 @@ ts_log_diff = ts_log.sub(ts_log.shift())
 print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
 ts_log_diff.dropna(inplace=True)
 print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
-# plt.plot(ts_log_diff)
-
 # This appears to have reduced trend considerably. Lets verify using our plots:
 test_stationarity(ts_log_diff, _plot=True)
-
 # Markers plot
-plt.plot(ts_log, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
-plt.plot(ts_log_diff, '^', markersize=6, markeredgewidth=1, alpha=0.5)
 
 ts_log_diff["2015-12"]
 
-decomposition = seasonal_decompose(ts_log, freq=1)
+decomposition = seasonal_decompose(ts_log)
 
 trend = decomposition.trend
 seasonal = decomposition.seasonal
@@ -267,15 +267,22 @@ plt.tight_layout()
 model = ARIMA(ts_log, order=(2, 1, 2))
 results_ARIMA = model.fit(disp=-1)
 predictions = results_ARIMA.fittedvalues
-# predictions = results_ARIMA.predict(start=1, end=10000)
+
+observations = timeseries_sample.shape[0]
+predictions1 = results_ARIMA.predict(start=observations, end=observations+50000)
+predictions1
+predictions1.shape
 
 # results_ARIMA.plot_predict(start=1, end=50000)
 
 # Markers plot
 # plt.plot(ts_log_diff, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
-# plt.plot(predictions, '^', markersize=6, markeredgewidth=1, alpha=0.7)
-# error = predictions-ts_log_diff
-# plt.title('RSS: %.4f'% sum((error)**2))
+# plt.plot(predictions1, '^', markersize=6, markeredgewidth=1, alpha=0.7)
+plt.plot(ts_log_diff)
+plt.plot(predictions1)
+error = predictions1-ts_log_diff
+plt.legend(loc='best')
+plt.title('RSS: %.4f'% sum((error)**2))
 
 print("Missing values:", not np.all(np.isfinite(predictions)))
 np.any(np.isinf(predictions))

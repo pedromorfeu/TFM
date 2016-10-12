@@ -162,54 +162,52 @@ save_matrix("inverse_X.csv", XX, data.columns)
 
 
 ### Time series
+# time serie for the first component
 timeseries = pd.Series(nipals_T[:, 0], index=data.index)
-print(timeseries.head())
-test_stationarity(timeseries, _plot=False)
+# observations per day
+timeseries.groupby(lambda x: x.date()).count()
+# Specify a date to analyze the timeseries
+date = "2015-10-07"
+timeseries_sample = timeseries[date]
+print(timeseries_sample.head())
+# Resample by second ('s') and interpolate
+timeseries_sample = timeseries_sample.resample('2s').mean().interpolate()
+print(timeseries_sample.head())
+test_stationarity(timeseries_sample, _plot=True)
 # not stationary -> must be stabilized
 
-# ts_log = timeseries
-ts_log = np.log(timeseries)
-print("Missing values:", not np.all(np.isfinite(ts_log)))
-ts_log.dropna(inplace=True)
-print("Missing values:", not np.all(np.isfinite(ts_log)))
-# plt.plot(ts_log)
-# plt.plot(ts_log, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
-ts_log.index[np.isinf(ts_log)]
-ts_log.index[np.isnan(ts_log)]
-test_stationarity(ts_log, _plot=True)
-
 # Differencing
-ts_log_diff = ts_log.sub(ts_log.shift())
-print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
-ts_log_diff.index[np.isinf(ts_log_diff)]
-ts_log_diff.index[np.isnan(ts_log_diff)]
-ts_log_diff.dropna(inplace=True)
-print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
+timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
+print("Missing values:", not np.all(np.isfinite(timeseries_sample_diff)))
+timeseries_sample_diff.index[np.isinf(timeseries_sample_diff)]
+timeseries_sample_diff.index[np.isnan(timeseries_sample_diff)]
+timeseries_sample_diff.dropna(inplace=True)
+print("Missing values:", not np.all(np.isfinite(timeseries_sample_diff)))
 # This appears to have reduced trend considerably. Lets verify using our plots:
-test_stationarity(ts_log_diff, _plot=True)
+test_stationarity(timeseries_sample_diff, _plot=True)
 
 #Forecasting
-lag_acf = acf(ts_log_diff, nlags=20)
-lag_pacf = pacf(ts_log_diff, nlags=20, method='ols')
+lag_acf = acf(timeseries_sample_diff, nlags=20)
+lag_pacf = pacf(timeseries_sample_diff, nlags=20, method='ols')
 
 #Plot ACF:
 plt.subplot(121)
 plt.plot(lag_acf)
 plt.axhline(y=0,linestyle='--',color='gray')
-plt.axhline(y=-1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
-plt.axhline(y=1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
+plt.axhline(y=-1.96/np.sqrt(len(timeseries_sample_diff)),linestyle='--',color='gray')
+plt.axhline(y=1.96/np.sqrt(len(timeseries_sample_diff)),linestyle='--',color='gray')
 plt.title('Autocorrelation Function')
 
 #Plot PACF:
 plt.subplot(122)
 plt.plot(lag_pacf)
 plt.axhline(y=0,linestyle='--',color='gray')
-plt.axhline(y=-1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
-plt.axhline(y=1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
+plt.axhline(y=-1.96/np.sqrt(len(timeseries_sample_diff)),linestyle='--',color='gray')
+plt.axhline(y=1.96/np.sqrt(len(timeseries_sample_diff)),linestyle='--',color='gray')
 plt.title('Partial Autocorrelation Function')
 plt.tight_layout()
 
-model = ARIMA(ts_log, order=(1, 0, 1))
+model = ARIMA(timeseries_sample, order=(2, 1, 3))
 results_ARIMA = model.fit(disp=-1)
 predictions = results_ARIMA.fittedvalues
 print(predictions)
@@ -221,9 +219,9 @@ print(predictions)
 print("Missing values:", not np.all(np.isfinite(predictions)))
 np.any(np.isinf(predictions))
 np.any(np.isnan(predictions))
-plt.plot(ts_log_diff)
+plt.plot(timeseries_sample_diff)
 plt.plot(predictions, color='red')
-error = predictions-ts_log_diff
+error = predictions-timeseries_sample_diff
 plt.title('RSS: %.4f'% sum((error)**2))
 
 predictions_ARIMA_diff = pd.Series(predictions, copy=True)
@@ -232,13 +230,13 @@ predictions_ARIMA_diff_cumsum = predictions_ARIMA_diff.cumsum()
 print(predictions_ARIMA_diff_cumsum.head())
 # plt.plot(ts_log)
 # plt.plot(predictions_ARIMA_diff_cumsum)
-predictions_ARIMA_log = pd.Series(ts_log.ix[0], index=ts_log.index)
+predictions_ARIMA_log = pd.Series(timeseries_sample.ix[0], index=timeseries_sample.index)
 predictions_ARIMA_log = predictions_ARIMA_log.add(predictions_ARIMA_diff_cumsum, fill_value=0)
 print(predictions_ARIMA_log.head())
-print(ts_log.head())
+print(timeseries_sample.head())
 # plt.plot(ts_log)
 # plt.plot(predictions_ARIMA_log)
-predictions_ARIMA = np.exp(predictions_ARIMA_log)
+predictions_ARIMA = predictions_ARIMA_log
 print("Missing values:", not np.all(np.isfinite(predictions_ARIMA)))
 print(predictions_ARIMA.head())
 print(timeseries.head())
@@ -248,18 +246,29 @@ print("Missing values:", not np.all(np.isfinite(predictions_ARIMA)))
 
 plt.clf()
 # Markers plot
-plt.plot(timeseries, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
-plt.plot(predictions_ARIMA, '^', markersize=6, markeredgewidth=1, alpha=0.7)
-# plt.plot(timeseries)
-# plt.plot(predictions_ARIMA)
+# plt.plot(timeseries_sample, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
+# plt.plot(predictions_ARIMA, '^', markersize=6, markeredgewidth=1, alpha=0.7)
+plt.plot(timeseries_sample)
+plt.plot(predictions_ARIMA)
 error = predictions_ARIMA-timeseries
 print("Missing values:", not np.all(np.isfinite(error)))
 error.index[np.isinf(error)]
 error.index[np.isnan(error)]
 error.dropna(inplace=True)
-plt.title('RMSE: %.4f'% np.sqrt(sum(error**2)/len(timeseries)))
+plt.title('RMSE: %.4f'% np.sqrt(sum(error**2)/len(timeseries_sample)))
 plt.show()
 
+observations = timeseries_sample.shape[0]
+for i in range(A):
+    generated_X[:, i] = results_ARIMA.predict(start=1, end=100000).values
+generated_X.shape
+
+# invert matrix: dot product between random data and the loadings, nipals_P
+XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
+# XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
+print_matrix("XX", XX)
+
+save_matrix("inverse_X.csv", XX, data.columns)
 
 
 # PCA also has two very important outputs we should calculate:
