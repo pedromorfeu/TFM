@@ -7,8 +7,11 @@ library("biotools")
 
 data <- read.csv2("ip.txt", sep = "\t", header = T, stringsAsFactors = F, strip.white = T, blank.lines.skip=T,
                   colClasses = c("character", rep("numeric", 14)), dec=".")
-data <- data[, seq(2,15)]
 data <- data[!is.na(data$APHu),]
+# filter by date
+data <- (data[startsWith(data$Tiempoinicio, "07-oct-2015"), ])
+
+data <- data[, seq(2,15)]
 # head(data)
 # str(data)
 # summary(data)
@@ -44,10 +47,8 @@ all <- rbind(box_data, box_inverted_data)
 # summary(all)
 
 
-res_box <- boxM(data = all[, -15], grouping = all[, 15])
+# res_box <- boxM(data = all[, -15], grouping = all[, 15])
 #print(res_box) 
 
 # cov.Mtest(all[, -15], all[, 15])
 # BoxMTest(all[, -15], factor(all[, 15]))
-
-

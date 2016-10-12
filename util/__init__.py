@@ -6,7 +6,7 @@ import os
 import pandas as pd
 from matplotlib import pyplot as plt
 from datetime import datetime
-from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.stattools import adfuller, acf, pacf
 
 print(locale.getdefaultlocale())
 locale.setlocale(locale.LC_TIME, "spanish")
@@ -80,7 +80,8 @@ def save_matrix(filename, matrix, columns_names=None):
     print(str(datetime.now()), "Saved")
 
 
-def test_stationarity(_timeseries, _plot=False):
+def test_stationarity(_timeseries, _plot=False, _critical="5%"):
+    # critical: 10%, 5%, 1%
     # Determing rolling statistics
     # rolmean = pd.rolling_mean(timeseries, window=12)
     rolmean = _timeseries.rolling(min_periods=1, window=20, center=False).mean()
@@ -103,3 +104,33 @@ def test_stationarity(_timeseries, _plot=False):
     for key, value in dftest[4].items():
         dfoutput['Critical Value (%s)' % key] = value
     print(dfoutput)
+
+    test_value = dfoutput[0]
+    critical_value = dftest[4][_critical]
+    if test_value < critical_value:
+        return True
+    return False
+
+
+def plot_acf_pacf(_timeseries):
+    lag_acf = acf(_timeseries, nlags=20)
+    lag_pacf = pacf(_timeseries, nlags=20, method='ols')
+
+    #Plot ACF:
+    plt.subplot(121)
+    plt.plot(lag_acf)
+    plt.axhline(y=0,linestyle='--',color='gray')
+    plt.axhline(y=-1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
+    plt.axhline(y=1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
+    plt.title('Autocorrelation Function')
+
+    #Plot PACF:
+    plt.subplot(122)
+    plt.plot(lag_pacf)
+    plt.axhline(y=0,linestyle='--',color='gray')
+    plt.axhline(y=-1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
+    plt.axhline(y=1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
+    plt.title('Partial Autocorrelation Function')
+    plt.tight_layout()
+
+    return lag_acf, lag_pacf
