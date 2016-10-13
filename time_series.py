@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 from util import *
 from matplotlib import pyplot as plt
 from datetime import datetime
@@ -9,23 +10,23 @@ from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 
-raw = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
-               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
+data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
+                   index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
-print(raw.columns)
-print(raw.head())
-print(raw.dtypes)
-print(raw.index)
-print(raw.shape)
+print(data.columns)
+print(data.head())
+print(data.dtypes)
+print(data.index)
+print(data.shape)
 
-print(min(raw.index))
-print(max(raw.index))
+print(min(data.index))
+print(max(data.index))
 
-print(raw["2015-10-06 22:01:20"])
-print(raw["2015-10-06"])
-print(raw["2015-10-06":"2015-11-06"])
+print(data["2015-10-06 22:01:20"])
+print(data["2015-10-06"])
+print(data["2015-10-06":"2015-11-06"])
 
-timeseries = raw["APHu"]
+timeseries = data["Svo"]
 print(timeseries.head())
 
 plt.plot(timeseries)
@@ -44,25 +45,68 @@ plt.plot(timeseries["2015-12"], 'o', markersize=6, markeredgecolor='black', mark
 plt.title("Serie temporal de diciembre de 2015 para 'APHu'")
 
 
+# Plot all
+fig, axes = plt.subplots(nrows=3, ncols=5)
+for i in range(0, len(data.columns)):
+    col = data.columns[i]
+    ax_plt = axes.flatten()[i]
+    ax_plt.plot(data[col])
+    ax_plt.plot(data[col], 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+    ax_plt.set_title(col)
+
+timeseries.mean()
+# group by day and count observations
+timeseries.groupby(lambda x: x.date()).count()
+# some days and observations:
+# 2015-10-06     835
+# 2015-10-07    7470
+# 2015-10-08    6888
+# 2015-10-09    3150
+# 2015-10-10      20
+# 2015-10-12     520
+# 2015-12-14     100
+
+date = "2015-10-07"
+timeseries[date].shape
+plt.plot(timeseries[date])
+plt.plot(timeseries[date], 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+
+# Specify a date to analyze the timeseries
+timeseries_sample = timeseries[date]
+timeseries_sample
+timeseries_sample.shape
+plt.plot(timeseries_sample)
+plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+
+# Frequency is ~9 seconds
+# to 5 seconds frequency and forward fill
+timeseries_sample = timeseries_sample.asfreq('5s', method='pad')
+timeseries_sample.shape
+timeseries_sample
+plt.plot(timeseries_sample)
+plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+
+# Alternative:
 # Resample by second ('s') and interpolate
-interpolate = timeseries.resample('s').mean().interpolate()
-
-plt.plot(interpolate)
-plt.plot(interpolate, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
-
-
-# to 45 minute frequency and forward fill
-converted = timeseries.asfreq('15s', method='pad')
-plt.plot(converted)
-plt.plot(converted, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+timeseries_sample = timeseries_sample.resample('2s').mean().interpolate()
+timeseries_sample.shape
+timeseries_sample
+plt.plot(timeseries_sample)
+plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
 
 
 # We can check stationarity using the following:
 #     Plotting Rolling Statistics: We can plot the moving average or moving variance and see if it varies with time. By moving average/variance I mean that at any instant ‘t’, we’ll take the average/variance of the last year, i.e. last 12 months. But again this is more of a visual technique.
 #     Dickey-Fuller Test: This is one of the statistical tests for checking stationarity. Here the null hypothesis is that the TS is non-stationary. The test results comprise of a Test Statistic and some Critical Values for difference confidence levels. If the ‘Test Statistic’ is less than the ‘Critical Value’, we can reject the null hypothesis and say that the series is stationary.
 
-test_stationarity(timeseries)
+test_stationarity(timeseries_sample, _plot=True)
 
+rolmean = timeseries_sample.rolling(min_periods=1, window=20, center=False).mean()
+orig = plt.plot(timeseries_sample, color='blue', label='Original')
+mean = plt.plot(rolmean, color='red', label='Rolling Mean')
+plt.legend(loc='best')
+plt.title('Rolling Mean & Standard Deviation')
+plt.show()
 
 # ['APHu', 'APVs', 'ACPv', 'ZSx', 'ZUs', 'H7x', 'H1x', 'H2x', 'H6x', 'H3x', 'H4x', 'H5x', 'ACPx', 'Svo']
 # test_stationarity(raw["APHu"])
@@ -85,11 +129,10 @@ test_stationarity(timeseries)
 
 
 # One of the first tricks to reduce trend can be transformation. For example, in this case we can clearly see that the there is a significant positive trend. So we can apply transformation which penalize higher values more than smaller values. These can be taking a log, square root, cube root, etc. Let's take a log transform here for simplicity:
-ts_log = np.log(timeseries)
+ts_log = np.log(timeseries_sample)
 print("Missing values:", not np.all(np.isfinite(ts_log)))
 ts_log.dropna(inplace=True)
 print("Missing values:", not np.all(np.isfinite(ts_log)))
-
 plt.plot(ts_log)
 plt.plot(ts_log, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
 
@@ -117,7 +160,6 @@ moving_avg.dropna(inplace=True)
 print("Missing values:", not np.all(np.isfinite(moving_avg)))
 plt.plot(ts_log)
 plt.plot(moving_avg, color='red')
-
 # Markers plot
 plt.plot(ts_log, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
 plt.plot(moving_avg, '^', markersize=6, markeredgewidth=1, alpha=0.5)
@@ -128,8 +170,7 @@ print("Missing values:", not np.all(np.isfinite(ts_log_moving_avg_diff)))
 ts_log_moving_avg_diff.dropna(inplace=True)
 print("Missing values:", not np.all(np.isfinite(ts_log_moving_avg_diff)))
 ts_log_moving_avg_diff.head(12)
-
-test_stationarity(ts_log_moving_avg_diff)
+test_stationarity(ts_log_moving_avg_diff, _plot=True)
 
 # This looks like a much better series. The rolling values appear to be varying slightly but there is no specific trend. Also, the test statistic is smaller than the 1% critical values so we can say with 99% confidence that this is a stationary series.
 
@@ -137,10 +178,9 @@ test_stationarity(ts_log_moving_avg_diff)
 expwighted_avg = ts_log.ewm(halflife=12).mean()
 plt.plot(ts_log)
 plt.plot(expwighted_avg, color='red')
-
 ts_log_ewma_diff = ts_log.sub(expwighted_avg)
 print("Missing values:", not np.all(np.isfinite(ts_log_ewma_diff)))
-test_stationarity(ts_log_ewma_diff)
+test_stationarity(ts_log_ewma_diff, _plot=True)
 
 
 ### Differencing
@@ -150,18 +190,13 @@ ts_log_diff = ts_log.sub(ts_log.shift())
 print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
 ts_log_diff.dropna(inplace=True)
 print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
-# plt.plot(ts_log_diff)
-
 # This appears to have reduced trend considerably. Lets verify using our plots:
-test_stationarity(ts_log_diff)
-
+test_stationarity(ts_log_diff, _plot=True)
 # Markers plot
-plt.plot(ts_log, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
-plt.plot(ts_log_diff, '^', markersize=6, markeredgewidth=1, alpha=0.5)
 
 ts_log_diff["2015-12"]
 
-decomposition = seasonal_decompose(ts_log, freq=1)
+decomposition = seasonal_decompose(ts_log)
 
 trend = decomposition.trend
 seasonal = decomposition.seasonal
@@ -193,25 +228,7 @@ plt.tight_layout()
 
 
 ### FORECASTING
-lag_acf = acf(ts_log_diff, nlags=20)
-lag_pacf = pacf(ts_log_diff, nlags=20, method='ols')
-
-#Plot ACF:
-plt.subplot(121)
-plt.plot(lag_acf)
-plt.axhline(y=0,linestyle='--',color='gray')
-plt.axhline(y=-1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
-plt.axhline(y=1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
-plt.title('Autocorrelation Function')
-
-#Plot PACF:
-plt.subplot(122)
-plt.plot(lag_pacf)
-plt.axhline(y=0,linestyle='--',color='gray')
-plt.axhline(y=-1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
-plt.axhline(y=1.96/np.sqrt(len(ts_log_diff)),linestyle='--',color='gray')
-plt.title('Partial Autocorrelation Function')
-plt.tight_layout()
+plot_acf_pacf(ts_log_diff)
 
 # An importance concern here is how to determine the value of ‘p’ and ‘q’. We use two plots to determine these numbers. Lets discuss them first.
 #     Autocorrelation Function (ACF)
@@ -235,29 +252,34 @@ plt.tight_layout()
 # plt.title('RSS: %.4f'% sum((results_MA.fittedvalues-ts_log_diff)**2))
 
 # Combined Model
-model = ARIMA(ts_log, order=(1, 1, 0))
+model = ARIMA(ts_log, order=(2, 1, 2))
 results_ARIMA = model.fit(disp=-1)
-
 predictions = results_ARIMA.fittedvalues
-predictions = results_ARIMA.predict(start=1, end=30000)
 
-results_ARIMA.plot_predict(start=1, end=30000)
+observations = timeseries_sample.shape[0]
+predictions1 = results_ARIMA.predict(start=observations, end=observations+50000)
+predictions1
+predictions1.shape
+
+# results_ARIMA.plot_predict(start=1, end=50000)
 
 # Markers plot
-plt.xlim(0, 40000)
-plt.plot(ts_log_diff, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
-plt.plot(predictions, '^', markersize=6, markeredgewidth=1, alpha=0.7)
-error = predictions-ts_log_diff
+# plt.plot(ts_log_diff, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
+# plt.plot(predictions1, '^', markersize=6, markeredgewidth=1, alpha=0.7)
+plt.plot(ts_log_diff)
+plt.plot(predictions1)
+error = predictions1-ts_log_diff
+plt.legend(loc='best')
 plt.title('RSS: %.4f'% sum((error)**2))
 
 print("Missing values:", not np.all(np.isfinite(predictions)))
 np.any(np.isinf(predictions))
 np.any(np.isnan(predictions))
 
-plt.plot(ts_log_diff)
-plt.plot(predictions, color='red')
-error = predictions-ts_log_diff
-plt.title('RSS: %.4f'% sum((error)**2))
+# plt.plot(ts_log_diff)
+# plt.plot(predictions, color='red')
+# error = predictions-ts_log_diff
+# plt.title('RSS: %.4f'% sum((error)**2))
 
 
 
@@ -267,43 +289,32 @@ print(predictions_ARIMA_diff.head())
 predictions_ARIMA_diff_cumsum = predictions_ARIMA_diff.cumsum()
 print(predictions_ARIMA_diff_cumsum.head())
 
-plt.plot(ts_log)
-plt.plot(predictions_ARIMA_diff_cumsum)
-
 predictions_ARIMA_log = pd.Series(ts_log.ix[0], index=ts_log.index)
 predictions_ARIMA_log = predictions_ARIMA_log.add(predictions_ARIMA_diff_cumsum, fill_value=0)
 print(predictions_ARIMA_log.head())
 print(ts_log.head())
 
-plt.plot(ts_log)
-plt.plot(predictions_ARIMA_log)
+# plt.plot(ts_log)
+# plt.plot(predictions_ARIMA_log)
 
 predictions_ARIMA = np.exp(predictions_ARIMA_log)
 print("Missing values:", not np.all(np.isfinite(predictions_ARIMA)))
 print(predictions_ARIMA.head())
-print(timeseries.head())
+print(timeseries_sample.head())
 predictions_ARIMA.index[np.isinf(predictions_ARIMA)]
 predictions_ARIMA.index[np.isnan(predictions_ARIMA)]
 print("Missing values:", not np.all(np.isfinite(predictions_ARIMA)))
 
 plt.clf()
 # Markers plot
-plt.plot(timeseries, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
-plt.plot(predictions_ARIMA, '^', markersize=6, markeredgewidth=1, alpha=0.7)
-# plt.plot(timeseries)
-# plt.plot(predictions_ARIMA)
-error = predictions_ARIMA-timeseries
+# plt.plot(timeseries_sample, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
+# plt.plot(predictions_ARIMA, '^', markersize=6, markeredgewidth=1, alpha=0.7)
+plt.plot(timeseries_sample)
+plt.plot(predictions_ARIMA)
+error = predictions_ARIMA-timeseries_sample
 print("Missing values:", not np.all(np.isfinite(error)))
 error.index[np.isinf(error)]
 error.index[np.isnan(error)]
 error.dropna(inplace=True)
-plt.title('RMSE: %.4f'% np.sqrt(sum(error**2)/len(timeseries)))
+plt.title('RMSE: %.4f'% np.sqrt(sum(error**2)/len(timeseries_sample)))
 plt.show()
-
-type(model)
-type(results_ARIMA)
-
-
-
-results_ARIMA.plot_predict(start=1, end=30000)
-

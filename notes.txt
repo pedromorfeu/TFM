@@ -54,7 +54,8 @@
     1. We can difference the data. That is, given the series Zt, we create the new series Yi=Zi−Zi−1. The differenced data will contain one less point than the original data. Although you can difference the data more than once, one difference is usually sufficient.
     2. If the data contain a trend, we can fit some type of curve to the data and then model the residuals from that fit. Since the purpose of the fit is to simply remove long term trend, a simple fit, such as a straight line, is typically used.
     3. For non-constant variance, taking the logarithm or square root of the series may stabilize the variance. For negative data, you can add a suitable constant to make all the data positive before applying the transformation. This constant can then be subtracted from the model to obtain predicted (i.e., the fitted) values and forecasts for future points." (http://www.itl.nist.gov/div898/handbook/pmc/section4/pmc442.htm)
-
+42. "What to Do about Missing Values in Time-Series Cross-Section Data" (http://gking.harvard.edu/files/pr.pdf)
+43. "Online Time Series Prediction with Missing Data" (http://jmlr.org/proceedings/papers/v37/anava15.pdf)
 
 
 Email:
