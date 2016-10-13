@@ -151,18 +151,19 @@ generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
 for i in range(N_COMPONENTS):
     # calculate normal distribution by component and store it in column i
     # generated_X[:, i] = np.random.normal(mus[i], sigmas[i], NEW_DATA_SIZE)
-    # alternative:
-    # generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
-    # generate random
-    generated_X[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
+    # alternative normal:
+    generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
+    # generate random not-normal:
+    # generated_X[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
     
 # invert matrix: dot product between random data and the loadings, nipals_P
 XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
 # XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 
-# save_matrix("inverse_X.csv", XX, data.columns)
+save_matrix("inverse_X_gaussian.csv", XX, data.columns)
 
+exit()
 
 ### Time series
 for i in range(N_COMPONENTS):
