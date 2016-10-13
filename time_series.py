@@ -34,8 +34,14 @@ plt.plot(timeseries["2015-10-07"])
 plt.plot(timeseries["2015-10-08"])
 plt.plot(timeseries["2015-10-09"])
 
-plt.plot(timeseries["2015-10"])
-plt.plot(timeseries["2015-10"], 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+plt.plot(timeseries)
+plt.plot(timeseries, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+plt.title("Serie temporal completa para 'APHu'")
+
+plt.ylim([2400, 2410])
+plt.plot(timeseries["2015-12"])
+plt.plot(timeseries["2015-12"], 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+plt.title("Serie temporal de diciembre de 2015 para 'APHu'")
 
 
 # Resample by second ('s') and interpolate
