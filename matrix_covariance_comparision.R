@@ -33,6 +33,11 @@ head(inverted_data)
 str(inverted_data)
 summary(inverted_data)
 
+
+plot(inverted_data[, 1], type="l", col="red")
+lines(data[, 1], col="gray")
+
+
 # Hotelling T2
 res = hotelling.test(x = data, y = inverted_data)
 #res = hotelling.stat(x = data, y = inverted_data)
