@@ -163,13 +163,12 @@ print_matrix("XX", XX)
 
 save_matrix("inverse_X_gaussian.csv", XX, data.columns)
 
-exit()
-
 ### Time series
 for i in range(N_COMPONENTS):
     print("Time series analysis for component", i+1)
     # time serie for component
     timeseries = pd.Series(nipals_T[:, i], index=data.index)
+    print("timeseries", timeseries)
     # observations per day
     dates_count = timeseries.groupby(lambda x: x.date()).count()
     # day with more observations
@@ -181,7 +180,7 @@ for i in range(N_COMPONENTS):
     # Resample and interpolate
     print("Resampling time series by", TS_FREQUENCY)
     timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
-    print(timeseries_sample.head())
+    print("timeseries_sample", timeseries_sample)
     stationary = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
     print("Stationary?", stationary)
     # not stationary -> must be stabilized
@@ -219,14 +218,14 @@ for i in range(N_COMPONENTS):
 
     print("Creating model ARIMA(p,d,q)=", p, d, q)
     model = ARIMA(timeseries_sample, order=(p, d, q))
-    print(str(datetime.now()), "Fitting model")
+    print(str(datetime.now()), "Fitting model...")
     results_ARIMA = model.fit(disp=-1)
     print(str(datetime.now()), "Model fitted")
     fitted = results_ARIMA.fittedvalues
     print("Predicting...")
     predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ='levels')
-    print(fitted)
-    print(predictions)
+    print("fitted", fitted)
+    print("predictions", predictions)
 
     # plt.clf()
     # Markers plot
@@ -245,7 +244,7 @@ for i in range(N_COMPONENTS):
     # plt.show()
 
     # add noise
-    predictions = predictions + np.random.normal(0, predictions.std(), NEW_DATA_SIZE)
+    # predictions = predictions + np.random.normal(0, predictions.std(), NEW_DATA_SIZE)
 
     generated_X[:, i] = predictions
 
