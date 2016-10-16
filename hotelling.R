@@ -63,3 +63,5 @@ library("ICSNP")
 HotellingsT2(X = data, Y = inverted_data)
 
 
+mean(data[,1]) - mean(inverted_data[,1])
+

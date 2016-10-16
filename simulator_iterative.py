@@ -16,8 +16,10 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 N_COMPONENTS = 5
 NEW_DATA_SIZE = 100000
-TS_FREQUENCY = "5s"
+TS_FREQUENCY = "10s"
 
+
+start = datetime.now()
 
 data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
                index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
@@ -168,7 +170,7 @@ for i in range(N_COMPONENTS):
     print("Time series analysis for component", i+1)
     # time serie for component
     timeseries = pd.Series(nipals_T[:, i], index=data.index)
-    print("timeseries", timeseries)
+    print_timeseries("timeseries", timeseries)
     # observations per day
     dates_count = timeseries.groupby(lambda x: x.date()).count()
     # day with more observations
@@ -176,34 +178,64 @@ for i in range(N_COMPONENTS):
     print("The date with more observations is", date)
     # Specify a date to analyze the timeseries
     timeseries_sample = timeseries[date]
-    print(timeseries_sample.head())
+    print_timeseries("timeseries_sample", timeseries_sample)
     # Resample and interpolate
     print("Resampling time series by", TS_FREQUENCY)
     timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
-    print("timeseries_sample", timeseries_sample)
+    print_timeseries("timeseries_sample", timeseries_sample)
     stationary = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
     print("Stationary?", stationary)
     # not stationary -> must be stabilized
 
+    # Stabilizing the variance
+    subtract_constant = 0
+    # For negative data, you can add a suitable constant to make all the data positive
+    # before applying the transformation.
+    print("any negative?", np.any(timeseries_sample < 0))
+    if np.any(timeseries_sample < 0):
+        subtract_constant = min(timeseries_sample) - 1
+    timeseries_sample_positive = timeseries_sample - subtract_constant
+    print_timeseries("timeseries_sample_positive", timeseries_sample_positive)
+    print("any negative?", np.any(timeseries_sample_positive < 0))
+    # ts_log = np.log(timeseries_sample_positive)
+    ts_log = timeseries_sample
+    print_timeseries("ts_log", ts_log)
+    print("Missing values?", not np.all(np.isfinite(ts_log)))
+
+    moving_avg = ts_log.rolling(12).mean()
+    ts_log_moving_avg_diff = ts_log - moving_avg
+    ts_log_moving_avg_diff.head(12)
+    ts_log_moving_avg_diff.dropna(inplace=True)
+    ts_log_moving_avg_diff.head()
+    stationary = test_stationarity(ts_log_moving_avg_diff, _plot=False, _critical="5%")
+    print("Stationary?", stationary)
+
+    expwighted_avg = ts_log.ewm(halflife=12).mean()
+    plt.plot(ts_log)
+    plt.plot(expwighted_avg, color='red')
+    ts_log_ewma_diff = ts_log - expwighted_avg
+    stationary = test_stationarity(ts_log_ewma_diff, _plot=False, _critical="5%")
+    print("Stationary?", stationary)
+
     # Differencing
     print("Differencing the time series...")
-    timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
-    print("Missing values:", not np.all(np.isfinite(timeseries_sample_diff)))
-    timeseries_sample_diff.index[np.isinf(timeseries_sample_diff)]
-    timeseries_sample_diff.index[np.isnan(timeseries_sample_diff)]
-    timeseries_sample_diff.dropna(inplace=True)
-    print("Missing values:", not np.all(np.isfinite(timeseries_sample_diff)))
+    ts_log_diff = ts_log - ts_log.shift()
+    print("Missing values?", not np.all(np.isfinite(ts_log_diff)))
+    ts_log_diff.index[np.isinf(ts_log_diff)]
+    ts_log_diff.index[np.isnan(ts_log_diff)]
+    ts_log_diff.dropna(inplace=True)
+    print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
     # This appears to have reduced trend considerably. Lets verify using our plots:
-    stationary = test_stationarity(timeseries_sample_diff, _plot=False, _critical="5%")
+    stationary = test_stationarity(ts_log_diff, _plot=False, _critical="5%")
     print("Stationary?", stationary)
     if not stationary:
         # TODO: try other methods to make the timeseries stationary
         raise ValueError("Timeseries is not stationary after differencing.")
 
-    #Forecasting
-    # plot_acf_pacf(timeseries_sample_diff)
-    print(str(datetime.now()), "Calculating AR and MA orders...")
-    res = arma_order_select_ic(timeseries_sample_diff, ic=['aic', 'bic'], trend='nc', max_ar=3, max_ma=3)
+    # Forecasting
+    # plot_acf_pacf(ts_log_diff)
+    print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
+    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=2, max_ma=2)
     print(str(datetime.now()), "AR and MA orders calculated")
     # , fit_kw={"method" : "css"}
     # AIC and BIC min order (AR, MA) = (p, q)
@@ -212,41 +244,58 @@ for i in range(N_COMPONENTS):
     print("AIC=", aic)
     print("BIC=", bic)
 
-    p = aic[1]
-    q = aic[0]
+    p = aic[0]
+    q = aic[1]
     d = 1
 
-    print("Creating model ARIMA(p,d,q)=", p, d, q)
-    model = ARIMA(timeseries_sample, order=(p, d, q))
+    print("Creating model ARIMA(p,d,q)=ARIMA(%i,%i,%i)" %(p, d, q))
+    model = ARIMA(ts_log, order=(p, d, q))
     print(str(datetime.now()), "Fitting model...")
     results_ARIMA = model.fit(disp=-1)
     print(str(datetime.now()), "Model fitted")
-    fitted = results_ARIMA.fittedvalues
-    print("Predicting...")
-    predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ='levels')
-    print("fitted", fitted)
-    print("predictions", predictions)
 
-    # plt.clf()
-    # Markers plot
-    # plt.plot(timeseries_sample, 'o', markersize=6, markeredgewidth=1, alpha=0.7)
-    # plt.plot(predictions_ARIMA, '^', markersize=6, markeredgewidth=1, alpha=0.7)
+    # results_ARIMA.plot_predict(start=1, end=NEW_DATA_SIZE)
+
+    print("Predicting...")
+    predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ="levels")
+    print_timeseries("ts_log_diff", ts_log_diff)
+    print_timeseries("fitted", results_ARIMA.fittedvalues)
+    print_timeseries("predictions", predictions)
+
+    # plt.plot(ts_log)
+    # # plt.plot(results_ARIMA.fittedvalues, color='red')
+    # plt.plot(predictions, color='red')
+    # plt.title('RSS: %.4f' % sum((results_ARIMA.fittedvalues - ts_log_diff) ** 2))
+
+    predictions_ARIMA_diff = pd.Series(results_ARIMA.fittedvalues, copy=True)
+    print(predictions_ARIMA_diff.head())
+    predictions_ARIMA_diff_cumsum = predictions_ARIMA_diff.cumsum()
+    print(predictions_ARIMA_diff_cumsum.head())
+    predictions_ARIMA_log = pd.Series(ts_log.ix[0], index=ts_log.index)
+    predictions_ARIMA_log.head()
+    predictions_ARIMA_log = predictions_ARIMA_log.add(predictions_ARIMA_diff_cumsum, fill_value=0)
+    predictions_ARIMA_log.head()
+    predictions_ARIMA = np.exp(predictions_ARIMA_log) + subtract_constant
+
+
+    # predictions_ARIMA = np.exp(predictions) + subtract_constant
+    predictions_ARIMA = predictions
+
+    error = predictions_ARIMA - timeseries_sample
+    print("Missing values:", not np.all(np.isfinite(error)))
+    error.dropna(inplace=True)
+    print("Missing values:", not np.all(np.isfinite(error)))
+    rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
+    print("RMSE", rmse)
+
     # plt.plot(timeseries_sample)
     # plt.plot(predictions_ARIMA)
-    error = predictions-timeseries_sample
-    print("Missing values:", not np.all(np.isfinite(error)))
-    error.index[np.isinf(error)]
-    error.index[np.isnan(error)]
-    error.dropna(inplace=True)
-    rmse = np.sqrt(sum(error**2)/len(timeseries_sample))
-    print("RMSE", rmse)
-    # plt.title('RMSE: %.4f'% rmse)
-    # plt.show()
+    # plt.title('RMSE: %.4f' % rmse)
 
     # add noise
     # predictions = predictions + np.random.normal(0, predictions.std(), NEW_DATA_SIZE)
 
-    generated_X[:, i] = predictions
+    generated_X[:, i] = predictions_ARIMA
 
 # invert matrix: dot product between random data and the loadings, nipals_P
 XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
@@ -296,3 +345,7 @@ raw[153:156, :]
 
 # Next step for you: exclude observation 38, 39, 110 and 154 and
 # rebuild the PCA model. Can you interpret what the loadings, nipals_P, mean?
+
+timedelta = datetime.now() - start
+print("Total seconds", timedelta.total_seconds())
+print("Total minutes", timedelta.total_seconds()/60)

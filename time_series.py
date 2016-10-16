@@ -26,12 +26,12 @@ print(data["2015-10-06 22:01:20"])
 print(data["2015-10-06"])
 print(data["2015-10-06":"2015-11-06"])
 
-timeseries = data["Svo"]
-print(timeseries.head())
+timeseries = data["APHu"]
+print_timeseries("timeseries", timeseries)
 
-plt.plot(timeseries)
+plt.plot(timeseries, "o")
 plt.plot(timeseries["2015-10-06"])
-plt.plot(timeseries["2015-10-07"])
+plt.plot(timeseries["2015-10-07"], "o")
 plt.plot(timeseries["2015-10-08"])
 plt.plot(timeseries["2015-10-09"])
 
@@ -73,7 +73,7 @@ plt.plot(timeseries[date], 'o', markersize=6, markeredgecolor='black', markeredg
 
 # Specify a date to analyze the timeseries
 timeseries_sample = timeseries[date]
-timeseries_sample
+print_timeseries("timeseries_sample", timeseries_sample)
 timeseries_sample.shape
 plt.plot(timeseries_sample)
 plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
@@ -88,9 +88,9 @@ plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markered
 
 # Alternative:
 # Resample by second ('s') and interpolate
-timeseries_sample = timeseries_sample.resample('2s').mean().interpolate()
+timeseries_sample = timeseries_sample.resample('10s').mean().interpolate()
+print_timeseries("timeseries_sample", timeseries_sample)
 timeseries_sample.shape
-timeseries_sample
 plt.plot(timeseries_sample)
 plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
 

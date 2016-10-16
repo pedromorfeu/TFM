@@ -1,0 +1,8 @@
+5 components, 100000 simulated, ARIMA, no noise, frequency 5s:      Hotelling high, p-value=0
+5 components, 100000 simulated, gaussian, no noise, frequency 5s:   Hotelling low, p-value=1
+3 components, 100000 simulated, ARIMA, no noise, frequency 5s:      Hotelling high, p-value=0
+3 components, 100000 simulated, gaussian, no noise, frequency 5s:   Hotelling low, p-value=1
+3 components, 100000 simulated, ARIMA, no noise, frequency 10s:     Hotelling ERROR, p-value=ERROR
+3 components, 100000 simulated, gaussian, no noise, frequency 10s:  Hotelling 0.045771, p-value=1
+3 components, 100000 simulated, ARIMA, no noise, frequency 60s:     Hotelling , p-value=
+3 components, 100000 simulated, gaussian, no noise, frequency 60s:  Hotelling , p-value=

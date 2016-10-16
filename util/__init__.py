@@ -58,6 +58,12 @@ def print_matrix(name, matrix):
     print(matrix[-5:, ], sep="\n")
 
 
+def print_timeseries(name, timeseries):
+    print(name, timeseries.head(), sep="\n")
+    print("...")
+    print(timeseries.tail(), sep="\n")
+
+
 def save_matrix(filename, matrix, columns_names=None):
     print(str(datetime.now()), "Saving matrix...")
 
@@ -95,7 +101,7 @@ def test_stationarity(_timeseries, _plot=False, _critical="5%"):
         # std = plt.plot(rolstd, color='black', label='Rolling Std')
         plt.legend(loc='best')
         plt.title('Rolling Mean & Standard Deviation')
-        plt.show()
+        plt.show(block=True)
 
     # Perform Dickey-Fuller test:
     print('Results of Dickey-Fuller Test:')
