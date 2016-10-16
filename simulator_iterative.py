@@ -179,6 +179,8 @@ for i in range(N_COMPONENTS):
     # Specify a date to analyze the timeseries
     timeseries_sample = timeseries[date]
     print_timeseries("timeseries_sample", timeseries_sample)
+    print("timeseries_sample.shape", timeseries_sample.shape)
+    # exit()
     # Resample and interpolate
     print("Resampling time series by", TS_FREQUENCY)
     timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
@@ -193,8 +195,8 @@ for i in range(N_COMPONENTS):
     # before applying the transformation.
     print("any negative?", np.any(timeseries_sample < 0))
     if np.any(timeseries_sample < 0):
-        subtract_constant = min(timeseries_sample) - 1
-    timeseries_sample_positive = timeseries_sample - subtract_constant
+        subtract_constant = abs(min(timeseries_sample)) + 1
+    timeseries_sample_positive = timeseries_sample + subtract_constant
     print_timeseries("timeseries_sample_positive", timeseries_sample_positive)
     print("any negative?", np.any(timeseries_sample_positive < 0))
     # ts_log = np.log(timeseries_sample_positive)
@@ -211,8 +213,8 @@ for i in range(N_COMPONENTS):
     print("Stationary?", stationary)
 
     expwighted_avg = ts_log.ewm(halflife=12).mean()
-    plt.plot(ts_log)
-    plt.plot(expwighted_avg, color='red')
+    # plt.plot(ts_log)
+    # plt.plot(expwighted_avg, color='red')
     ts_log_ewma_diff = ts_log - expwighted_avg
     stationary = test_stationarity(ts_log_ewma_diff, _plot=False, _critical="5%")
     print("Stationary?", stationary)
@@ -275,10 +277,10 @@ for i in range(N_COMPONENTS):
     predictions_ARIMA_log.head()
     predictions_ARIMA_log = predictions_ARIMA_log.add(predictions_ARIMA_diff_cumsum, fill_value=0)
     predictions_ARIMA_log.head()
-    predictions_ARIMA = np.exp(predictions_ARIMA_log) + subtract_constant
+    predictions_ARIMA = np.exp(predictions_ARIMA_log) - subtract_constant
 
 
-    # predictions_ARIMA = np.exp(predictions) + subtract_constant
+    # predictions_ARIMA = np.exp(predictions) - subtract_constant
     predictions_ARIMA = predictions
 
     error = predictions_ARIMA - timeseries_sample
@@ -288,9 +290,11 @@ for i in range(N_COMPONENTS):
     rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
     print("RMSE", rmse)
 
-    # plt.plot(timeseries_sample)
-    # plt.plot(predictions_ARIMA)
-    # plt.title('RMSE: %.4f' % rmse)
+    plt.clf()
+    plt.plot(timeseries_sample)
+    plt.plot(predictions_ARIMA)
+    plt.title('RMSE: %.4f' % rmse)
+    plt.show(block=True)
 
     # add noise
     # predictions = predictions + np.random.normal(0, predictions.std(), NEW_DATA_SIZE)

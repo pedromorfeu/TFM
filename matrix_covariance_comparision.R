@@ -36,7 +36,7 @@ data_filtered <- read.csv2("ip.txt", sep = "\t", header = T, stringsAsFactors = 
                   colClasses = c("character", rep("numeric", 14)), dec=".")
 data_filtered <- data_filtered[!is.na(data_filtered$APHu),]
 # filter by date
-data_filtered <- (data_filtered[startsWith(data_filtered$Tiempoinicio, "07-oct-2015"), ])
+data_filtered <- (data_filtered[startsWith(data_filtered$Tiempoinicio, "09-oct-2015"), ])
 data_filtered <- data_filtered[, seq(2,15)]
 head(data_filtered)
 str(data_filtered)
@@ -52,6 +52,9 @@ summary(inverted_data)
 res = hotelling.test(x = data_filtered, y = inverted_data)
 print(res)
 
+
+colMeans(data_filtered)
+colMeans(inverted_data)
 
 plot(inverted_data[, 1], type="l", col="red")
 lines(data_filterd[, 1], col="gray")

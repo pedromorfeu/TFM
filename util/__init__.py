@@ -90,9 +90,9 @@ def test_stationarity(_timeseries, _plot=False, _critical="5%"):
     # critical: 10%, 5%, 1%
     # Determing rolling statistics
     # rolmean = pd.rolling_mean(timeseries, window=12)
-    rolmean = _timeseries.rolling(min_periods=1, window=20, center=False).mean()
+    rolmean = _timeseries.rolling(min_periods=1, window=12, center=False).mean()
     # rolstd = pd.rolling_std(timeseries, window=12)
-    rolstd = _timeseries.rolling(min_periods=1, window=20, center=False).std()
+    rolstd = _timeseries.rolling(min_periods=1, window=12, center=False).std()
 
     if _plot:
         # Plot rolling statistics:
