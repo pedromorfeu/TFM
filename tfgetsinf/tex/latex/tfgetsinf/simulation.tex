@@ -28,6 +28,9 @@
 
 \usepackage[utf8]{inputenc} 
 
+\usepackage{listings}
+\usepackage{color}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                        ALTRES PAQUETS I DEFINICIONS                         %
 %                                                                             %
@@ -169,7 +172,41 @@ Para la ingestión y transformación de los datos se han usado librerías muy ú
 
 Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto (`.'). Con eso es suficiente para un {em parsing} correcto.
 
-Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en el {\em locale} de España, el {\em standard} de abreviación de mes es con punto (`.'), por ejemplo {\tt oct.}. Así que el {\em parsing} de fechas tuvo que ser ajustado. La estratégia ha sido el uso de una expresión regular para añadir el punto (`.') necesario en las abreviaciones de meses.
+Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en el {\em locale} de España, el {\em standard} de abreviación de mes es con punto (`.'), por ejemplo {\tt oct.}. Así que el {\em parsing} de fechas tuvo que ser ajustado. La estratégia ha sido el uso de una expresión regular para añadir el punto (`.') necesario en las abreviaciones de meses, como se puede ver en los siguientes {\em snippets} Python y R:
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{mauve},
+  stringstyle=\color{dkgreen},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+{\em Parsing} de fechas en Python:
+\begin{lstlisting}
+def parse_date(date_string):
+    locale_date_string = re.sub("(.+-)(.+)(-.+)", "\\1\\2.\\3", date_string)
+    return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
+\end{lstlisting}
+
+{\em Parsing} de fechas en R:
+\begin{lstlisting}
+data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
+data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
+\end{lstlisting}
 
 El resultado final es un {\em dataset} estructurado con 14 características y una marca temporal como índice. 
 
