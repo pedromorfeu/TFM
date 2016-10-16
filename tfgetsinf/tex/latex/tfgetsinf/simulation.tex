@@ -143,10 +143,36 @@ Este documento se estructura de la siguiente forma: un análisis sobre el {\em d
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Dataset}
-TODO
+El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado {\em Transformación}.
+
+\section{Estructura}
+Un breve análisis del {\em dataset} en un editor de texto muestra que tiene un formato de campos separados por espacios y tabulaciones. La cantidad de espacios es variable:
+
+\begin{verbatim*}
+Tiempoinicio                    	APHu                            	APVs ...
+                     	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 
+06-oct-2015 21:57:03 	44.6             	69.3 ...
+06-oct-2015 21:57:12 	45.1             	69.0 ...
+06-oct-2015 21:57:21 	44.8             	69.8 ...
+...
+\end{verbatim*}
+
+
+La primera línea contiene un {\em header} (cabecera), con 15 nombres: 
+
+{\tt Tiempoinicio, APHu, APVs, ACPv, ZSx, ZUs, H7x, H1x, H2x, H6x, H3x, H4x, H5x, ACPx, Svo}. 
+
+Se puede verificar también que hay una línea vacía después del {\em header}. El primer campo tiene un formato de fecha/hora y los demás campos tienen formato decimal.
 
 \section{Transformación}
-TODO
+Para la ingestión y transformación de los datos se han usado librerías muy útiles y con muchas funcionalidades que facilitan bastante esas tareas: en los scripts Python se ha usado el paquete {\em Pandas} y en R la función {\em read.csv2} del paquete {\em utils}.
+
+Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto (`.'). Con eso es suficiente para un {em parsing} correcto.
+
+Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en el {\em locale} de España, el {\em standard} de abreviación de mes es con punto (`.'), por ejemplo {\tt oct.}. Así que el {\em parsing} de fechas tuvo que ser ajustado. La estratégia ha sido el uso de una expresión regular para añadir el punto (`.') necesario en las abreviaciones de meses.
+
+El resultado final es un {\em dataset} estructurado con 14 características y una marca temporal como índice. 
+
 
 \chapter{Desarrollo}
 TODO 
