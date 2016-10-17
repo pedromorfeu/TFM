@@ -94,15 +94,6 @@ def test_stationarity(_timeseries, _plot=False, _critical="5%"):
     # rolstd = pd.rolling_std(timeseries, window=12)
     rolstd = _timeseries.rolling(min_periods=1, window=12, center=False).std()
 
-    if _plot:
-        # Plot rolling statistics:
-        orig = plt.plot(_timeseries, color='blue', label='Original')
-        mean = plt.plot(rolmean, color='red', label='Rolling Mean')
-        # std = plt.plot(rolstd, color='black', label='Rolling Std')
-        plt.legend(loc='best')
-        plt.title('Rolling Mean & Standard Deviation')
-        plt.show(block=True)
-
     # Perform Dickey-Fuller test:
     print('Results of Dickey-Fuller Test:')
     dftest = adfuller(_timeseries, autolag='AIC')
@@ -113,9 +104,19 @@ def test_stationarity(_timeseries, _plot=False, _critical="5%"):
 
     test_value = dfoutput[0]
     critical_value = dftest[4][_critical]
-    if test_value < critical_value:
-        return True
-    return False
+    stationary = (test_value < critical_value)
+    print("Stationary?", stationary)
+
+    if _plot:
+        # Plot rolling statistics:
+        orig = plt.plot(_timeseries, color='blue', label='Original')
+        mean = plt.plot(rolmean, color='red', label='Rolling Mean')
+        # std = plt.plot(rolstd, color='black', label='Rolling Std')
+        plt.legend(loc='best')
+        plt.title('Rolling Mean & Standard Deviation')
+        plt.show(block=True)
+
+    return stationary
 
 
 def plot_acf_pacf(_timeseries):

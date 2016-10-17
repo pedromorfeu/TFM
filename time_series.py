@@ -66,7 +66,7 @@ timeseries.groupby(lambda x: x.date()).count()
 # 2015-10-12     520
 # 2015-12-14     100
 
-date = "2015-10-07"
+date = "2015-10-06"
 timeseries[date].shape
 plt.plot(timeseries[date])
 plt.plot(timeseries[date], 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
@@ -80,20 +80,30 @@ plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markered
 
 # Frequency is ~9 seconds
 # to 5 seconds frequency and forward fill
-timeseries_sample = timeseries_sample.asfreq('5s', method='pad')
-timeseries_sample.shape
-timeseries_sample
-plt.plot(timeseries_sample)
-plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+timeseries_sample_freq1 = timeseries_sample.asfreq('10s', method='ffill')
 
 # Alternative:
 # Resample by second ('s') and interpolate
-timeseries_sample = timeseries_sample.resample('10s').mean().interpolate()
-print_timeseries("timeseries_sample", timeseries_sample)
-timeseries_sample.shape
-plt.plot(timeseries_sample)
-plt.plot(timeseries_sample, 'o', markersize=6, markeredgecolor='black', markeredgewidth=1, alpha=0.7)
+timeseries_sample_freq2 = timeseries_sample.resample('10s').mean().interpolate()
 
+timeseries_sample_freq3 = timeseries_sample.resample('10s').mean()
+
+rolmean1 = timeseries_sample_freq1.rolling(min_periods=1, window=20, center=False).mean()
+rolmean2 = timeseries_sample_freq2.rolling(min_periods=1, window=20, center=False).mean()
+rolmean3 = timeseries_sample_freq3.rolling(min_periods=1, window=20, center=False).mean()
+
+np.all(timeseries_sample_freq1==timeseries_sample_freq2)
+
+plt.plot(timeseries_sample)
+plt.plot(timeseries_sample_freq3)
+plt.plot(rolmean3)
+
+plt.plot(timeseries_sample_freq1)
+plt.plot(timeseries_sample_freq2)
+plt.plot(timeseries_sample_freq3)
+plt.plot(rolmean1)
+plt.plot(rolmean2)
+plt.plot(rolmean3)
 
 # We can check stationarity using the following:
 #     Plotting Rolling Statistics: We can plot the moving average or moving variance and see if it varies with time. By moving average/variance I mean that at any instant ‘t’, we’ll take the average/variance of the last year, i.e. last 12 months. But again this is more of a visual technique.

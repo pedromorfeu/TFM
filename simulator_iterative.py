@@ -16,7 +16,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 N_COMPONENTS = 5
 NEW_DATA_SIZE = 100000
-TS_FREQUENCY = "10s"
+TS_FREQUENCY = "20s"
 
 
 start = datetime.now()
@@ -163,11 +163,11 @@ XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
 # XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 
-save_matrix("inverse_X_gaussian.csv", XX, data.columns)
+# save_matrix("inverse_X_gaussian.csv", XX, data.columns)
 
 ### Time series
 for i in range(N_COMPONENTS):
-    print("Time series analysis for component", i+1)
+    print("Time series analysis for component", i)
     # time serie for component
     timeseries = pd.Series(nipals_T[:, i], index=data.index)
     print_timeseries("timeseries", timeseries)
@@ -176,17 +176,18 @@ for i in range(N_COMPONENTS):
     # day with more observations
     date = dates_count.idxmax().strftime("%Y-%m-%d")
     print("The date with more observations is", date)
+    date="2015-10-06"
     # Specify a date to analyze the timeseries
     timeseries_sample = timeseries[date]
     print_timeseries("timeseries_sample", timeseries_sample)
     print("timeseries_sample.shape", timeseries_sample.shape)
-    # exit()
     # Resample and interpolate
     print("Resampling time series by", TS_FREQUENCY)
     timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
+    # timeseries_sample = timeseries_sample.asfreq(TS_FREQUENCY, method="ffill")
     print_timeseries("timeseries_sample", timeseries_sample)
     stationary = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
-    print("Stationary?", stationary)
+
     # not stationary -> must be stabilized
 
     # Stabilizing the variance
@@ -206,18 +207,16 @@ for i in range(N_COMPONENTS):
 
     moving_avg = ts_log.rolling(12).mean()
     ts_log_moving_avg_diff = ts_log - moving_avg
-    ts_log_moving_avg_diff.head(12)
+    ts_log_moving_avg_diff.head(5)
     ts_log_moving_avg_diff.dropna(inplace=True)
     ts_log_moving_avg_diff.head()
     stationary = test_stationarity(ts_log_moving_avg_diff, _plot=False, _critical="5%")
-    print("Stationary?", stationary)
 
-    expwighted_avg = ts_log.ewm(halflife=12).mean()
+    expwighted_avg = ts_log.ewm(halflife=20).mean()
     # plt.plot(ts_log)
     # plt.plot(expwighted_avg, color='red')
     ts_log_ewma_diff = ts_log - expwighted_avg
     stationary = test_stationarity(ts_log_ewma_diff, _plot=False, _critical="5%")
-    print("Stationary?", stationary)
 
     # Differencing
     print("Differencing the time series...")
@@ -229,7 +228,6 @@ for i in range(N_COMPONENTS):
     print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
     # This appears to have reduced trend considerably. Lets verify using our plots:
     stationary = test_stationarity(ts_log_diff, _plot=False, _critical="5%")
-    print("Stationary?", stationary)
     if not stationary:
         # TODO: try other methods to make the timeseries stationary
         raise ValueError("Timeseries is not stationary after differencing.")
@@ -289,6 +287,12 @@ for i in range(N_COMPONENTS):
     print("Missing values:", not np.all(np.isfinite(error)))
     rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
     print("RMSE", rmse)
+
+    plt.clf()
+    plt.plot(timeseries_sample)
+    plt.plot(predictions_ARIMA[:max(timeseries_sample.index)])
+    plt.title('RMSE: %.4f' % rmse)
+    plt.show(block=True)
 
     plt.clf()
     plt.plot(timeseries_sample)
