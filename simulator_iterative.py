@@ -17,7 +17,8 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 N_COMPONENTS = 5
 NEW_DATA_SIZE = 100000
 TS_FREQUENCY = "20s"
-
+# If the frequency is higher than the sample steps, then we have more real data
+# If we interpolate, then we are introducing new data, which is induced
 
 start = datetime.now()
 
@@ -228,12 +229,13 @@ for i in range(N_COMPONENTS):
     print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
     # This appears to have reduced trend considerably. Lets verify using our plots:
     stationary = test_stationarity(ts_log_diff, _plot=False, _critical="5%")
+
     if not stationary:
         # TODO: try other methods to make the timeseries stationary
         raise ValueError("Timeseries is not stationary after differencing.")
 
     # Forecasting
-    # plot_acf_pacf(ts_log_diff)
+    plot_acf_pacf(ts_log_diff)
     print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
     res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=2, max_ma=2)
     print(str(datetime.now()), "AR and MA orders calculated")
@@ -247,6 +249,8 @@ for i in range(N_COMPONENTS):
     p = aic[0]
     q = aic[1]
     d = 1
+
+    p, d, q = 1, 1, 1
 
     print("Creating model ARIMA(p,d,q)=ARIMA(%i,%i,%i)" %(p, d, q))
     model = ARIMA(ts_log, order=(p, d, q))

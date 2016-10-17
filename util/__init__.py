@@ -123,6 +123,8 @@ def plot_acf_pacf(_timeseries):
     lag_acf = acf(_timeseries, nlags=20)
     lag_pacf = pacf(_timeseries, nlags=20, method='ols')
 
+    plt.clf()
+
     #Plot ACF:
     plt.subplot(121)
     plt.plot(lag_acf)
@@ -139,5 +141,7 @@ def plot_acf_pacf(_timeseries):
     plt.axhline(y=1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
     plt.title('Partial Autocorrelation Function')
     plt.tight_layout()
+
+    plt.show(block=True)
 
     return lag_acf, lag_pacf
