@@ -145,6 +145,7 @@ print_matrix("nipals_P", nipals_P)
 # scores
 print_matrix("nipals_T", nipals_T)
 
+save_matrix("nipals_T.csv", nipals_T, list(range(N_COMPONENTS)))
 
 ### Generate data
 mus = np.mean(nipals_T, axis=0)

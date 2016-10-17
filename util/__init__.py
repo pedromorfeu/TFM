@@ -73,7 +73,7 @@ def save_matrix(filename, matrix, columns_names=None):
     f = open(os.path.join(folder, filename), "w")
     if columns_names is not None:
         for i in range(len(columns_names)):
-            f.write(columns_names[i])
+            f.write(str(columns_names[i]))
             f.write("\t") if i < len(columns_names) - 1 else None
         f.write("\n")
 
