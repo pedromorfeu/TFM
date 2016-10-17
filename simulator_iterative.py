@@ -16,7 +16,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 N_COMPONENTS = 5
 NEW_DATA_SIZE = 100000
-TS_FREQUENCY = "20s"
+TS_FREQUENCY = "9s"
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
 
@@ -145,7 +145,9 @@ print_matrix("nipals_P", nipals_P)
 # scores
 print_matrix("nipals_T", nipals_T)
 
-save_matrix("nipals_T.csv", nipals_T, list(range(N_COMPONENTS)))
+# save_matrix("nipals_T_ts.csv", nipals_T, columns_names=["time"] + list(range(N_COMPONENTS)), index_ts=data.index)
+
+
 
 ### Generate data
 mus = np.mean(nipals_T, axis=0)
@@ -228,6 +230,7 @@ for i in range(N_COMPONENTS):
     ts_log_diff.index[np.isnan(ts_log_diff)]
     ts_log_diff.dropna(inplace=True)
     print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
+    print_timeseries("ts_log_diff", ts_log_diff)
     # This appears to have reduced trend considerably. Lets verify using our plots:
     stationary = test_stationarity(ts_log_diff, _plot=False, _critical="5%")
 
@@ -236,9 +239,9 @@ for i in range(N_COMPONENTS):
         raise ValueError("Timeseries is not stationary after differencing.")
 
     # Forecasting
-    plot_acf_pacf(ts_log_diff)
+    # plot_acf_pacf(ts_log_diff)
     print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
-    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=2, max_ma=2)
+    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=5, max_ma=5)
     print(str(datetime.now()), "AR and MA orders calculated")
     # , fit_kw={"method" : "css"}
     # AIC and BIC min order (AR, MA) = (p, q)
@@ -247,11 +250,9 @@ for i in range(N_COMPONENTS):
     print("AIC=", aic)
     print("BIC=", bic)
 
-    p = aic[0]
-    q = aic[1]
+    p = bic[0]
+    q = bic[1]
     d = 1
-
-    p, d, q = 1, 1, 1
 
     print("Creating model ARIMA(p,d,q)=ARIMA(%i,%i,%i)" %(p, d, q))
     model = ARIMA(ts_log, order=(p, d, q))
@@ -263,6 +264,7 @@ for i in range(N_COMPONENTS):
 
     print("Predicting...")
     predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ="levels")
+    # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
     print_timeseries("ts_log_diff", ts_log_diff)
     print_timeseries("fitted", results_ARIMA.fittedvalues)
     print_timeseries("predictions", predictions)
@@ -285,6 +287,10 @@ for i in range(N_COMPONENTS):
 
     # predictions_ARIMA = np.exp(predictions) - subtract_constant
     predictions_ARIMA = predictions
+
+    # forecast, stderr, conf_int = results_ARIMA.forecast(steps=NEW_DATA_SIZE)
+    # predictions_ARIMA = pd.Series(forecast, index=predictions.index)
+    # print("predictions_ARIMA", predictions_ARIMA)
 
     error = predictions_ARIMA - timeseries_sample
     print("Missing values:", not np.all(np.isfinite(error)))

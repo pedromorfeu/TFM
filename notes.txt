@@ -56,6 +56,7 @@
     3. For non-constant variance, taking the logarithm or square root of the series may stabilize the variance. For negative data, you can add a suitable constant to make all the data positive before applying the transformation. This constant can then be subtracted from the model to obtain predicted (i.e., the fitted) values and forecasts for future points." (http://www.itl.nist.gov/div898/handbook/pmc/section4/pmc442.htm)
 42. "What to Do about Missing Values in Time-Series Cross-Section Data" (http://gking.harvard.edu/files/pr.pdf)
 43. "Online Time Series Prediction with Missing Data" (http://jmlr.org/proceedings/papers/v37/anava15.pdf)
+44. Time series: "ARIMA models are defined for stationary time series. Therefore, if you start off with a non-stationary time series, you will first need to ‘difference’ the time series until you obtain a stationary time series. If you have to difference the time series d times to obtain a stationary series, then you have an ARIMA(p,d,q) model, where d is the order of differencing used."; "If we use the “bic” criterion, which penalises the number of parameters" (http://a-little-book-of-r-for-time-series.readthedocs.io/en/latest/src/timeseries.html)
 
 
 Email:

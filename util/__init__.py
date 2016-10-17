@@ -64,7 +64,7 @@ def print_timeseries(name, timeseries):
     print(timeseries.tail(), sep="\n")
 
 
-def save_matrix(filename, matrix, columns_names=None):
+def save_matrix(filename, matrix, columns_names=None, index_ts=None):
     print(str(datetime.now()), "Saving matrix...")
 
     folder = "generated"
@@ -78,6 +78,9 @@ def save_matrix(filename, matrix, columns_names=None):
         f.write("\n")
 
     for i in range(matrix.shape[0]):
+        if index_ts is not None:
+            f.write(index_ts[i].to_datetime().strftime("%d-%b-%Y %H:%M:%S"))
+            f.write("\t")
         for j in range(matrix.shape[1]):
             f. write(str(matrix[i, j]))
             f.write("\t") if j < matrix.shape[1]-1 else None
