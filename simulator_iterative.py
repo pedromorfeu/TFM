@@ -241,7 +241,7 @@ for i in range(N_COMPONENTS):
     # Forecasting
     # plot_acf_pacf(ts_log_diff)
     print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
-    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=5, max_ma=5)
+    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=3, max_ma=3)
     print(str(datetime.now()), "AR and MA orders calculated")
     # , fit_kw={"method" : "css"}
     # AIC and BIC min order (AR, MA) = (p, q)
@@ -250,8 +250,8 @@ for i in range(N_COMPONENTS):
     print("AIC=", aic)
     print("BIC=", bic)
 
-    p = bic[0]
-    q = bic[1]
+    p = aic[0]
+    q = aic[1]
     d = 1
 
     print("Creating model ARIMA(p,d,q)=ARIMA(%i,%i,%i)" %(p, d, q))

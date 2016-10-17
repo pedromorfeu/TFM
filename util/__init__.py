@@ -7,6 +7,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from datetime import datetime
 from statsmodels.tsa.stattools import adfuller, acf, pacf
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
 print(locale.getdefaultlocale())
 locale.setlocale(locale.LC_TIME, "spanish")
@@ -122,28 +123,39 @@ def test_stationarity(_timeseries, _plot=False, _critical="5%"):
     return stationary
 
 
-def plot_acf_pacf(_timeseries):
-    lag_acf = acf(_timeseries, nlags=20)
-    lag_pacf = pacf(_timeseries, nlags=20, method='ols')
+def plot_acf_pacf(_timeseries, spikes_plot=True, lags=10):
+    lag_acf = acf(_timeseries, nlags=lags)
+    lag_pacf = pacf(_timeseries, nlags=lags, method='ols')
+
+    print("lag_acf", list(range(lags)))
+    print("lag_acf", lag_acf)
+    print("lag_pacf", list(range(1, lags)))
+    print("lag_pacf", lag_pacf)
 
     plt.clf()
 
-    #Plot ACF:
-    plt.subplot(121)
-    plt.plot(lag_acf)
-    plt.axhline(y=0,linestyle='--',color='gray')
-    plt.axhline(y=-1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
-    plt.axhline(y=1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
-    plt.title('Autocorrelation Function')
+    if spikes_plot:
+        ax1 = plt.subplot(211)
+        plot_acf(_timeseries, lags=lags, ax=ax1)
+        ax2 = plt.subplot(212)
+        plot_pacf(_timeseries, lags=lags, ax=ax2)
+    else:
+        #Plot ACF:
+        plt.subplot(121)
+        plt.plot(lag_acf)
+        plt.axhline(y=0,linestyle='--',color='gray')
+        plt.axhline(y=-1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
+        plt.axhline(y=1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
+        plt.title('Autocorrelation Function')
 
-    #Plot PACF:
-    plt.subplot(122)
-    plt.plot(lag_pacf)
-    plt.axhline(y=0,linestyle='--',color='gray')
-    plt.axhline(y=-1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
-    plt.axhline(y=1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
-    plt.title('Partial Autocorrelation Function')
-    plt.tight_layout()
+        #Plot PACF:
+        plt.subplot(122)
+        plt.plot(lag_pacf)
+        plt.axhline(y=0,linestyle='--',color='gray')
+        plt.axhline(y=-1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
+        plt.axhline(y=1.96/np.sqrt(len(_timeseries)),linestyle='--',color='gray')
+        plt.title('Partial Autocorrelation Function')
+        plt.tight_layout()
 
     plt.show(block=True)
 
