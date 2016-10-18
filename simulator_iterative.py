@@ -15,8 +15,8 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 N_COMPONENTS = 5
-NEW_DATA_SIZE = 100000
-TS_FREQUENCY = "9s"
+NEW_DATA_SIZE = 835
+TS_FREQUENCY = "10s"
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
 
@@ -148,7 +148,6 @@ print_matrix("nipals_T", nipals_T)
 # save_matrix("nipals_T_ts.csv", nipals_T, columns_names=["time"] + list(range(N_COMPONENTS)), index_ts=data.index)
 
 
-
 ### Generate data
 mus = np.mean(nipals_T, axis=0)
 sigmas = np.std(nipals_T, axis=0)
@@ -184,10 +183,9 @@ for i in range(N_COMPONENTS):
     # Specify a date to analyze the timeseries
     timeseries_sample = timeseries[date]
     print_timeseries("timeseries_sample", timeseries_sample)
-    print("timeseries_sample.shape", timeseries_sample.shape)
     # Resample and interpolate
     print("Resampling time series by", TS_FREQUENCY)
-    timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
+    # timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
     # timeseries_sample = timeseries_sample.asfreq(TS_FREQUENCY, method="ffill")
     print_timeseries("timeseries_sample", timeseries_sample)
     stationary = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
@@ -224,7 +222,7 @@ for i in range(N_COMPONENTS):
 
     # Differencing
     print("Differencing the time series...")
-    ts_log_diff = ts_log - ts_log.shift()
+    ts_log_diff = ts_log - ts_log.shift(2)
     print("Missing values?", not np.all(np.isfinite(ts_log_diff)))
     ts_log_diff.index[np.isinf(ts_log_diff)]
     ts_log_diff.index[np.isnan(ts_log_diff)]
@@ -299,17 +297,17 @@ for i in range(N_COMPONENTS):
     rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
     print("RMSE", rmse)
 
-    plt.clf()
-    plt.plot(timeseries_sample)
-    plt.plot(predictions_ARIMA[:max(timeseries_sample.index)])
-    plt.title('RMSE: %.4f' % rmse)
-    plt.show(block=True)
-
-    plt.clf()
-    plt.plot(timeseries_sample)
-    plt.plot(predictions_ARIMA)
-    plt.title('RMSE: %.4f' % rmse)
-    plt.show(block=True)
+    # plt.clf()
+    # plt.plot(timeseries_sample)
+    # plt.plot(predictions_ARIMA[:max(timeseries_sample.index)])
+    # plt.title('RMSE: %.4f' % rmse)
+    # plt.show(block=True)
+    #
+    # plt.clf()
+    # plt.plot(timeseries_sample)
+    # plt.plot(predictions_ARIMA)
+    # plt.title('RMSE: %.4f' % rmse)
+    # plt.show(block=True)
 
     # add noise
     # predictions = predictions + np.random.normal(0, predictions.std(), NEW_DATA_SIZE)

@@ -36,7 +36,7 @@ data_filtered <- read.csv2("ip.txt", sep = "\t", header = T, stringsAsFactors = 
                   colClasses = c("character", rep("numeric", 14)), dec=".")
 data_filtered <- data_filtered[!is.na(data_filtered$APHu),]
 # filter by date
-data_filtered <- (data_filtered[startsWith(data_filtered$Tiempoinicio, "09-oct-2015"), ])
+data_filtered <- (data_filtered[startsWith(data_filtered$Tiempoinicio, "06-oct-2015"), ])
 data_filtered <- data_filtered[, seq(2,15)]
 head(data_filtered)
 str(data_filtered)
