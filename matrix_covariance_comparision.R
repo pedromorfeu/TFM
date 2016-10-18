@@ -25,7 +25,6 @@ res = hotelling.test(x = data, y = inverted_data_gaussian)
 print(res)
 
 
-plot(data$APHu)
 plot(data[, 1], type="l", col="gray", ylim=c(min(data[, 1]), max(data[, 1])))
 plot(inverted_data[, 1], type="l", col="red", ylim=c(min(data[, 1]), max(data[, 1])))
 lines(data[, 1], col="gray")
@@ -55,6 +54,10 @@ print(res)
 
 colMeans(data_filtered)
 colMeans(inverted_data)
+
+plot(data_filtered$APHu)
+plot(inverted_data_gaussian$APHu)
+plot(inverted_data$APHu)
 
 plot(inverted_data[, 1], type="l", col="red")
 lines(data_filterd[, 1], col="gray")

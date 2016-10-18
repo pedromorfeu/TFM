@@ -149,8 +149,8 @@ print_matrix("nipals_T", nipals_T)
 
 
 ### Generate data
-mus = np.mean(nipals_T, axis=0)
-sigmas = np.std(nipals_T, axis=0)
+mus = np.mean(nipals_T[:NEW_DATA_SIZE, :], axis=0)
+sigmas = np.std(nipals_T[:NEW_DATA_SIZE, :], axis=0)
 
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
 for i in range(N_COMPONENTS):
@@ -166,7 +166,9 @@ XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
 # XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 
-# save_matrix("inverse_X_gaussian.csv", XX, data.columns)
+save_matrix("inverse_X_gaussian.csv", XX, data.columns)
+
+exit()
 
 ### Time series
 for i in range(N_COMPONENTS):
