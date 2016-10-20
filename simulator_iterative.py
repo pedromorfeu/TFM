@@ -15,7 +15,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 N_COMPONENTS = 5
-NEW_DATA_SIZE = 100000
+NEW_DATA_SIZE = 40000
 TS_FREQUENCY = "10s"
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
@@ -245,7 +245,7 @@ for i in range(N_COMPONENTS):
         raise ValueError("Timeseries is not stationary after differencing.")
 
     # Forecasting
-    plot_acf_pacf(ts_log_diff)
+    # plot_acf_pacf(ts_log_diff)
     print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
     res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc')
     print(str(datetime.now()), "AR and MA orders calculated", res.aic_min_order, res.bic_min_order)
@@ -269,30 +269,14 @@ for i in range(N_COMPONENTS):
     # results_ARIMA.plot_predict(start=1, end=NEW_DATA_SIZE)
 
     print("Predicting...")
-    predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ="levels")
+    predictions_ARIMA = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ="levels")
+    # predictions_ARIMA = model.predict(params=results_ARIMA.fittedvalues, start=1, end=len(timeseries_sample) + 100, typ="levels")
     # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
-    print_timeseries("ts_log_diff", ts_log_diff)
-    print_timeseries("fitted", results_ARIMA.fittedvalues)
-    print_timeseries("predictions", predictions)
-
-    # plt.plot(ts_log)
-    # # plt.plot(results_ARIMA.fittedvalues, color='red')
-    # plt.plot(predictions, color='red')
-    # plt.title('RSS: %.4f' % sum((results_ARIMA.fittedvalues - ts_log_diff) ** 2))
-
-    predictions_ARIMA_diff = pd.Series(results_ARIMA.fittedvalues, copy=True)
-    print(predictions_ARIMA_diff.head())
-    predictions_ARIMA_diff_cumsum = predictions_ARIMA_diff.cumsum()
-    print(predictions_ARIMA_diff_cumsum.head())
-    predictions_ARIMA_log = pd.Series(ts_log.ix[0], index=ts_log.index)
-    predictions_ARIMA_log.head()
-    predictions_ARIMA_log = predictions_ARIMA_log.add(predictions_ARIMA_diff_cumsum, fill_value=0)
-    predictions_ARIMA_log.head()
-    predictions_ARIMA = np.exp(predictions_ARIMA_log) - subtract_constant
-
+    # print_timeseries("ts_log_diff", ts_log_diff)
+    # print_timeseries("fitted", results_ARIMA.fittedvalues)
+    print_timeseries("predictions", predictions_ARIMA)
 
     # predictions_ARIMA = np.exp(predictions) - subtract_constant
-    predictions_ARIMA = predictions
 
     # forecast, stderr, conf_int = results_ARIMA.forecast(steps=NEW_DATA_SIZE)
     # predictions_ARIMA = pd.Series(forecast, index=predictions.index)
@@ -305,20 +289,20 @@ for i in range(N_COMPONENTS):
     rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
     print("RMSE", rmse)
 
-    plt.clf()
-    plt.plot(timeseries_sample)
-    plt.plot(predictions_ARIMA[:max(timeseries_sample.index) + 500])
-    plt.title('RMSE: %.4f' % rmse)
-    plt.show(block=True)
-
-    plt.clf()
-    plt.plot(timeseries_sample)
-    plt.plot(predictions_ARIMA)
-    plt.title('RMSE: %.4f' % rmse)
-    plt.show(block=True)
+    # plt.clf()
+    # plt.plot(timeseries_sample)
+    # plt.plot(predictions_ARIMA[:max(timeseries_sample.index) + 500])
+    # plt.title('RMSE: %.4f' % rmse)
+    # plt.show(block=True)
+    #
+    # plt.clf()
+    # plt.plot(timeseries_sample)
+    # plt.plot(predictions_ARIMA)
+    # plt.title('RMSE: %.4f' % rmse)
+    # plt.show(block=True)
 
     # add noise
-    # predictions = predictions + np.random.normal(0, predictions.std(), NEW_DATA_SIZE)
+    predictions_ARIMA = predictions_ARIMA + np.random.normal(0, predictions_ARIMA.std(), NEW_DATA_SIZE)
 
     generated_X[:, i] = predictions_ARIMA
 
