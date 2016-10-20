@@ -15,6 +15,7 @@ data <- data[!is.na(data$APHu),]
 # head(data)
 # str(data)
 # summary(data)
+data <- (data[startsWith(data$Tiempoinicio, "06-oct-2015"), ])
 
 data[is.na(data),]
 head(data)
@@ -92,14 +93,14 @@ Acf(xstar, main="")
 Pacf(xstar, main="")
 
 #The following R code was used to automatically select a model.
-fit <- auto.arima(xstar, seasonal=FALSE)
+fit <- auto.arima(data$APHu, seasonal=FALSE)
 fit 
 
 #plot 1 by 1
 par(mfrow=c(1,1))
 #forecast: h - Number of periods for forecasting
 #forecast: include - include X observations of the original series in your plot
-plot(forecast(fit,h=10),include=80)
+plot(forecast(fit,h=5),include=80)
 
 
 #The ACF plot of the residuals from the ARIMA(3,1,1) model shows 

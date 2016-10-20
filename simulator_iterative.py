@@ -16,7 +16,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 N_COMPONENTS = 5
 NEW_DATA_SIZE = 100000
-TS_FREQUENCY = "9s"
+TS_FREQUENCY = "10s"
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
 
@@ -31,8 +31,14 @@ print(data.dtypes)
 print(data.index)
 print(data.shape)
 
-# raw = data.values[:, 1:]
-# raw = raw.astype(float)
+# observations per day
+dates_count = data.groupby(lambda x: x.date()).count()
+# day with more observations
+date = dates_count.idxmax()[0].strftime("%Y-%m-%d")
+print("The date with more observations is", date)
+date = "2015-10-06"
+# Specify a date to analyze the timeseries
+data = data[date]
 
 raw = data.values
 N, K = raw.shape
@@ -145,9 +151,7 @@ print_matrix("nipals_P", nipals_P)
 # scores
 print_matrix("nipals_T", nipals_T)
 
-# save_matrix("nipals_T_ts.csv", nipals_T, columns_names=["time"] + list(range(N_COMPONENTS)), index_ts=data.index)
-
-
+# save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
 
 ### Generate data
 mus = np.mean(nipals_T, axis=0)
@@ -164,10 +168,11 @@ for i in range(N_COMPONENTS):
     
 # invert matrix: dot product between random data and the loadings, nipals_P
 XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
-# XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
+#XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 
-# save_matrix("inverse_X_gaussian.csv", XX, data.columns)
+save_matrix("inverse_X_gaussian.csv", XX, data.columns)
+
 
 ### Time series
 for i in range(N_COMPONENTS):
@@ -175,14 +180,17 @@ for i in range(N_COMPONENTS):
     # time serie for component
     timeseries = pd.Series(nipals_T[:, i], index=data.index)
     print_timeseries("timeseries", timeseries)
-    # observations per day
-    dates_count = timeseries.groupby(lambda x: x.date()).count()
-    # day with more observations
-    date = dates_count.idxmax().strftime("%Y-%m-%d")
-    print("The date with more observations is", date)
-    date="2015-10-06"
-    # Specify a date to analyze the timeseries
-    timeseries_sample = timeseries[date]
+
+    # # observations per day
+    # dates_count = timeseries.groupby(lambda x: x.date()).count()
+    # # day with more observations
+    # date = dates_count.idxmax().strftime("%Y-%m-%d")
+    # print("The date with more observations is", date)
+    # date="2015-10-06"
+    # # Specify a date to analyze the timeseries
+    # timeseries_sample = timeseries[date]
+
+    timeseries_sample = timeseries
     print_timeseries("timeseries_sample", timeseries_sample)
     print("timeseries_sample.shape", timeseries_sample.shape)
     # Resample and interpolate
@@ -239,9 +247,9 @@ for i in range(N_COMPONENTS):
         raise ValueError("Timeseries is not stationary after differencing.")
 
     # Forecasting
-    # plot_acf_pacf(ts_log_diff)
+    plot_acf_pacf(ts_log_diff)
     print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
-    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=3, max_ma=3)
+    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=2, max_ma=2)
     print(str(datetime.now()), "AR and MA orders calculated")
     # , fit_kw={"method" : "css"}
     # AIC and BIC min order (AR, MA) = (p, q)
@@ -263,7 +271,7 @@ for i in range(N_COMPONENTS):
     # results_ARIMA.plot_predict(start=1, end=NEW_DATA_SIZE)
 
     print("Predicting...")
-    predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ="levels")
+    predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
     # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
     print_timeseries("ts_log_diff", ts_log_diff)
     print_timeseries("fitted", results_ARIMA.fittedvalues)

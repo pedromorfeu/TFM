@@ -1,4 +1,4 @@
-ç# install.packages("Hotelling")
+# install.packages("Hotelling")
 library("Hotelling")
 
 data(container.df)
@@ -50,17 +50,17 @@ res
 
 
 
-install.packages("rrcov")
+# install.packages("rrcov")
 library("rrcov")
 
 T2.test(x, y)
-T2.test(data, inverted_data)
+T2.test(data, inverted_data_gaussian)
 
 
-install.packages("ICSNP")
+# install.packages("ICSNP")
 library("ICSNP")
 
-HotellingsT2(X = data, Y = inverted_data)
+HotellingsT2(X = data, Y = inverted_data_gaussian)
 
 
 mean(data[,1]) - mean(inverted_data[,1])
