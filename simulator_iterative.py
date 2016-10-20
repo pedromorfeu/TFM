@@ -269,7 +269,8 @@ for i in range(N_COMPONENTS):
     # results_ARIMA.plot_predict(start=1, end=NEW_DATA_SIZE)
 
     print("Predicting...")
-    predictions_ARIMA = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ="levels")
+    timeseries_size = timeseries_sample.shape[0]
+    predictions_ARIMA = results_ARIMA.predict(start=timeseries_size-1, end=timeseries_size + NEW_DATA_SIZE - 2, typ="levels")
     # predictions_ARIMA = model.predict(params=results_ARIMA.fittedvalues, start=1, end=len(timeseries_sample) + 100, typ="levels")
     # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
     # print_timeseries("ts_log_diff", ts_log_diff)
@@ -289,20 +290,20 @@ for i in range(N_COMPONENTS):
     rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
     print("RMSE", rmse)
 
-    # plt.clf()
-    # plt.plot(timeseries_sample)
-    # plt.plot(predictions_ARIMA[:max(timeseries_sample.index) + 500])
-    # plt.title('RMSE: %.4f' % rmse)
-    # plt.show(block=True)
-    #
-    # plt.clf()
-    # plt.plot(timeseries_sample)
-    # plt.plot(predictions_ARIMA)
-    # plt.title('RMSE: %.4f' % rmse)
-    # plt.show(block=True)
+    plt.clf()
+    plt.plot(timeseries_sample)
+    plt.plot(predictions_ARIMA[:max(timeseries_sample.index) + 500])
+    plt.title('RMSE: %.4f' % rmse)
+    plt.show(block=True)
+
+    plt.clf()
+    plt.plot(timeseries_sample)
+    plt.plot(predictions_ARIMA)
+    plt.title('RMSE: %.4f' % rmse)
+    plt.show(block=True)
 
     # add noise
-    predictions_ARIMA = predictions_ARIMA + np.random.normal(0, predictions_ARIMA.std(), NEW_DATA_SIZE)
+    # predictions_ARIMA = predictions_ARIMA + np.random.normal(0, rmse, NEW_DATA_SIZE)
 
     generated_X[:, i] = predictions_ARIMA
 
