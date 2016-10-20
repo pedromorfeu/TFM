@@ -193,7 +193,7 @@ for i in range(N_COMPONENTS):
     print_timeseries("timeseries_sample", timeseries_sample)
     # Resample and interpolate
     print("Resampling time series by", TS_FREQUENCY)
-    # timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
+    timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
     # timeseries_sample = timeseries_sample.asfreq(TS_FREQUENCY, method="ffill")
     print_timeseries("timeseries_sample", timeseries_sample)
     stationary = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
@@ -230,7 +230,7 @@ for i in range(N_COMPONENTS):
 
     # Differencing
     print("Differencing the time series...")
-    ts_log_diff = ts_log - ts_log.shift(2)
+    ts_log_diff = ts_log - ts_log.shift()
     print("Missing values?", not np.all(np.isfinite(ts_log_diff)))
     ts_log_diff.index[np.isinf(ts_log_diff)]
     ts_log_diff.index[np.isnan(ts_log_diff)]
@@ -247,8 +247,8 @@ for i in range(N_COMPONENTS):
     # Forecasting
     plot_acf_pacf(ts_log_diff)
     print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
-    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc', max_ar=2, max_ma=2)
-    print(str(datetime.now()), "AR and MA orders calculated")
+    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc')
+    print(str(datetime.now()), "AR and MA orders calculated", res.aic_min_order, res.bic_min_order)
     # , fit_kw={"method" : "css"}
     # AIC and BIC min order (AR, MA) = (p, q)
     aic = res.aic_min_order
@@ -269,7 +269,7 @@ for i in range(N_COMPONENTS):
     # results_ARIMA.plot_predict(start=1, end=NEW_DATA_SIZE)
 
     print("Predicting...")
-    predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
+    predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE, typ="levels")
     # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
     print_timeseries("ts_log_diff", ts_log_diff)
     print_timeseries("fitted", results_ARIMA.fittedvalues)
@@ -305,17 +305,17 @@ for i in range(N_COMPONENTS):
     rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
     print("RMSE", rmse)
 
-    # plt.clf()
-    # plt.plot(timeseries_sample)
-    # plt.plot(predictions_ARIMA[:max(timeseries_sample.index)])
-    # plt.title('RMSE: %.4f' % rmse)
-    # plt.show(block=True)
-    #
-    # plt.clf()
-    # plt.plot(timeseries_sample)
-    # plt.plot(predictions_ARIMA)
-    # plt.title('RMSE: %.4f' % rmse)
-    # plt.show(block=True)
+    plt.clf()
+    plt.plot(timeseries_sample)
+    plt.plot(predictions_ARIMA[:max(timeseries_sample.index) + 500])
+    plt.title('RMSE: %.4f' % rmse)
+    plt.show(block=True)
+
+    plt.clf()
+    plt.plot(timeseries_sample)
+    plt.plot(predictions_ARIMA)
+    plt.title('RMSE: %.4f' % rmse)
+    plt.show(block=True)
 
     # add noise
     # predictions = predictions + np.random.normal(0, predictions.std(), NEW_DATA_SIZE)

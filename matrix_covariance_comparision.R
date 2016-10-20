@@ -18,8 +18,8 @@ ncol(data)
 mean(data$APHu)
 sd(data$APHu)
 plot(data$APHu)
-
-head(data)
+# head(data)
+# tail(data)
 
 # check the variables with zero variance and give them white noise
 # otherwise the test will fail due to inability to invert
@@ -54,24 +54,24 @@ lines(data[, 1], col="gray")
 
 
 ### ARIMA
-data_filtered <- read.csv2("ip.txt", sep = "\t", header = T, stringsAsFactors = F, strip.white = T, blank.lines.skip=T,
-                  colClasses = c("character", rep("numeric", 14)), dec=".")
-data_filtered <- data_filtered[!is.na(data_filtered$APHu),]
-# filter by date
-data_filtered <- (data_filtered[startsWith(data_filtered$Tiempoinicio, "06-oct-2015"), ])
-data_filtered <- data_filtered[, seq(2,15)]
-head(data_filtered)
-str(data_filtered)
-summary(data_filtered)
-
 inverted_data <- read.csv2("generated/inverse_X.csv", sep = "\t", header=T, stringsAsFactors = F, 
                            colClasses = rep("numeric", 14), dec = ".")
+nrow(inverted_data)
+ncol(inverted_data)
+mean(inverted_data$APHu)
+sd(inverted_data$APHu)
+#plot(inverted_data$APHu)
 head(inverted_data)
-str(inverted_data)
-summary(inverted_data)
+tail(inverted_data)
+
+
+cov(inverted_data)
+inverted_data$ZSx <- mean(inverted_data$ZSx) + 0.001 * rnorm(nrow(inverted_data))
+inverted_data$H7x <- mean(inverted_data$H7x) + 0.001 * rnorm(nrow(inverted_data))
+cov(inverted_data)
 
 # Hotelling T2
-res = hotelling.test(x = data_filtered, y = inverted_data)
+res = hotelling.test(x = data, y = inverted_data)
 print(res)
 
 
