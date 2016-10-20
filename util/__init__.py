@@ -57,12 +57,14 @@ def print_matrix(name, matrix):
     print(name, matrix[:5, :], sep="\n")
     print("...")
     print(matrix[-5:, ], sep="\n")
+    print(matrix.shape)
 
 
 def print_timeseries(name, timeseries):
     print(name, timeseries.head(), sep="\n")
     print("...")
     print(timeseries.tail(), sep="\n")
+    print(timeseries.shape)
 
 
 def save_matrix(filename, matrix, columns_names=None, index_ts=None):
