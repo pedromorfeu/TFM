@@ -2,6 +2,8 @@
 
 import numpy as np
 import pandas as pd
+from sklearn.metrics.scorer import _PredictScorer
+
 from util import *
 from matplotlib import pylab
 from datetime import datetime
@@ -258,7 +260,7 @@ for i in range(N_COMPONENTS):
 
     p = aic[0]
     q = aic[1]
-    d = 1
+    d = 0
 
     print("Creating model ARIMA(p,d,q)=ARIMA(%i,%i,%i)" %(p, d, q))
     model = ARIMA(ts_log, order=(p, d, q))
@@ -266,11 +268,33 @@ for i in range(N_COMPONENTS):
     results_ARIMA = model.fit(disp=-1)
     print(str(datetime.now()), "Model fitted")
 
+    # model.endog
+    # model.data
+
+    print(results_ARIMA.fittedvalues.shape)
+    plt.plot(timeseries_sample)
+    plt.plot(results_ARIMA.fittedvalues)
+
     # results_ARIMA.plot_predict(start=1, end=NEW_DATA_SIZE)
 
     print("Predicting...")
     timeseries_size = timeseries_sample.shape[0]
-    predictions_ARIMA = results_ARIMA.predict(start=timeseries_size-1, end=timeseries_size + NEW_DATA_SIZE - 2, typ="levels")
+    predictions_ARIMA = results_ARIMA.predict(start=1, end=timeseries_size)
+
+    print(predictions_ARIMA.shape)
+    plt.plot(timeseries_sample)
+    plt.plot(predictions_ARIMA)
+
+    timeseries_size = predictions_ARIMA.shape[0]
+    model.data.endog = predictions_ARIMA.values
+    model.data.orig_endog = predictions_ARIMA.values
+    results_ARIMA1 = model.fit(disp=-1)
+
+    print(predictions_ARIMA1.shape)
+    plt.plot(timeseries_sample)
+    plt.plot(predictions_ARIMA1)
+
+
     # predictions_ARIMA = model.predict(params=results_ARIMA.fittedvalues, start=1, end=len(timeseries_sample) + 100, typ="levels")
     # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
     # print_timeseries("ts_log_diff", ts_log_diff)
