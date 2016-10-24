@@ -15,7 +15,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 
 N_COMPONENTS = 5
-NEW_DATA_SIZE = 40000
+NEW_DATA_SIZE = 100000
 TS_FREQUENCY = "10s"
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
@@ -160,9 +160,9 @@ sigmas = np.std(nipals_T[:NEW_DATA_SIZE, :], axis=0)
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
 for i in range(N_COMPONENTS):
     # calculate normal distribution by component and store it in column i
-    # generated_X[:, i] = np.random.normal(mus[i], sigmas[i], NEW_DATA_SIZE)
+    generated_X[:, i] = np.random.normal(mus[i], sigmas[i], NEW_DATA_SIZE)
     # alternative normal:
-    generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
+    # generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
     # generate random not-normal:
     # generated_X[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
     
@@ -290,17 +290,17 @@ for i in range(N_COMPONENTS):
     rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
     print("RMSE", rmse)
 
-    plt.clf()
-    plt.plot(timeseries_sample)
-    plt.plot(predictions_ARIMA[:max(timeseries_sample.index) + 500])
-    plt.title('RMSE: %.4f' % rmse)
-    plt.show(block=True)
-
-    plt.clf()
-    plt.plot(timeseries_sample)
-    plt.plot(predictions_ARIMA)
-    plt.title('RMSE: %.4f' % rmse)
-    plt.show(block=True)
+    # plt.clf()
+    # plt.plot(timeseries_sample)
+    # plt.plot(predictions_ARIMA[:max(timeseries_sample.index) + 500])
+    # plt.title('RMSE: %.4f' % rmse)
+    # plt.show(block=True)
+    #
+    # plt.clf()
+    # plt.plot(timeseries_sample)
+    # plt.plot(predictions_ARIMA)
+    # plt.title('RMSE: %.4f' % rmse)
+    # plt.show(block=True)
 
     # add noise
     # predictions_ARIMA = predictions_ARIMA + np.random.normal(0, rmse, NEW_DATA_SIZE)

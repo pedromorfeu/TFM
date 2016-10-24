@@ -68,7 +68,7 @@ def print_timeseries(name, timeseries):
 
 
 def save_matrix(filename, matrix, columns_names=None, index_ts=None):
-    print(str(datetime.now()), "Saving matrix...")
+    print(str(datetime.now()), "Saving matrix...", filename)
 
     folder = "generated"
     os.makedirs(folder, exist_ok=True)
