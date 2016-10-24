@@ -59,6 +59,9 @@
 44. Time series: "ARIMA models are defined for stationary time series. Therefore, if you start off with a non-stationary time series, you will first need to ‘difference’ the time series until you obtain a stationary time series. If you have to difference the time series d times to obtain a stationary series, then you have an ARIMA(p,d,q) model, where d is the order of differencing used."; "If we use the “bic” criterion, which penalises the number of parameters" (http://a-little-book-of-r-for-time-series.readthedocs.io/en/latest/src/timeseries.html)
 45. Time series forecast: "You trained the model on a subset of the data and then predict out of sample. AR(MA) prediction quickly converges to the mean of the data" (http://stackoverflow.com/questions/24331886/correct-way-to-use-armaresult-predict-function)
 
+
+* Predict again with newly generated data, because this will be calculated from distance to gaussian results.
+
 Email:
 Una vez constatemos que ambas poblaciones pueden considerarse estadísticamente idénticas deberías de pasar a generar muestras a periodos más o menos regulares. Pero atención, como los datos seguirán algún tipo de patrón temporal debería de aprenderse la serie temporal para cada componente principal previamente y generar cada componente con la serie aprendida para ella, también se debería de generar algo de ruido en la señal, dicho ruido podría establecerse por ejemplo a partir de: el error de predicción de la serie o mediante las componentes principales que hayamos dejado.
 

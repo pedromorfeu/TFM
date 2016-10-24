@@ -279,21 +279,21 @@ for i in range(N_COMPONENTS):
 
     print("Predicting...")
     timeseries_size = timeseries_sample.shape[0]
-    predictions_ARIMA = results_ARIMA.predict(start=1, end=timeseries_size)
+    predictions_ARIMA = results_ARIMA.predict(start=0, end=timeseries_size-1)
+    print(ts_log.tail())
+    print(predictions_ARIMA.tail())
 
     print(predictions_ARIMA.shape)
     plt.plot(timeseries_sample)
     plt.plot(predictions_ARIMA)
 
     timeseries_size = predictions_ARIMA.shape[0]
-    model.data.endog = predictions_ARIMA.values
-    model.data.orig_endog = predictions_ARIMA.values
+    model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
     results_ARIMA1 = model.fit(disp=-1)
 
-    print(predictions_ARIMA1.shape)
+    print(results_ARIMA.fittedvalues.shape)
     plt.plot(timeseries_sample)
-    plt.plot(predictions_ARIMA1)
-
+    plt.plot(results_ARIMA.fittedvalues)
 
     # predictions_ARIMA = model.predict(params=results_ARIMA.fittedvalues, start=1, end=len(timeseries_sample) + 100, typ="levels")
     # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
