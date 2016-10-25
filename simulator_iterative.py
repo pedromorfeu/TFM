@@ -266,48 +266,29 @@ for i in range(N_COMPONENTS):
     print(str(datetime.now()), "Fitting model...")
     results_ARIMA = model.fit(disp=-1)
     print(str(datetime.now()), "Model fitted")
+    predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0])
+    print(ts_log.tail(2))
+    print(predictions_ARIMA.tail(2))
+    predictions_ARIMA = ts_log.append(predictions_ARIMA)
 
-    # model.endog
-    # model.data
+    print("Iterative predicting with new data")
+    for j in range(1000):
+        print("Iteration", j)
+        model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
+        results_ARIMA1 = model1.fit(disp=-1)
+        predictions_ARIMA1 = results_ARIMA1.predict(start=predictions_ARIMA.shape[0], end=predictions_ARIMA.shape[0])
+        print(ts_log.tail(2))
+        print(predictions_ARIMA1.tail(2))
+        predictions_ARIMA = predictions_ARIMA.append(predictions_ARIMA1)
 
-    print(results_ARIMA.fittedvalues.shape)
-    plt.plot(timeseries_sample)
-    plt.plot(results_ARIMA.fittedvalues)
+    print(ts_log.tail(2))
+    print(results_ARIMA.fittedvalues.tail(2))
+    print(predictions_ARIMA.tail(2))
 
-    # results_ARIMA.plot_predict(start=1, end=NEW_DATA_SIZE)
-
-    print("Predicting...")
-    predicted = results_ARIMA.fittedvalues
-    print(ts_log.tail())
-    print(predicted.tail())
-
-    # model.data.endog = predicted
-    # model.data.orig_endog = predicted
-
-    predicted1 = model.predict(params=results_ARIMA._results.params, start=1, end=ts_log.shape[0])
-    print(ts_log.tail())
-    print(results_ARIMA.fittedvalues.tail())
-    print(predicted1[-5:])
-
-
-
-
-
-
-    predictions_ARIMA = results_ARIMA.predict(start=0, end=ts_log.shape[0]-1)
-    print(ts_log.tail())
-    print(predictions_ARIMA.tail())
-
-    print(predictions_ARIMA.shape)
-    plt.plot(timeseries_sample)
+    plt.plot(ts_log)
     plt.plot(predictions_ARIMA)
 
-    model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
-    results_ARIMA1 = model1.fit(disp=-1)
-
-    print(results_ARIMA1.fittedvalues.shape)
-    plt.plot(ts_log)
-    plt.plot(results_ARIMA1.fittedvalues)
+    test_stationarity(predictions_ARIMA, _plot=True, _critical="5%")
 
     # predictions_ARIMA = model.predict(params=results_ARIMA.fittedvalues, start=1, end=len(timeseries_sample) + 100, typ="levels")
     # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
