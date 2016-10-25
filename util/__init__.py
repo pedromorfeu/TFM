@@ -60,10 +60,10 @@ def print_matrix(name, matrix):
     print(matrix.shape)
 
 
-def print_timeseries(name, timeseries):
-    print(name, timeseries.head(), sep="\n")
+def print_timeseries(name, timeseries, n=5):
+    print(name, timeseries.head(n), sep="\n")
     print("...")
-    print(timeseries.tail(), sep="\n")
+    print(timeseries.tail(n), sep="\n")
     print(timeseries.shape)
 
 
