@@ -71,8 +71,7 @@ inverted_data$H7x <- mean(inverted_data$H7x) + 0.001 * rnorm(nrow(inverted_data)
 cov(inverted_data)
 
 # Hotelling T2
-res = hotelling.test(x = data, y = inverted_data)
-print(res)
+print(hotelling.test(x = data, y = inverted_data))
 
 
 # COMPONENTS

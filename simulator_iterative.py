@@ -266,10 +266,14 @@ for i in range(N_COMPONENTS):
     print(str(datetime.now()), "Fitting model...")
     results_ARIMA = model.fit(disp=-1)
     print(str(datetime.now()), "Model fitted")
-    predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0])
-    print(ts_log.tail(2))
-    print(predictions_ARIMA.tail(2))
-    predictions_ARIMA = ts_log.append(predictions_ARIMA)
+    predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0]+NEW_DATA_SIZE-1)
+    # print(ts_log.tail(2))
+    # print(predictions_ARIMA.tail(2))
+    # predictions_ARIMA = ts_log.append(predictions_ARIMA)
+    # print(predictions_ARIMA.tail(2))
+
+    plt.plot(ts_log)
+    plt.plot(predictions_ARIMA)
 
     print("Iterative predicting with new data")
     for j in range(1000):
@@ -277,7 +281,7 @@ for i in range(N_COMPONENTS):
         model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
         results_ARIMA1 = model1.fit(disp=-1)
         predictions_ARIMA1 = results_ARIMA1.predict(start=predictions_ARIMA.shape[0], end=predictions_ARIMA.shape[0])
-        print(ts_log.tail(2))
+        print(predictions_ARIMA.tail(2))
         print(predictions_ARIMA1.tail(2))
         predictions_ARIMA = predictions_ARIMA.append(predictions_ARIMA1)
 
