@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from util import *
+from warnings import warn
 from matplotlib import pylab
 from datetime import datetime
 from statsmodels.tsa.stattools import arma_order_select_ic
@@ -247,33 +248,40 @@ for i in range(N_COMPONENTS):
 
     # Forecasting
     # plot_acf_pacf(ts_log_diff)
-    print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
-    res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc')
-    print(str(datetime.now()), "AR and MA orders calculated", res.aic_min_order, res.bic_min_order)
-    # , fit_kw={"method" : "css"}
-    # AIC and BIC min order (AR, MA) = (p, q)
-    aic = res.aic_min_order
-    bic = res.bic_min_order
-    print("AIC=", aic)
-    print("BIC=", bic)
+    # print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
+    # res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc')
+    # print(str(datetime.now()), "AR and MA orders calculated", res.aic_min_order, res.bic_min_order)
+    # # , fit_kw={"method" : "css"}
+    # # AIC and BIC min order (AR, MA) = (p, q)
+    # aic = res.aic_min_order
+    # bic = res.bic_min_order
+    # print("AIC=", aic)
+    # print("BIC=", bic)
+    #
+    # p = aic[0]
+    # q = aic[1]
+    # d = 0
 
-    p = aic[0]
-    q = aic[1]
-    d = 0
+    # Calculate best order (order with minimum error)
+    (min_rmse, p, d, q) = arima_order_select(ts_log)
 
-    print("Creating model ARIMA(p,d,q)=ARIMA(%i,%i,%i)" %(p, d, q))
+    print("Creating model (p,d,q)=(%i,%i,%i)" % (p, d, q))
     model = ARIMA(ts_log, order=(p, d, q))
     print(str(datetime.now()), "Fitting model...")
     results_ARIMA = model.fit(disp=-1)
     print(str(datetime.now()), "Model fitted")
-    predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0]+NEW_DATA_SIZE-1)
-    # print(ts_log.tail(2))
-    # print(predictions_ARIMA.tail(2))
-    # predictions_ARIMA = ts_log.append(predictions_ARIMA)
-    # print(predictions_ARIMA.tail(2))
+    print(str(datetime.now()), "Predicting...")
+    # predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0]+NEW_DATA_SIZE-1)
+    predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0])
+    print(str(datetime.now()), "Predicted")
 
-    plt.plot(ts_log)
-    plt.plot(predictions_ARIMA)
+    print(ts_log.tail(5))
+    print(predictions_ARIMA.tail(5))
+    predictions_ARIMA = ts_log.append(predictions_ARIMA)
+    print(predictions_ARIMA.tail(5))
+
+    # Calculate best order (order with minimum error) again
+    (min_rmse, p, d, q) = arima_order_select(ts_log)
 
     print("Iterative predicting with new data")
     for j in range(1000):

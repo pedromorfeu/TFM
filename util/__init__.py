@@ -8,6 +8,7 @@ from matplotlib import pyplot as plt
 from datetime import datetime
 from statsmodels.tsa.stattools import adfuller, acf, pacf
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.arima_model import ARIMA
 
 print(locale.getdefaultlocale())
 locale.setlocale(locale.LC_TIME, "spanish")
@@ -162,3 +163,35 @@ def plot_acf_pacf(_timeseries, spikes_plot=True, lags=10):
     plt.show(block=True)
 
     return lag_acf, lag_pacf
+
+
+def arima_order_select(timeseries, max_ar=4, max_i=2, max_ma=4):
+    min_rmse, min_p, min_d, min_q = np.inf, 0, 0, 0
+
+    for p in range(max_ar):
+        for d in range(max_i):
+            for q in range(max_ma):
+                try:
+                    print("Creating model (p,d,q)=(%i,%i,%i)" % (p, d, q))
+                    model = ARIMA(timeseries, order=(p, d, q))
+                    print(str(datetime.now()), "Fitting model...")
+                    results_ARIMA = model.fit(disp=-1)
+                    print(str(datetime.now()), "Model fitted")
+                    print(str(datetime.now()), "Predicting...")
+                    predictions_ARIMA = results_ARIMA.predict()
+                    print(str(datetime.now()), "Predicted")
+                    error = predictions_ARIMA - timeseries
+                    rmse = np.sqrt(sum((error) ** 2) / len(timeseries))
+                    if rmse < min_rmse:
+                        min_rmse = rmse
+                        (min_p, min_d, min_q) = (p, d, q)
+                    print("RMSE", rmse)
+                    # plt.plot(ts_log)
+                    # plt.plot(predictions_ARIMA)
+                    # plt.show(block=True)
+                except (ValueError, np.linalg.linalg.LinAlgError) as err:
+                    print("Ignoring model (p,d,q)=(%i,%i,%i)." % (p, d, q), "Error:", err)
+
+    print("Minimum RMSE", min_rmse)
+    print("Selected (p,d,q)=(%i,%i,%i)" % (min_p, min_d, min_q))
+    return (min_rmse, min_p, min_d, min_q)
