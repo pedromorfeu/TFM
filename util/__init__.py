@@ -174,12 +174,8 @@ def arima_order_select(timeseries, max_ar=4, max_i=2, max_ma=4):
                 try:
                     print("Creating model (p,d,q)=(%i,%i,%i)" % (p, d, q))
                     model = ARIMA(timeseries, order=(p, d, q))
-                    print(str(datetime.now()), "Fitting model...")
                     results_ARIMA = model.fit(disp=-1)
-                    print(str(datetime.now()), "Model fitted")
-                    print(str(datetime.now()), "Predicting...")
                     predictions_ARIMA = results_ARIMA.predict()
-                    print(str(datetime.now()), "Predicted")
                     error = predictions_ARIMA - timeseries
                     rmse = np.sqrt(sum((error) ** 2) / len(timeseries))
                     if rmse < min_rmse:
