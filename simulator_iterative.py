@@ -155,8 +155,8 @@ print_matrix("nipals_T", nipals_T)
 # save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
 
 ### Generate data
-mus = np.mean(nipals_T[:NEW_DATA_SIZE, :], axis=0)
-sigmas = np.std(nipals_T[:NEW_DATA_SIZE, :], axis=0)
+mus = np.mean(nipals_T, axis=0)
+sigmas = np.std(nipals_T, axis=0)
 
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
 for i in range(N_COMPONENTS):
