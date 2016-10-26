@@ -289,8 +289,6 @@ for i in range(N_COMPONENTS):
         model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
         results_ARIMA1 = model1.fit(disp=-1)
         predictions_ARIMA1 = results_ARIMA1.predict(start=predictions_ARIMA.shape[0], end=predictions_ARIMA.shape[0])
-        print(predictions_ARIMA.tail(2))
-        print(predictions_ARIMA1.tail(2))
         predictions_ARIMA = predictions_ARIMA.append(predictions_ARIMA1)
 
     print(ts_log.tail(2))
