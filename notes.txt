@@ -58,7 +58,7 @@
 43. "Online Time Series Prediction with Missing Data" (http://jmlr.org/proceedings/papers/v37/anava15.pdf)
 44. Time series: "ARIMA models are defined for stationary time series. Therefore, if you start off with a non-stationary time series, you will first need to ‘difference’ the time series until you obtain a stationary time series. If you have to difference the time series d times to obtain a stationary series, then you have an ARIMA(p,d,q) model, where d is the order of differencing used."; "If we use the “bic” criterion, which penalises the number of parameters" (http://a-little-book-of-r-for-time-series.readthedocs.io/en/latest/src/timeseries.html)
 45. Time series forecast: "You trained the model on a subset of the data and then predict out of sample. AR(MA) prediction quickly converges to the mean of the data" (http://stackoverflow.com/questions/24331886/correct-way-to-use-armaresult-predict-function)
-
+46. Unofficial Windows Binaries for Python Extension Packages (http://www.lfd.uci.edu/~gohlke/pythonlibs/)
 
 * Predict again with newly generated data, because this will be calculated from distance to gaussian results.
 
