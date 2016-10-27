@@ -281,15 +281,16 @@ for i in range(N_COMPONENTS):
     print(predictions_ARIMA.tail(5))
 
     # Calculate best order (order with minimum error) again
-    (min_rmse, p, d, q) = arima_order_select(ts_log)
+    (min_rmse, p, d, q) = arima_order_select(predictions_ARIMA)
 
-    print("Iterative predicting with new data")
+    print(str(datetime.now()), "Iterative prediction with new data")
     for j in range(1000):
         print("Iteration", j)
         model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
         results_ARIMA1 = model1.fit(disp=-1)
         predictions_ARIMA1 = results_ARIMA1.predict(start=predictions_ARIMA.shape[0], end=predictions_ARIMA.shape[0])
         predictions_ARIMA = predictions_ARIMA.append(predictions_ARIMA1)
+    print(str(datetime.now()), "Done iterative prediction")
 
     print(ts_log.tail(2))
     print(results_ARIMA.fittedvalues.tail(2))
