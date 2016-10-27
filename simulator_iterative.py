@@ -10,6 +10,7 @@ from datetime import datetime
 from statsmodels.tsa.stattools import arma_order_select_ic
 from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.api import SARIMAX
 
 # Download the CSV data file from:
 # http://datasets.connectmv.com/info/silicon-wafer-thickness
@@ -286,10 +287,14 @@ for i in range(N_COMPONENTS):
     print(str(datetime.now()), "Iterative prediction with new data")
     for j in range(1000):
         print("Iteration", j)
-        model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
-        results_ARIMA1 = model1.fit(disp=-1)
+        # model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
+        model1 = SARIMAX(predictions_ARIMA, order=(p, d, q))
+        # results_ARIMA1 = model1.fit(disp=-1)
+        results_ARIMA1 = model1.filter(results_ARIMA.params)
+        # predictions_ARIMA1 = results_ARIMA1.predict(start=predictions_ARIMA.shape[0], end=predictions_ARIMA.shape[0])
         predictions_ARIMA1 = results_ARIMA1.predict(start=predictions_ARIMA.shape[0], end=predictions_ARIMA.shape[0])
         predictions_ARIMA = predictions_ARIMA.append(predictions_ARIMA1)
+        print(predictions_ARIMA.tail(2))
     print(str(datetime.now()), "Done iterative prediction")
 
     print(ts_log.tail(2))
