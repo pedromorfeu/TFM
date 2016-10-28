@@ -18,7 +18,7 @@ from statsmodels.tsa.api import SARIMAX
 
 
 N_COMPONENTS = 5
-NEW_DATA_SIZE = 100000
+NEW_DATA_SIZE = 1000
 TS_FREQUENCY = "10s"
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
@@ -267,7 +267,7 @@ for i in range(N_COMPONENTS):
     (min_rmse, p, d, q) = arima_order_select(ts_log)
 
     print("Creating model (p,d,q)=(%i,%i,%i)" % (p, d, q))
-    model = ARIMA(ts_log, order=(p, d, q))
+    model = SARIMAX(ts_log, order=(p, d, q))
     print(str(datetime.now()), "Fitting model...")
     results_ARIMA = model.fit(disp=-1)
     print(str(datetime.now()), "Model fitted")
@@ -278,39 +278,42 @@ for i in range(N_COMPONENTS):
 
     print(ts_log.tail(5))
     print(predictions_ARIMA.tail(5))
-    predictions_ARIMA = ts_log.append(predictions_ARIMA)
+    out_of_sample = predictions_ARIMA
+    ts_log_predicted = ts_log.append(predictions_ARIMA)
     print(predictions_ARIMA.tail(5))
 
     # Calculate best order (order with minimum error) again
-    (min_rmse, p, d, q) = arima_order_select(predictions_ARIMA)
+    # (min_rmse, p, d, q) = arima_order_select(predictions_ARIMA)
 
     print(str(datetime.now()), "Iterative prediction with new data")
-    for j in range(1000):
+    for j in range(NEW_DATA_SIZE):
         print("Iteration", j)
         # model1 = ARIMA(predictions_ARIMA, order=(p, d, q))
-        model1 = SARIMAX(predictions_ARIMA, order=(p, d, q))
+        model1 = SARIMAX(ts_log_predicted, order=(p, d, q))
         # results_ARIMA1 = model1.fit(disp=-1)
         results_ARIMA1 = model1.filter(results_ARIMA.params)
         # predictions_ARIMA1 = results_ARIMA1.predict(start=predictions_ARIMA.shape[0], end=predictions_ARIMA.shape[0])
-        predictions_ARIMA1 = results_ARIMA1.predict(start=predictions_ARIMA.shape[0], end=predictions_ARIMA.shape[0])
-        predictions_ARIMA = predictions_ARIMA.append(predictions_ARIMA1)
-        print(predictions_ARIMA.tail(2))
+        predictions_ARIMA1 = results_ARIMA1.predict(start=ts_log_predicted.shape[0], end=ts_log_predicted.shape[0])
+        out_of_sample = out_of_sample.append(predictions_ARIMA1)
+        ts_log_predicted = ts_log_predicted.append(predictions_ARIMA1)
+        # print(predictions_ARIMA.tail(2))
     print(str(datetime.now()), "Done iterative prediction")
 
     print(ts_log.tail(2))
-    print(results_ARIMA.fittedvalues.tail(2))
-    print(predictions_ARIMA.tail(2))
+    print(ts_log_predicted.tail(2))
+    print(out_of_sample.tail(2))
 
     plt.plot(ts_log)
-    plt.plot(predictions_ARIMA)
+    plt.plot(out_of_sample)
+    plt.show(block=True)
 
-    test_stationarity(predictions_ARIMA, _plot=True, _critical="5%")
+    # test_stationarity(ts_log_predicted, _plot=True, _critical="5%")
 
     # predictions_ARIMA = model.predict(params=results_ARIMA.fittedvalues, start=1, end=len(timeseries_sample) + 100, typ="levels")
     # predictions = results_ARIMA.predict(start=1, end=NEW_DATA_SIZE)
     # print_timeseries("ts_log_diff", ts_log_diff)
     # print_timeseries("fitted", results_ARIMA.fittedvalues)
-    print_timeseries("predictions", predictions_ARIMA)
+    # print_timeseries("predictions", predictions_ARIMA)
 
     # predictions_ARIMA = np.exp(predictions) - subtract_constant
 
@@ -318,11 +321,11 @@ for i in range(N_COMPONENTS):
     # predictions_ARIMA = pd.Series(forecast, index=predictions.index)
     # print("predictions_ARIMA", predictions_ARIMA)
 
-    error = predictions_ARIMA - timeseries_sample
+    error = ts_log_predicted - ts_log
     print("Missing values:", not np.all(np.isfinite(error)))
     error.dropna(inplace=True)
     print("Missing values:", not np.all(np.isfinite(error)))
-    rmse = np.sqrt(sum((error) ** 2) / len(timeseries_sample))
+    rmse = np.sqrt(sum((error) ** 2) / len(ts_log))
     print("RMSE", rmse)
 
     # plt.clf()

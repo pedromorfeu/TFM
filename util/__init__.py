@@ -9,6 +9,7 @@ from datetime import datetime
 from statsmodels.tsa.stattools import adfuller, acf, pacf
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.api import SARIMAX
 
 print(locale.getdefaultlocale())
 locale.setlocale(locale.LC_TIME, "spanish")
@@ -165,7 +166,7 @@ def plot_acf_pacf(_timeseries, spikes_plot=True, lags=10):
     return lag_acf, lag_pacf
 
 
-def arima_order_select(timeseries, max_ar=4, max_i=2, max_ma=4):
+def arima_order_select(_timeseries, max_ar=4, max_i=2, max_ma=4):
     min_rmse, min_p, min_d, min_q = np.inf, 0, 0, 0
 
     for p in range(max_ar):
@@ -173,11 +174,11 @@ def arima_order_select(timeseries, max_ar=4, max_i=2, max_ma=4):
             for q in range(max_ma):
                 try:
                     print("Creating model (p,d,q)=(%i,%i,%i)" % (p, d, q))
-                    model = ARIMA(timeseries, order=(p, d, q))
+                    model = SARIMAX(_timeseries, order=(p, d, q))
                     results_ARIMA = model.fit(disp=-1)
                     predictions_ARIMA = results_ARIMA.predict()
-                    error = predictions_ARIMA - timeseries
-                    rmse = np.sqrt(sum((error) ** 2) / len(timeseries))
+                    error = predictions_ARIMA - _timeseries
+                    rmse = np.sqrt(sum((error) ** 2) / len(_timeseries))
                     if rmse < min_rmse:
                         min_rmse = rmse
                         (min_p, min_d, min_q) = (p, d, q)
