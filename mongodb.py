@@ -7,6 +7,9 @@ client = MongoClient("mongodb://pedro2:pedro2@ds053190.mlab.com:53190/")
 print(client)
 db = client.mydb
 print(db)
+
+db.authenticate("pedro2", "pedro2")
+
 print(db.people.find_one())
 
 points = 2 * numpy.random.randn(10000000, 3) + 3
