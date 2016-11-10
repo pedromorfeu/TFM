@@ -170,18 +170,17 @@ for i in range(N_COMPONENTS):
     # generate random not-normal:
     # generated_X[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
 print_matrix("generated_gaussian", generated_gaussian)
-save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
+# save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
 
 # invert matrix: dot product between random data and the loadings, nipals_P
 XX = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
 #XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
+# save_matrix("inverse_X_gaussian.csv", XX, data.columns)
 
-save_matrix("inverse_X_gaussian.csv", XX, data.columns)
-
-models = []
 
 ### Time series
+models = []
 for i in range(N_COMPONENTS):
     print("Time series analysis for component", i)
     # time serie for component
@@ -297,6 +296,7 @@ print("Models calculated and stored")
 
 print(str(datetime.now()), "Iterative prediction with new data")
 models_iterative = models.copy()
+generated_gaussian_copy = generated_gaussian.copy()
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
 for i in range(NEW_DATA_SIZE):
     print("Iteration", i)
@@ -318,9 +318,11 @@ for i in range(NEW_DATA_SIZE):
 
     # Euclidean distance
     print("preds", preds)
-    distances = np.sqrt(((generated_gaussian - preds) ** 2).sum(axis=1))
+    distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
     sorted_indexes = distances.argsort()
-    preds_transformed = generated_gaussian[sorted_indexes][0]
+    min_index = sorted_indexes[0]
+    preds_transformed = generated_gaussian_copy[min_index]
+    generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
     generated_X[i] = preds_transformed
     print("preds_transformed", preds_transformed)
 
@@ -332,6 +334,13 @@ print(str(datetime.now()), "Done iterative prediction")
 
 print_matrix("generated_X", generated_X)
 save_matrix("generated_X.csv", generated_X, [x for x in range(N_COMPONENTS)])
+
+# invert matrix: dot product between random data and the loadings, nipals_P
+XX = np.dot(generated_X[:], nipals_P.T) + np.mean(raw, axis=0)
+# XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
+print_matrix("XX", XX)
+save_matrix("inverse_X.csv", XX, data.columns)
+
 
 
 # error = ts_log_predicted - ts_log
@@ -360,20 +369,13 @@ save_matrix("generated_X.csv", generated_X, [x for x in range(N_COMPONENTS)])
 
 
 
-# invert matrix: dot product between random data and the loadings, nipals_P
-XX = np.dot(generated_X[:], nipals_P.T) + np.mean(raw, axis=0)
-# XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
-print_matrix("XX", XX)
-
-save_matrix("inverse_X.csv", XX, data.columns)
-
 
 # PCA also has two very important outputs we should calculate:
 
 # The SPE_X, squared prediction error to the X-space is the residual distance
 # from the model to each data point.
-SPE_X = np.sum(X ** 2, axis=1)
-print("SPE_X", X[:5, :])
+# SPE_X = np.sum(X ** 2, axis=1)
+# print("SPE_X", X[:5, :])
 
 # And Hotelling's T2, the directed distance from the model center to
 # each data point.
