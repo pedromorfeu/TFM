@@ -326,7 +326,6 @@ for i in range(10):
     for (results_ARIMA, ts_log_predicted) in models_iterative:
         ts_log_predicted.set_value(ts_log_predicted.last_valid_index(), preds_transformed[j])
         j += 1
-
 print(str(datetime.now()), "Done iterative prediction")
 
 print_matrix("generated_X", generated_X)
@@ -360,7 +359,7 @@ save_matrix("generated_X.csv", generated_X, [x for x in range(N_COMPONENTS)])
 
 
 # invert matrix: dot product between random data and the loadings, nipals_P
-XX = np.dot(generated_X[:10], nipals_P.T) + np.mean(raw, axis=0)
+XX = np.dot(generated_X[:], nipals_P.T) + np.mean(raw, axis=0)
 # XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 
