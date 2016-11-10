@@ -287,7 +287,7 @@ for i in range(N_COMPONENTS):
     ts_log_predicted = ts_log.append(predictions_ARIMA)
     print(predictions_ARIMA.tail(5))
 
-    models.append((results_ARIMA, ts_log_predicted))
+    models.append((results_ARIMA, ts_log_predicted, min_rmse))
 
 print("Models calculated and stored")
 
@@ -298,20 +298,22 @@ print("Models calculated and stored")
 print(str(datetime.now()), "Iterative prediction with new data")
 models_iterative = models.copy()
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
-for i in range(10):
+for i in range(NEW_DATA_SIZE):
     print("Iteration", i)
     j = 0
     # Array to store each predicted point
     preds = np.zeros(N_COMPONENTS)
-    for (results_ARIMA, ts_log_predicted) in models_iterative:
+    for (results_ARIMA, ts_log_predicted, min_rmse) in models_iterative:
         model1 = SARIMAX(ts_log_predicted, order=results_ARIMA.model.order)
         results_ARIMA1 = model1.filter(results_ARIMA.params)
         # results_ARIMA1 = model1.fit(disp=-1)
         predictions_ARIMA1 = results_ARIMA1.predict(start=ts_log_predicted.shape[0], end=ts_log_predicted.shape[0])
         # print("predictions_ARIMA1", predictions_ARIMA1)
         ts_log_predicted1 = ts_log_predicted.append(predictions_ARIMA1)
-        models_iterative[j] = (results_ARIMA1, ts_log_predicted1)
-        preds[j] = predictions_ARIMA1
+        models_iterative[j] = (results_ARIMA1, ts_log_predicted1, min_rmse)
+        # add random error from series standard deviation and mean 0
+        add_error = 0 + min_rmse * np.random.randn()
+        preds[j] = predictions_ARIMA1 + add_error
         j += 1
 
     # Euclidean distance
@@ -323,7 +325,7 @@ for i in range(10):
     print("preds_transformed", preds_transformed)
 
     j = 0
-    for (results_ARIMA, ts_log_predicted) in models_iterative:
+    for (results_ARIMA, ts_log_predicted, min_rmse) in models_iterative:
         ts_log_predicted.set_value(ts_log_predicted.last_valid_index(), preds_transformed[j])
         j += 1
 print(str(datetime.now()), "Done iterative prediction")
