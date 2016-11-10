@@ -29,6 +29,8 @@ for i in range(10):
 
 
 # MongoDB distance
+# A 2dsphere index in MongoDB 3.0+ will allow additional values in the coordinate array,
+# but only the first two values will be indexed and used in a 2dsphere query
 print(str(datetime.now()))
 cursor = db.points.find({"coordinates": {"$near": {"$geometry": {"type": "point", "coordinates": [1, 2, 3]}}}}).limit(1)
 print(cursor.next())
