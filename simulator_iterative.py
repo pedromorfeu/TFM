@@ -18,6 +18,7 @@ from statsmodels.tsa.api import SARIMAX
 
 
 N_COMPONENTS = 5
+GAUSSIAN_DATA_SIZE = 1000000
 NEW_DATA_SIZE = 1000
 TS_FREQUENCY = "10s"
 # If the frequency is higher than the sample steps, then we have more real data
@@ -160,16 +161,16 @@ print_matrix("nipals_T", nipals_T)
 mus = np.mean(nipals_T, axis=0)
 sigmas = np.std(nipals_T, axis=0)
 
-generated_gaussian = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
+generated_gaussian = np.zeros((GAUSSIAN_DATA_SIZE, N_COMPONENTS))
 for i in range(N_COMPONENTS):
     # calculate normal distribution by component and store it in column i
-    generated_gaussian[:, i] = np.random.normal(mus[i], sigmas[i], NEW_DATA_SIZE)
+    generated_gaussian[:, i] = np.random.normal(mus[i], sigmas[i], GAUSSIAN_DATA_SIZE)
     # alternative normal:
     # generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
     # generate random not-normal:
     # generated_X[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
 print_matrix("generated_gaussian", generated_gaussian)
-
+save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
 
 # invert matrix: dot product between random data and the loadings, nipals_P
 XX = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
@@ -297,7 +298,7 @@ print("Models calculated and stored")
 print(str(datetime.now()), "Iterative prediction with new data")
 models_iterative = models.copy()
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
-for i in range(1000):
+for i in range(10):
     print("Iteration", i)
     j = 0
     # Array to store each predicted point
@@ -305,36 +306,39 @@ for i in range(1000):
     for (results_ARIMA, ts_log_predicted) in models_iterative:
         model1 = SARIMAX(ts_log_predicted, order=results_ARIMA.model.order)
         results_ARIMA1 = model1.filter(results_ARIMA.params)
+        # results_ARIMA1 = model1.fit(disp=-1)
         predictions_ARIMA1 = results_ARIMA1.predict(start=ts_log_predicted.shape[0], end=ts_log_predicted.shape[0])
-        # print("predictions_ARIMA1", type(predictions_ARIMA1))
-        ts_log_predicted = ts_log_predicted.append(predictions_ARIMA1)
-        models_iterative[j] = (results_ARIMA1, ts_log_predicted)
+        # print("predictions_ARIMA1", predictions_ARIMA1)
+        ts_log_predicted1 = ts_log_predicted.append(predictions_ARIMA1)
+        models_iterative[j] = (results_ARIMA1, ts_log_predicted1)
         preds[j] = predictions_ARIMA1
         j += 1
 
     # Euclidean distance
+    print("preds", preds)
     distances = np.sqrt(((generated_gaussian - preds) ** 2).sum(axis=1))
     sorted_indexes = distances.argsort()
     preds_transformed = generated_gaussian[sorted_indexes][0]
     generated_X[i] = preds_transformed
+    print("preds_transformed", preds_transformed)
 
-    k = 0
+    j = 0
     for (results_ARIMA, ts_log_predicted) in models_iterative:
-        ts_log_predicted.set_value(ts_log_predicted.last_valid_index(), preds_transformed[k])
-        k += 1
+        ts_log_predicted.set_value(ts_log_predicted.last_valid_index(), preds_transformed[j])
+        j += 1
 
 print(str(datetime.now()), "Done iterative prediction")
 
 print_matrix("generated_X", generated_X)
-save_matrix("generated_X.csv", generated_X, [1,2,3,4,5])
+save_matrix("generated_X.csv", generated_X, [x for x in range(N_COMPONENTS)])
 
 
-error = ts_log_predicted - ts_log
-print("Missing values:", not np.all(np.isfinite(error)))
-error.dropna(inplace=True)
-print("Missing values:", not np.all(np.isfinite(error)))
-rmse = np.sqrt(sum((error) ** 2) / len(ts_log))
-print("RMSE", rmse)
+# error = ts_log_predicted - ts_log
+# print("Missing values:", not np.all(np.isfinite(error)))
+# error.dropna(inplace=True)
+# print("Missing values:", not np.all(np.isfinite(error)))
+# rmse = np.sqrt(sum((error) ** 2) / len(ts_log))
+# print("RMSE", rmse)
 
 # plt.clf()
 # plt.plot(timeseries_sample)
@@ -351,13 +355,12 @@ print("RMSE", rmse)
 # add noise
 # predictions_ARIMA = predictions_ARIMA + np.random.normal(0, rmse, NEW_DATA_SIZE)
 
-generated_X[:, i] = predictions_ARIMA
-
+# generated_X[:, i] = predictions_ARIMA
 
 
 
 # invert matrix: dot product between random data and the loadings, nipals_P
-XX = np.dot(generated_X, nipals_P.T) + np.mean(raw, axis=0)
+XX = np.dot(generated_X[:10], nipals_P.T) + np.mean(raw, axis=0)
 # XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 
