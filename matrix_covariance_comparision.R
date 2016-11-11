@@ -34,6 +34,7 @@ sd(data$APHu)
 head(data)
 
 inverted_data_gaussian <- read.csv2("generated/inverse_X_gaussian.csv", sep = "\t", header=T, stringsAsFactors = F, dec = ".")
+inverted_data_gaussian <- inverted_data_gaussian[c(1,2,3,4,5,6,7,8,9,10), ]
 nrow(inverted_data_gaussian)
 ncol(inverted_data_gaussian)
 mean(inverted_data_gaussian$APHu)

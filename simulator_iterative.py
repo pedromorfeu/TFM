@@ -383,7 +383,7 @@ inv_covariance = np.linalg.inv(np.dot(nipals_T.T, nipals_T) / N)
 Hot_T2 = np.zeros((N, 1))
 for n in range(N):
     Hot_T2[n] = np.dot(np.dot(nipals_T[n, :], inv_covariance), nipals_T[n, :].T)
-print("Hot_T2", Hot_T2)
+# print("Hot_T2", Hot_T2)
 
 # You can verify the NIPALS and SVD results are the same:
 # (you may find that the signs have flipped, but this is still correct)
