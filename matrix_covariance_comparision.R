@@ -85,8 +85,8 @@ cov(nipals_T)
 
 
 generated_gaussian <- read.csv2("generated/generated_gaussian.csv", sep = "\t", header = T, stringsAsFactors = F, dec=".")
-generated_gaussian <- generated_gaussian[c(1:100000, 1:100000, 1:100000), ]
-generated_gaussian <- generated_gaussian[sample(nrow(generated_gaussian), 1000, replace = T), ]
+# generated_gaussian <- generated_gaussian[c(1:100000, 1:100000, 1:100000), ]
+generated_gaussian <- generated_gaussian[sample(nrow(generated_gaussian), 100, replace = T), ]
 head(generated_gaussian)
 str(generated_gaussian)
 
@@ -104,6 +104,17 @@ cov(generated_X)
 
 # Hotelling T2
 print(hotelling.test(x = nipals_T, y = generated_X))
+
+
+
+test_X <- read.csv2("generated/test_X.csv", sep = "\t", header = T, stringsAsFactors = F, dec=".")
+head(test_X)
+str(test_X)
+
+cov(test_X)
+
+# Hotelling T2
+print(hotelling.test(x = nipals_T, y = test_X))
 
 
 colMeans(data_filtered)

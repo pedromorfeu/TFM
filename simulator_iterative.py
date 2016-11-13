@@ -154,7 +154,6 @@ for a in range(N_COMPONENTS):
 print_matrix("nipals_P", nipals_P)
 # scores
 print_matrix("nipals_T", nipals_T)
-
 save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
 
 ### Generate data
@@ -176,7 +175,7 @@ print_matrix("generated_gaussian", generated_gaussian)
 XX = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
 #XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
-save_matrix("inverse_X_gaussian.csv", XX, data.columns)
+# save_matrix("inverse_X_gaussian.csv", XX, data.columns)
 
 
 ### Time series
@@ -336,6 +335,7 @@ for i in range(NEW_DATA_SIZE):
         j += 1
 print(str(datetime.now()), "Done iterative prediction")
 
+# distribution of generated_X isn't normal; however, generated_gaussian is
 print_matrix("generated_X", generated_X)
 save_matrix("generated_X.csv", generated_X, [x for x in range(N_COMPONENTS)])
 
