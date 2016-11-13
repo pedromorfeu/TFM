@@ -77,14 +77,33 @@ print(hotelling.test(x = data, y = inverted_data))
 
 # COMPONENTS
 nipals_T <- read.csv2("generated/nipals_T_ts.csv", sep = "\t", header = T, stringsAsFactors = F, dec=".")
+nipals_T <- nipals_T[, seq(2,6)]
 head(nipals_T)
 str(nipals_T)
 
-mean <- mean(nipals_T$X0)
-std <- sd(nipals_T$X0)
-boxplot(nipals_T$X0)
-abline(h=mean)
-summary(nipals_T$X0)
+cov(nipals_T)
+
+
+generated_gaussian <- read.csv2("generated/generated_gaussian.csv", sep = "\t", header = T, stringsAsFactors = F, dec=".")
+generated_gaussian <- generated_gaussian[c(1:100000, 1:100000, 1:100000), ]
+generated_gaussian <- generated_gaussian[sample(nrow(generated_gaussian), 1000, replace = T), ]
+head(generated_gaussian)
+str(generated_gaussian)
+
+cov(generated_gaussian)
+
+# Hotelling T2
+print(hotelling.test(x = nipals_T, y = generated_gaussian))
+
+
+generated_X <- read.csv2("generated/generated_X.csv", sep = "\t", header = T, stringsAsFactors = F, dec=".")
+head(generated_X)
+str(generated_X)
+
+cov(generated_X)
+
+# Hotelling T2
+print(hotelling.test(x = nipals_T, y = generated_X))
 
 
 colMeans(data_filtered)

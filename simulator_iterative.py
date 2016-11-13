@@ -155,7 +155,7 @@ print_matrix("nipals_P", nipals_P)
 # scores
 print_matrix("nipals_T", nipals_T)
 
-# save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
+save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
 
 ### Generate data
 mus = np.mean(nipals_T, axis=0)
@@ -176,11 +176,12 @@ print_matrix("generated_gaussian", generated_gaussian)
 XX = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
 #XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
-# save_matrix("inverse_X_gaussian.csv", XX, data.columns)
+save_matrix("inverse_X_gaussian.csv", XX, data.columns)
 
 
 ### Time series
 models = []
+timeseries_samples = []
 for i in range(N_COMPONENTS):
     print("Time series analysis for component", i)
     # time serie for component
@@ -201,6 +202,7 @@ for i in range(N_COMPONENTS):
     # Resample and interpolate
     print("Resampling time series by", TS_FREQUENCY)
     timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
+    timeseries_samples.append(timeseries_sample)
     # timeseries_sample = timeseries_sample.asfreq(TS_FREQUENCY, method="ffill")
     print_timeseries("timeseries_sample", timeseries_sample)
     stationary = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
@@ -322,10 +324,12 @@ for i in range(NEW_DATA_SIZE):
     sorted_indexes = distances.argsort()
     min_index = sorted_indexes[0]
     preds_transformed = generated_gaussian_copy[min_index]
-    generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
+    # hypotesis: repetitions make results worse
+    # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
     generated_X[i] = preds_transformed
     print("preds_transformed", preds_transformed)
 
+    # Store the new values for re-feeding the models in the next prediction
     j = 0
     for (results_ARIMA, ts_log_predicted, min_rmse) in models_iterative:
         ts_log_predicted.set_value(ts_log_predicted.last_valid_index(), preds_transformed[j])
@@ -340,6 +344,15 @@ XX = np.dot(generated_X[:], nipals_P.T) + np.mean(raw, axis=0)
 # XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 save_matrix("inverse_X.csv", XX, data.columns)
+
+
+for i in range(N_COMPONENTS):
+    gaussian_ts = pd.Series(generated_X[:, i], index=pd.date_range("2015-10-06 23:59:50", periods=NEW_DATA_SIZE, freq=TS_FREQUENCY))
+    plt.plot(gaussian_ts, "o", color="gray")
+    plt.plot(models_iterative[i][1])
+    plt.plot(timeseries_samples[i])
+    plt.title("Component %d" % (i+1))
+    plt.show(block=True)
 
 
 
