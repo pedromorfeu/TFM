@@ -124,7 +124,7 @@ def test_stationarity(_timeseries, _plot=False, _critical="5%"):
         plt.title('Rolling Mean & Standard Deviation')
         plt.show(block=True)
 
-    return stationary
+    return stationary, test_value
 
 
 def plot_acf_pacf(_timeseries, spikes_plot=True, lags=10):
@@ -166,11 +166,11 @@ def plot_acf_pacf(_timeseries, spikes_plot=True, lags=10):
     return lag_acf, lag_pacf
 
 
-def arima_order_select(_timeseries, max_ar=4, max_i=2, max_ma=4):
+def arima_order_select(_timeseries, max_ar=4, max_i=2, max_ma=4, min_i=0):
     min_rmse, min_p, min_d, min_q = np.inf, 0, 0, 0
 
     for p in range(max_ar):
-        for d in range(max_i):
+        for d in range(min_i, max_i):
             for q in range(max_ma):
                 try:
                     print("Creating model (p,d,q)=(%i,%i,%i)" % (p, d, q))

@@ -204,7 +204,7 @@ for i in range(N_COMPONENTS):
     timeseries_samples.append(timeseries_sample)
     # timeseries_sample = timeseries_sample.asfreq(TS_FREQUENCY, method="ffill")
     print_timeseries("timeseries_sample", timeseries_sample)
-    stationary = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
+    stationary, test_value = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
 
     # not stationary -> must be stabilized
 
@@ -228,13 +228,13 @@ for i in range(N_COMPONENTS):
     ts_log_moving_avg_diff.head(5)
     ts_log_moving_avg_diff.dropna(inplace=True)
     ts_log_moving_avg_diff.head()
-    stationary = test_stationarity(ts_log_moving_avg_diff, _plot=False, _critical="5%")
+    stationary, test_value_moving_avg_diff = test_stationarity(ts_log_moving_avg_diff, _plot=False, _critical="5%")
 
     expwighted_avg = ts_log.ewm(halflife=20).mean()
     # plt.plot(ts_log)
     # plt.plot(expwighted_avg, color='red')
     ts_log_ewma_diff = ts_log - expwighted_avg
-    stationary = test_stationarity(ts_log_ewma_diff, _plot=False, _critical="5%")
+    stationary, test_value_ewma_diff = test_stationarity(ts_log_ewma_diff, _plot=False, _critical="5%")
 
     # Differencing
     print("Differencing the time series...")
@@ -246,11 +246,17 @@ for i in range(N_COMPONENTS):
     print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
     print_timeseries("ts_log_diff", ts_log_diff)
     # This appears to have reduced trend considerably. Lets verify using our plots:
-    stationary = test_stationarity(ts_log_diff, _plot=False, _critical="5%")
+    stationary, test_value_diff = test_stationarity(ts_log_diff, _plot=False, _critical="5%")
 
     if not stationary:
         # TODO: try other methods to make the timeseries stationary
         raise ValueError("Timeseries is not stationary after differencing.")
+
+    # Minimum value for integration part (d):
+    # If differenciated series is more stationary, then use i=1
+    min_i = 0
+    if test_value_diff < test_value:
+        min_i = 1
 
     # Forecasting
     # plot_acf_pacf(ts_log_diff)
@@ -269,7 +275,7 @@ for i in range(N_COMPONENTS):
     # d = 0
 
     # Calculate best order (order with minimum error)
-    (min_rmse, p, d, q) = arima_order_select(ts_log)
+    (min_rmse, p, d, q) = arima_order_select(ts_log, min_i=min_i)
 
     print("Creating model (p,d,q)=(%i,%i,%i)" % (p, d, q))
     model = SARIMAX(ts_log, order=(p, d, q))
@@ -281,11 +287,12 @@ for i in range(N_COMPONENTS):
     predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0])
     print(str(datetime.now()), "Predicted")
 
-    print(ts_log.tail(5))
-    print(predictions_ARIMA.tail(5))
-    out_of_sample = predictions_ARIMA
-    ts_log_predicted = ts_log.append(predictions_ARIMA)
-    print(predictions_ARIMA.tail(5))
+    # print(ts_log.tail(5))
+    # print(predictions_ARIMA.tail(5))
+    # out_of_sample = predictions_ARIMA
+    # ts_log_predicted = ts_log.append(predictions_ARIMA)
+    # print(predictions_ARIMA.tail(5))
+    ts_log_predicted = results_ARIMA.fittedvalues
 
     models.append((results_ARIMA, ts_log_predicted, min_rmse))
 
@@ -313,7 +320,9 @@ for i in range(NEW_DATA_SIZE):
         ts_log_predicted1 = ts_log_predicted.append(predictions_ARIMA1)
         models_iterative[j] = (results_ARIMA1, ts_log_predicted1, min_rmse)
         # add random error from series standard deviation and mean 0
-        add_error = 0 + min_rmse * np.random.randn()
+        # add_error = 0 + min_rmse * np.random.randn()
+        add_error = 0
+        # print("Adding error using RMSE", min_rmse, ":", add_error)
         preds[j] = predictions_ARIMA1 + add_error
         j += 1
 
@@ -322,7 +331,8 @@ for i in range(NEW_DATA_SIZE):
     distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
     sorted_indexes = distances.argsort()
     min_index = sorted_indexes[0]
-    preds_transformed = generated_gaussian_copy[min_index]
+    # preds_transformed = generated_gaussian_copy[min_index]
+    preds_transformed = preds
     # hypotesis: repetitions make results worse
     # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
     generated_X[i] = preds_transformed
@@ -347,7 +357,7 @@ save_matrix("inverse_X.csv", XX, data.columns)
 
 
 for i in range(N_COMPONENTS):
-    gaussian_ts = pd.Series(generated_X[:, i], index=pd.date_range("2015-10-06 23:59:50", periods=NEW_DATA_SIZE, freq=TS_FREQUENCY))
+    gaussian_ts = pd.Series(generated_gaussian[:NEW_DATA_SIZE, i], index=pd.date_range("2015-10-06 23:59:50", periods=NEW_DATA_SIZE, freq=TS_FREQUENCY))
     plt.plot(gaussian_ts, "o", color="gray")
     plt.plot(models_iterative[i][1])
     plt.plot(timeseries_samples[i])
