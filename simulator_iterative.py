@@ -299,6 +299,36 @@ for i in range(N_COMPONENTS):
 print("Models calculated and stored")
 
 
+models_iterative = models.copy()
+generated_gaussian_copy = generated_gaussian.copy()
+(results_ARIMA, ts_log_predicted, min_rmse) = models_iterative[0]
+generated_X = np.zeros(NEW_DATA_SIZE)
+for i in range(NEW_DATA_SIZE):
+    print("Iteration", i)
+    model1 = SARIMAX(ts_log_predicted, order=results_ARIMA.model.order)
+    results_ARIMA = model1.filter(results_ARIMA.params)
+    predictions_ARIMA = results_ARIMA.predict(start=ts_log_predicted.shape[0], end=ts_log_predicted.shape[0])
+    # add_error = 0 + min_rmse * np.random.randn()
+    add_error = np.random.normal(0, min_rmse)
+    predictions_ARIMA = add_error + predictions_ARIMA
+
+    # Euclidean distance
+    print("preds", predictions_ARIMA)
+    distances = np.sqrt(((generated_gaussian_copy[:, 0] - predictions_ARIMA.values[0]) ** 2))
+    sorted_indexes = distances.argsort()
+    min_index = sorted_indexes[0]
+    preds_transformed = generated_gaussian_copy[:, 0][min_index]
+    # hypotesis: repetitions make results worse
+    # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
+    generated_X[i] = preds_transformed
+    print("preds_transformed", preds_transformed)
+
+    ts_log_predicted = ts_log_predicted.append(predictions_ARIMA)
+
+plt.plot(timeseries_samples[0])
+plt.plot(ts_log_predicted)
+plt.title("Componente 1 con ruido y busqueda gaussiana")
+
 # Calculate best order (order with minimum error) again
 # (min_rmse, p, d, q) = arima_order_select(predictions_ARIMA)
 
