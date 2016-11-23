@@ -298,6 +298,7 @@ for i in range(N_COMPONENTS):
 
 print("Models calculated and stored")
 
+N_INDEXES = 20
 
 models_iterative = models.copy()
 generated_gaussian_copy = generated_gaussian.copy()
@@ -308,26 +309,32 @@ for i in range(NEW_DATA_SIZE):
     model1 = SARIMAX(ts_log_predicted, order=results_ARIMA.model.order)
     results_ARIMA = model1.filter(results_ARIMA.params)
     predictions_ARIMA = results_ARIMA.predict(start=ts_log_predicted.shape[0], end=ts_log_predicted.shape[0])
+    ts_log_predicted = ts_log_predicted.append(predictions_ARIMA)
     # add_error = 0 + min_rmse * np.random.randn()
-    add_error = np.random.normal(0, min_rmse)
+    # add_error = np.random.normal(0, min_rmse)
+    add_error = 0
     predictions_ARIMA = add_error + predictions_ARIMA
 
     # Euclidean distance
     print("preds", predictions_ARIMA)
     distances = np.sqrt(((generated_gaussian_copy[:, 0] - predictions_ARIMA.values[0]) ** 2))
-    sorted_indexes = distances.argsort()
-    min_index = sorted_indexes[0]
+    # take first N_INDEXES nearest indexes
+    sorted_indexes = distances.argsort()[:N_INDEXES]
+    # select the nearest index
+    # min_index = sorted_indexes[0]
+    # select random index
+    min_index = np.random.randint(N_INDEXES)
     preds_transformed = generated_gaussian_copy[:, 0][min_index]
     # hypotesis: repetitions make results worse
     # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
     generated_X[i] = preds_transformed
     print("preds_transformed", preds_transformed)
 
-    ts_log_predicted = ts_log_predicted.append(predictions_ARIMA)
+    ts_log_predicted.set_value(ts_log_predicted.last_valid_index(), preds_transformed)
 
 plt.plot(timeseries_samples[0])
 plt.plot(ts_log_predicted)
-plt.title("Componente 1 con ruido y busqueda gaussiana")
+plt.title("Componente 1 sin ruido y búsqueda gaussiana para 20 más cercanos")
 
 # Calculate best order (order with minimum error) again
 # (min_rmse, p, d, q) = arima_order_select(predictions_ARIMA)
@@ -359,10 +366,14 @@ for i in range(NEW_DATA_SIZE):
     # Euclidean distance
     print("preds", preds)
     distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
-    sorted_indexes = distances.argsort()
-    min_index = sorted_indexes[0]
-    # preds_transformed = generated_gaussian_copy[min_index]
-    preds_transformed = preds
+    # take first N_INDEXES nearest indexes
+    sorted_indexes = distances.argsort()[:N_INDEXES]
+    # select the nearest index
+    # min_index = sorted_indexes[0]
+    # select random index
+    min_index = np.random.randint(N_INDEXES)
+    preds_transformed = generated_gaussian_copy[min_index]
+    # preds_transformed = preds
     # hypotesis: repetitions make results worse
     # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
     generated_X[i] = preds_transformed

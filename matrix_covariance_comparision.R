@@ -34,7 +34,7 @@ sd(data$APHu)
 head(data)
 
 inverted_data_gaussian <- read.csv2("generated/inverse_X_gaussian.csv", sep = "\t", header=T, stringsAsFactors = F, dec = ".")
-inverted_data_gaussian <- inverted_data_gaussian[c(1,2,3,4,5,6,7,8,9,10), ]
+# inverted_data_gaussian <- inverted_data_gaussian[c(1,2,3,4,5,6,7,8,9,10), ]
 nrow(inverted_data_gaussian)
 ncol(inverted_data_gaussian)
 mean(inverted_data_gaussian$APHu)
@@ -85,15 +85,16 @@ cov(nipals_T)
 
 
 generated_gaussian <- read.csv2("generated/generated_gaussian.csv", sep = "\t", header = T, stringsAsFactors = F, dec=".")
-# generated_gaussian <- generated_gaussian[c(1:100000, 1:100000, 1:100000), ]
-generated_gaussian <- generated_gaussian[sample(nrow(generated_gaussian), 100, replace = T), ]
-head(generated_gaussian)
-str(generated_gaussian)
+generated_gaussian_copy <- generated_gaussian
+# generated_gaussian_copy <- generated_gaussian_copy[c(1:100000, 1:100000, 1:100000), ]
+generated_gaussian_copy <- generated_gaussian_copy[sample(nrow(generated_gaussian_copy), 100, replace = T), ]
+head(generated_gaussian_copy)
+str(generated_gaussian_copy)
 
-cov(generated_gaussian)
+cov(generated_gaussian_copy)
 
 # Hotelling T2
-print(hotelling.test(x = nipals_T, y = generated_gaussian))
+print(hotelling.test(x = nipals_T, y = generated_gaussian_copy))
 
 
 generated_X <- read.csv2("generated/generated_X.csv", sep = "\t", header = T, stringsAsFactors = F, dec=".")
