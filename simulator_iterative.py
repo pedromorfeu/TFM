@@ -192,9 +192,10 @@ print_matrix("XX", XX)
 #     plt.title(data.columns[i])
 #     plt.savefig(os.path.join("figures", "gaussian_" + data.columns[i]))
 
+
 ### Time series
 models = []
-timeseries_samples = []
+timeseries_samples = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
 for i in range(N_COMPONENTS):
     print("Time series analysis for component", i)
     # time serie for component
@@ -215,7 +216,7 @@ for i in range(N_COMPONENTS):
     # Resample and interpolate
     print("Resampling time series by", TS_FREQUENCY)
     timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
-    timeseries_samples.append(timeseries_sample)
+    timeseries_samples[:, i] = timeseries_sample.values
     # timeseries_sample = timeseries_sample.asfreq(TS_FREQUENCY, method="ffill")
     print_timeseries("timeseries_sample", timeseries_sample)
     stationary, test_value = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
