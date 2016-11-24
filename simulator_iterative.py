@@ -21,6 +21,7 @@ N_COMPONENTS = 5
 GAUSSIAN_DATA_SIZE = 1000000
 NEW_DATA_SIZE = 1000
 TS_FREQUENCY = "10s"
+N_INDEXES = 1
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
 
@@ -43,6 +44,13 @@ print("The date with more observations is", date)
 date = "2015-10-06"
 # Specify a date to analyze the timeseries
 data = data[date]
+
+# data["APHu"]
+# for col in data.columns:
+#     plt.clf()
+#     plt.plot(data[col])
+#     plt.title(col)
+#     plt.savefig(os.path.join("figures", col))
 
 raw = data.values
 N, K = raw.shape
@@ -156,7 +164,8 @@ print_matrix("nipals_P", nipals_P)
 print_matrix("nipals_T", nipals_T)
 save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
 
-### Generate data
+
+### Generate Gaussian data
 mus = np.mean(nipals_T, axis=0)
 sigmas = np.std(nipals_T, axis=0)
 
@@ -165,9 +174,9 @@ for i in range(N_COMPONENTS):
     # calculate normal distribution by component and store it in column i
     generated_gaussian[:, i] = np.random.normal(mus[i], sigmas[i], GAUSSIAN_DATA_SIZE)
     # alternative normal:
-    # generated_X[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
+    # generated_gaussian[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
     # generate random not-normal:
-    # generated_X[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
+    # generated_gaussian[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
 print_matrix("generated_gaussian", generated_gaussian)
 # save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
 
@@ -177,6 +186,11 @@ XX = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 # save_matrix("inverse_X_gaussian.csv", XX, data.columns)
 
+# for i in range(len(data.columns)):
+#     plt.clf()
+#     plt.plot(XX[:2000, i])
+#     plt.title(data.columns[i])
+#     plt.savefig(os.path.join("figures", "gaussian_" + data.columns[i]))
 
 ### Time series
 models = []
@@ -298,7 +312,6 @@ for i in range(N_COMPONENTS):
 
 print("Models calculated and stored")
 
-N_INDEXES = 20
 
 models_iterative = models.copy()
 generated_gaussian_copy = generated_gaussian.copy()
@@ -323,7 +336,8 @@ for i in range(NEW_DATA_SIZE):
     # select the nearest index
     # min_index = sorted_indexes[0]
     # select random index
-    min_index = np.random.randint(N_INDEXES)
+    random_index = np.random.randint(N_INDEXES)
+    min_index = sorted_indexes[random_index]
     preds_transformed = generated_gaussian_copy[:, 0][min_index]
     # hypotesis: repetitions make results worse
     # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
@@ -343,6 +357,7 @@ print(str(datetime.now()), "Iterative prediction with new data")
 models_iterative = models.copy()
 generated_gaussian_copy = generated_gaussian.copy()
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
+error_factor = np.array([ 0.01,  0.6,  0.8,  0.3,  0.8])
 for i in range(NEW_DATA_SIZE):
     print("Iteration", i)
     j = 0
@@ -357,8 +372,9 @@ for i in range(NEW_DATA_SIZE):
         ts_log_predicted1 = ts_log_predicted.append(predictions_ARIMA1)
         models_iterative[j] = (results_ARIMA1, ts_log_predicted1, min_rmse)
         # add random error from series standard deviation and mean 0
-        # add_error = 0 + min_rmse * np.random.randn()
-        add_error = 0
+        add_error = 0 + min_rmse * np.random.randn()
+        # add some error atenuation
+        add_error = error_factor[j] * add_error
         # print("Adding error using RMSE", min_rmse, ":", add_error)
         preds[j] = predictions_ARIMA1 + add_error
         j += 1
@@ -371,7 +387,8 @@ for i in range(NEW_DATA_SIZE):
     # select the nearest index
     # min_index = sorted_indexes[0]
     # select random index
-    min_index = np.random.randint(N_INDEXES)
+    random_index = np.random.randint(N_INDEXES)
+    min_index = sorted_indexes[random_index]
     preds_transformed = generated_gaussian_copy[min_index]
     # preds_transformed = preds
     # hypotesis: repetitions make results worse
@@ -398,13 +415,15 @@ save_matrix("inverse_X.csv", XX, data.columns)
 
 
 for i in range(N_COMPONENTS):
-    gaussian_ts = pd.Series(generated_gaussian[:NEW_DATA_SIZE, i], index=pd.date_range("2015-10-06 23:59:50", periods=NEW_DATA_SIZE, freq=TS_FREQUENCY))
-    plt.plot(gaussian_ts, "o", color="gray")
+    # gaussian_ts = pd.Series(generated_gaussian[:NEW_DATA_SIZE, i], index=pd.date_range("2015-10-06 23:59:50", periods=NEW_DATA_SIZE, freq=TS_FREQUENCY))
+    # plt.plot(gaussian_ts, "o", color="gray")
+    plt.clf()
     plt.plot(models_iterative[i][1])
     plt.plot(timeseries_samples[i])
     plt.title("Component %d" % (i+1))
-    plt.show(block=True)
-
+    # plt.show(block=True)
+    filename = "c" + str(i+1)
+    plt.savefig(os.path.join("figures", filename))
 
 
 # error = ts_log_predicted - ts_log
