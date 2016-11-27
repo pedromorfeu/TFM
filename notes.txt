@@ -60,7 +60,10 @@
 45. Time series forecast: "You trained the model on a subset of the data and then predict out of sample. AR(MA) prediction quickly converges to the mean of the data" (http://stackoverflow.com/questions/24331886/correct-way-to-use-armaresult-predict-function)
 46. Unofficial Windows Binaries for Python Extension Packages (http://www.lfd.uci.edu/~gohlke/pythonlibs/)
 
+
 * Predict again with newly generated data, because this will be calculated from distance to gaussian results.
+
+* Al hacer sampling sobre los datos gaussianos, le estamos quitando la distribución normal.
 
 Email:
 Una vez constatemos que ambas poblaciones pueden considerarse estadísticamente idénticas deberías de pasar a generar muestras a periodos más o menos regulares. Pero atención, como los datos seguirán algún tipo de patrón temporal debería de aprenderse la serie temporal para cada componente principal previamente y generar cada componente con la serie aprendida para ella, también se debería de generar algo de ruido en la señal, dicho ruido podría establecerse por ejemplo a partir de: el error de predicción de la serie o mediante las componentes principales que hayamos dejado.

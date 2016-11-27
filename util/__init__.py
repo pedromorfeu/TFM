@@ -192,3 +192,41 @@ def arima_order_select(_timeseries, max_ar=4, max_i=2, max_ma=4, min_i=0):
     print("Minimum RMSE", min_rmse)
     print("Selected (p,d,q)=(%i,%i,%i)" % (min_p, min_d, min_q))
     return (min_rmse, min_p, min_d, min_q)
+
+
+def save_plots(_data, _columns, _suffix="", _folder="figures"):
+    print("Saving plots...")
+    plt.ioff()
+    for i in range(len(_columns)):
+        plt.clf()
+        plt.plot(_data[:, i])
+        title = _columns[i] + _suffix
+        plt.title(title)
+        plt.legend()
+        plt.savefig(os.path.join(_folder, title))
+    plt.ion()
+    print("Plots saved")
+
+
+def save_all_plots(_data, _inverse, _inverse_gaussian, _columns, _suffix="", _folder="figures"):
+    print("Saving plots...")
+    plt.ioff()
+    for i in range(len(_columns)):
+        plt.clf()
+        plt.plot(_inverse_gaussian[:, i], label="gaussian")
+        plt.plot(_inverse[:, i], label="inverse")
+        plt.plot(_data[:, i], label="original")
+        title = _columns[i] + _suffix
+        plt.legend()
+        plt.savefig(os.path.join(_folder, title))
+    plt.ion()
+    print("Plots saved")
+
+
+# Standardization of datasets is a common requirement for many machine learning estimators implemented in scikit-learn;
+# they might behave badly if the individual features do not more or less look like standard normally distributed data: Gaussian with zero mean and unit variance.
+# In practice we often ignore the shape of the distribution and just transform the data to center it by removing the mean value of each feature,
+# then scale it by dividing non-constant features by their standard deviation.
+# (http://scikit-learn.org/stable/modules/preprocessing.html)
+def scale(_X):
+    return (_X - _X.mean(axis=0)) / _X.std(axis=0)

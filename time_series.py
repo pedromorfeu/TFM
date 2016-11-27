@@ -6,18 +6,38 @@ from matplotlib import pyplot as plt
 from datetime import datetime
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.stattools import acf, pacf
-from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.arima_model import ARIMA
 
 
 data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
-                   index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
+               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
+print(type(data))
 print(data.columns)
 print(data.head())
 print(data.dtypes)
 print(data.index)
 print(data.shape)
+
+data[["APHu", "APVs", "ACPv", "ZSx", "ZUs"]].head()
+data[["APHu", "APVs", "ACPv", "ZSx", "ZUs"]].resample("10s").mean().interpolate().head()
+
+plt.plot(data[["APHu", "APVs", "ACPv", "ZSx", "ZUs"]].head())
+plt.plot(data[["APHu", "APVs", "ACPv", "ZSx", "ZUs"]].resample("10s").mean().interpolate().head())
+
+
+data.head()
+data.resample("10s").mean().interpolate().head()
+
+
+# From http://pandas.pydata.org/pandas-docs/stable/timeseries.html
+rng = pd.date_range('1/1/2012', periods=100, freq='S')
+ts = pd.Series(np.random.randint(0, 500, len(rng)), index=rng)
+# from secondly to every 250 milliseconds
+ts[:2].resample('250L').head()
+ts[:2].resample('250L').mean().interpolate().head()
+
 
 print(min(data.index))
 print(max(data.index))
