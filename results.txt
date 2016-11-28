@@ -16,3 +16,7 @@
 5 components, noise [0.2, 1, 1, 0.4, 0.8], 1 nearest:           Hotelling 26, p-value=0
 5 components, noise [0.2, 0.8, 1, 0.4, 0.6], 1 nearest:         Hotelling 5.8894, p-value=1.994e-11
 5 components, noise [0.1, 0.6, 1, 0.2, 0.5], 1 nearest:         Hotelling 138, p-value=0
+5 components, noise, weight [ 0.00322594,  0.0015908 ,
+    0.0012264 ,  0.00102479,  0.00045235], 1 nearest:           Hotelling 171, p-value=0
+5 components, noise, weight [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,
+    7.15911735e-03,   7.56237144e-04], 1 nearest:               Hotelling 175, p-value=0

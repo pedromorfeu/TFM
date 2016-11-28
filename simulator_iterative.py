@@ -21,12 +21,14 @@ from scipy.spatial.distance import cdist
 
 
 N_COMPONENTS = 5
-GAUSSIAN_DATA_SIZE = 1000000
-NEW_DATA_SIZE = 1000
+GAUSSIAN_DATA_SIZE = 500000
+NEW_DATA_SIZE = 500
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
-# ERROR_FACTOR = np.ones(N_COMPONENTS)
-ERROR_FACTOR = [0.1, 0.6, 1, 0.2, 0.5]
+ERROR_FACTOR = np.ones(N_COMPONENTS)
+# ERROR_FACTOR = [0.1, 0.6, 1, 0.2, 0.5]
+WEIGHT_FACTOR = [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,    7.15911735e-03,   7.56237144e-04]
+
 
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
@@ -83,8 +85,9 @@ X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
 # from sklearn.decomposition import PCA
 # pca = PCA(n_components=N_COMPONENTS, whiten=True)
-# pca.fit(X)
+# pca.fit(raw)
 # pca.explained_variance_
+# pca.explained_variance_ratio_
 
 
 # We could of course use SVD ...
@@ -356,7 +359,6 @@ models_iterative = models.copy()
 generated_gaussian_copy = generated_gaussian.copy()
 scaled_generated_gaussian = scale(generated_gaussian.copy())
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
-weight_factor = [1, 0.4, 0.2, 0.1, 0.05]
 chosen_indexes = np.zeros(NEW_DATA_SIZE)
 for i in range(NEW_DATA_SIZE):
     print("Iteration", i)
@@ -384,7 +386,7 @@ for i in range(NEW_DATA_SIZE):
     # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
     # standardized distances
     # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
-    distances = np.sqrt(( (weight_factor*(scaled_generated_gaussian - scale(preds))) ** 2).sum(axis=1))
+    distances = np.sqrt( ( (WEIGHT_FACTOR * (scaled_generated_gaussian - scale(preds))) ** 2 ).sum(axis=1) )
 
     # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
 
