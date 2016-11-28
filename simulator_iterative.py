@@ -20,11 +20,11 @@ from scipy.spatial.distance import cdist
 # raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
 
 
-N_COMPONENTS = 3
+N_COMPONENTS = 5
 GAUSSIAN_DATA_SIZE = 500000
 NEW_DATA_SIZE = 500
 TS_FREQUENCY = "10s"
-N_INDEXES = 20
+N_INDEXES = 1
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
 
@@ -346,7 +346,8 @@ models_iterative = models.copy()
 generated_gaussian_copy = generated_gaussian.copy()
 scaled_generated_gaussian = scale(generated_gaussian.copy())
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
-error_factor = np.zeros(N_COMPONENTS)
+error_factor = np.ones(N_COMPONENTS)
+weight_factor = [1, 0.4, 0.2, 0.1, 0.05]
 chosen_indexes = np.zeros(NEW_DATA_SIZE)
 for i in range(NEW_DATA_SIZE):
     print("Iteration", i)
@@ -374,9 +375,9 @@ for i in range(NEW_DATA_SIZE):
     # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
     # standardized distances
     # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
-    # distances = np.sqrt(((scaled_generated_gaussian - scale(preds)) ** 2).sum(axis=1))
+    distances = np.sqrt(( (weight_factor*(scaled_generated_gaussian - scale(preds))) ** 2).sum(axis=1))
 
-    distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
+    # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
 
     # take first N_INDEXES nearest indexes
     sorted_indexes = distances.argsort()[:N_INDEXES]
