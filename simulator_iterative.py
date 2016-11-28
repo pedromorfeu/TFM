@@ -20,11 +20,14 @@ from scipy.spatial.distance import cdist
 # raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
 
 
-N_COMPONENTS = 3
-GAUSSIAN_DATA_SIZE = 500000
-NEW_DATA_SIZE = 500
+N_COMPONENTS = 5
+GAUSSIAN_DATA_SIZE = 1000000
+NEW_DATA_SIZE = 1000
 TS_FREQUENCY = "10s"
-N_INDEXES = 20
+N_INDEXES = 1
+# ERROR_FACTOR = np.ones(N_COMPONENTS)
+ERROR_FACTOR = [0.1, 0.6, 1, 0.2, 0.5]
+
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
 
@@ -77,9 +80,16 @@ print(X[:5, :])
 X.mean(axis=0)  # array([ -3.92198351e-17,  -1.74980803e-16, ...
 X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
+
+# from sklearn.decomposition import PCA
+# pca = PCA(n_components=N_COMPONENTS, whiten=True)
+# pca.fit(X)
+# pca.explained_variance_
+
+
 # We could of course use SVD ...
 print(str(datetime.now()), "Calculating SVD...")
-u, d, v = np.linalg.svd(X[:1000, :])
+u, d, v = np.linalg.svd(X[:, :])
 print(str(datetime.now()), "Done")
 print(u.shape)
 print(d.shape)
@@ -191,7 +201,7 @@ print_matrix("generated_gaussian", generated_gaussian)
 inverse_gaussian = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
 #XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("inverse_gaussian", inverse_gaussian)
-save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
+# save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
 
 
 # Distribution is lost?
@@ -346,7 +356,6 @@ models_iterative = models.copy()
 generated_gaussian_copy = generated_gaussian.copy()
 scaled_generated_gaussian = scale(generated_gaussian.copy())
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
-error_factor = np.zeros(N_COMPONENTS)
 chosen_indexes = np.zeros(NEW_DATA_SIZE)
 for i in range(NEW_DATA_SIZE):
     print("Iteration", i)
@@ -364,7 +373,7 @@ for i in range(NEW_DATA_SIZE):
         # add random error from series standard deviation and mean 0
         add_error = 0 + min_rmse * np.random.randn()
         # add some error atenuation
-        add_error = error_factor[j] * add_error
+        add_error = ERROR_FACTOR[j] * add_error
         # print("Adding error using RMSE", min_rmse, ":", add_error)
         preds[j] = predictions_ARIMA1 + add_error
         j += 1
@@ -405,6 +414,21 @@ f = open(os.path.join("generated", "chosen_indexes.csv"), "w")
 for i in chosen_indexes:
     f.write(str(int(i)) + ",")
 f.close()
+
+
+
+print("Saving plots...")
+plt.ioff()
+for i in range(N_COMPONENTS):
+    plt.clf()
+    plt.plot(models_iterative[i][1].values, label="prediction")
+    plt.plot(timeseries_samples[i], label="original")
+    title = "component" + str(i+1)
+    plt.title(title)
+    plt.legend()
+    plt.savefig(os.path.join("figures", title))
+plt.ion()
+print("Plots saved")
 
 
 # models_iterative = models.copy()

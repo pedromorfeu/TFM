@@ -217,6 +217,7 @@ def save_all_plots(_data, _inverse, _inverse_gaussian, _columns, _suffix="", _fo
         plt.plot(_inverse[:, i], label="inverse")
         plt.plot(_data[:, i], label="original")
         title = _columns[i] + _suffix
+        plt.title(title)
         plt.legend()
         plt.savefig(os.path.join(_folder, title))
     plt.ion()

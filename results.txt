@@ -6,3 +6,13 @@
 3 components, 100000 simulated, gaussian, no noise, frequency 10s:  Hotelling 0.045771, p-value=1
 3 components, 100000 simulated, ARIMA, no noise, frequency 60s:     Hotelling , p-value=
 3 components, 100000 simulated, gaussian, no noise, frequency 60s:  Hotelling , p-value=
+
+
+1000000 gaussian simulated:
+5 components, noise, 20 nearest:                                Hotelling 53, p-value=0
+5 components, no noise, 20 nearest:                             Hotelling 49, p-value=0
+5 components, noise, 1 nearest:                                 Hotelling 16, p-value=0
+5 components, noise [0.2, 1, 1, 0.4, 0.8], 1 nearest:           Hotelling 26, p-value=0
+5 components, noise [0.2, 1, 1, 0.4, 0.8], 1 nearest:           Hotelling 26, p-value=0
+5 components, noise [0.2, 0.8, 1, 0.4, 0.6], 1 nearest:         Hotelling 5.8894, p-value=1.994e-11
+5 components, noise [0.1, 0.6, 1, 0.2, 0.5], 1 nearest:         Hotelling 138, p-value=0
