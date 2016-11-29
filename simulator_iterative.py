@@ -25,7 +25,7 @@ GAUSSIAN_DATA_SIZE = 1000000
 NEW_DATA_SIZE = 1000
 TS_FREQUENCY = "10s"
 N_INDEXES = 20
-ERROR_FACTOR = np.ones(N_COMPONENTS)
+ERROR_FACTOR = np.zeros(N_COMPONENTS)
 # ERROR_FACTOR = [0.1, 0.6, 1, 0.2, 0.5]
 WEIGHT_FACTOR = [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,    7.15911735e-03,   7.56237144e-04]
 
@@ -389,6 +389,7 @@ for i in range(NEW_DATA_SIZE):
     distances = np.sqrt( ( (WEIGHT_FACTOR * (scaled_generated_gaussian - scale(preds))) ** 2 ).sum(axis=1) )
 
     # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
+    # distances = cdist( ([WEIGHT_FACTOR * scale(preds)]), WEIGHT_FACTOR * (scaled_generated_gaussian), 'mahalanobis', VI=None)[0]
 
     # take first N_INDEXES nearest indexes
     sorted_indexes = distances.argsort()[:N_INDEXES]
