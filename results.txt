@@ -24,7 +24,6 @@
     7.15911735e-03,   7.56237144e-04], 1 nearest:               Hotelling 328, p-value=0
 5 components, noise, weight [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,
     7.15911735e-03,   7.56237144e-04], 20 nearest:              Hotelling 322, p-value=0
-
 5 components, noise, weight [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,
     7.15911735e-03,   7.56237144e-04], mahalanobis 1 nearest:   Hotelling 343, p-value=0
 5 components, weight [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,
@@ -32,3 +31,6 @@
 
 5 components, weight [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,
     7.15911735e-03,   7.56237144e-04], 20 nearest:              Hotelling ?, p-value=0
+
+5 components, noise, component independent, 1 nearest:          Hotelling 489, p-value=0
+5 components, component independent, 20 nearest:                Hotelling 509, p-value=0

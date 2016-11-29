@@ -13,3 +13,8 @@ cdist([x], [q2], 'euclidean')
 
 cdist([1,2,3], [[2,3,4],[1,2,1],[3,4,6],[2,3,7],[6,4,3]], 'mahalanobis', VI=None)
 cdist([x], [q2], 'mahalanobis', VI=None)
+
+cdist([1,2,3], [[2,3,4],[1,2,1],[3,4,6],[2,3,7],[6,4,3]], 'mahalanobis', VI=None)
+
+cdist([[1,2,3]], [[2,3,4],[1,2,1],[3,4,6],[2,3,7],[6,4,3]], 'mahalanobis', VI=None)
+cdist([[2]], [[2],[3],[4],[1],[2],[1]], 'mahalanobis', VI=None)

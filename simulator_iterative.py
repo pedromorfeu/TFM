@@ -2,9 +2,6 @@
 
 import numpy as np
 import pandas as pd
-from docutils.nodes import generated
-from nltk.cluster.gaac import GAAClusterer
-
 from util import *
 from warnings import warn
 from matplotlib import pylab
@@ -21,11 +18,11 @@ from scipy.spatial.distance import cdist
 
 
 N_COMPONENTS = 5
-GAUSSIAN_DATA_SIZE = 1000000
-NEW_DATA_SIZE = 1000
+GAUSSIAN_DATA_SIZE = 500000
+NEW_DATA_SIZE = 500
 TS_FREQUENCY = "10s"
-N_INDEXES = 20
-ERROR_FACTOR = np.zeros(N_COMPONENTS)
+N_INDEXES = 1
+ERROR_FACTOR = np.ones(N_COMPONENTS)
 # ERROR_FACTOR = [0.1, 0.6, 1, 0.2, 0.5]
 WEIGHT_FACTOR = [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,    7.15911735e-03,   7.56237144e-04]
 
@@ -360,11 +357,13 @@ generated_gaussian_copy = generated_gaussian.copy()
 scaled_generated_gaussian = scale(generated_gaussian.copy())
 generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
 chosen_indexes = np.zeros(NEW_DATA_SIZE)
+i = 0
 for i in range(NEW_DATA_SIZE):
     print("Iteration", i)
     j = 0
     # Array to store each predicted point
     preds = np.zeros(N_COMPONENTS)
+    preds_transformed = np.zeros(N_COMPONENTS)
     for (results_ARIMA, ts_log_predicted, min_rmse) in models_iterative:
         model1 = SARIMAX(ts_log_predicted, order=results_ARIMA.model.order)
         results_ARIMA1 = model1.filter(results_ARIMA.params)
@@ -379,30 +378,40 @@ for i in range(NEW_DATA_SIZE):
         add_error = ERROR_FACTOR[j] * add_error
         # print("Adding error using RMSE", min_rmse, ":", add_error)
         preds[j] = predictions_ARIMA1 + add_error
+
+        # Euclidean distance
+        distances = np.sqrt( ( (generated_gaussian_copy[:, j] - preds[j]) ** 2) )
+        sorted_indexes = distances.argsort()[:N_INDEXES]
+        random_index = np.random.randint(N_INDEXES)
+        min_index = sorted_indexes[random_index]
+        preds_transformed[j] = generated_gaussian_copy[min_index, j]
         j += 1
 
-    # Euclidean distance
     print("preds", preds)
-    # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
-    # standardized distances
-    # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
-    distances = np.sqrt( ( (WEIGHT_FACTOR * (scaled_generated_gaussian - scale(preds))) ** 2 ).sum(axis=1) )
 
-    # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
-    # distances = cdist( ([WEIGHT_FACTOR * scale(preds)]), WEIGHT_FACTOR * (scaled_generated_gaussian), 'mahalanobis', VI=None)[0]
+    if False:
+        # Euclidean distance
+        # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
+        # standardized distances
+        # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
+        distances = np.sqrt( ( (WEIGHT_FACTOR * (scaled_generated_gaussian - scale(preds))) ** 2 ).sum(axis=1) )
 
-    # take first N_INDEXES nearest indexes
-    sorted_indexes = distances.argsort()[:N_INDEXES]
-    # select the nearest index
-    # min_index = sorted_indexes[0]
-    # select random index
-    random_index = np.random.randint(N_INDEXES)
-    min_index = sorted_indexes[random_index]
-    preds_transformed = generated_gaussian_copy[min_index]
-    chosen_indexes[i] = min_index
-    # preds_transformed = preds
-    # hypotesis: repetitions make results worse
-    # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
+        # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
+        # distances = cdist( ([WEIGHT_FACTOR * scale(preds)]), WEIGHT_FACTOR * (scaled_generated_gaussian), 'mahalanobis', VI=None)[0]
+
+        # take first N_INDEXES nearest indexes
+        sorted_indexes = distances.argsort()[:N_INDEXES]
+        # select the nearest index
+        # min_index = sorted_indexes[0]
+        # select random index
+        random_index = np.random.randint(N_INDEXES)
+        min_index = sorted_indexes[random_index]
+        preds_transformed = generated_gaussian_copy[min_index]
+        chosen_indexes[i] = min_index
+        # preds_transformed = preds
+        # hypotesis: repetitions make results worse
+        # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
+
     generated_X[i] = preds_transformed
     print("preds_transformed", preds_transformed)
 
@@ -425,6 +434,8 @@ print("Saving plots...")
 plt.ioff()
 for i in range(N_COMPONENTS):
     plt.clf()
+    max_gaussian = models_iterative[i][1].shape[0]
+    plt.plot(generated_gaussian[:max_gaussian, i], label="gaussian")
     plt.plot(models_iterative[i][1].values, label="prediction")
     plt.plot(timeseries_samples[i], label="original")
     title = "component" + str(i+1)

@@ -21,6 +21,10 @@ def dist(x,y):
 print(dist(numpy.array(p), numpy.array(q1)))
 print(dist(numpy.array(p), numpy.array(q2)))
 
+numpy.array([-4.70324186, -2.05215551,  2.56444493]) - numpy.array([-3.2683099767221981])
+(numpy.array([-4.70324186, -2.05215551,  2.56444493]) - numpy.array([-3.2683099767221981])) ** 2
+numpy.sqrt( (numpy.array([-4.70324186, -2.05215551,  2.56444493]) - numpy.array([-3.2683099767221981])) ** 2 )
+
 
 # Nearest points
 points = numpy.array([[3, 4, 1], [4, 6, 0], [1, 2, 5]])
