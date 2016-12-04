@@ -40,19 +40,16 @@ data <- read.csv2("generated/data.csv", sep = "\t", header=T, stringsAsFactors =
 # filter by date
 nrow(data)
 ncol(data)
-mean(data$APHu)
-sd(data$APHu)
-plot(data$APHu)
+mean(data)
+tail(data)
 
 # check the variables with zero variance and give them white noise
 # otherwise the test will fail due to inability to invert
 cov(data)
-# ZSx and H7x have zero variance
+data$col6 <- mean(data$col6) + 0.001 * rnorm(nrow(data))
 data$ZSx <- mean(data$ZSx) + 0.001 * rnorm(nrow(data))
 data$H7x <- mean(data$H7x) + 0.001 * rnorm(nrow(data))
 cov(data)
-mean(data$APHu)
-sd(data$APHu)
 
 head(data)
 
@@ -67,6 +64,7 @@ nrow(inverted_data_gaussian)
 ncol(inverted_data_gaussian)
 
 cov(inverted_data_gaussian)
+inverted_data_gaussian$col6 <- mean(inverted_data_gaussian$col6) + 0.001 * rnorm(nrow(inverted_data_gaussian))
 inverted_data_gaussian$ZSx <- mean(inverted_data_gaussian$ZSx) + 0.001 * rnorm(nrow(inverted_data_gaussian))
 inverted_data_gaussian$H7x <- mean(inverted_data_gaussian$H7x) + 0.001 * rnorm(nrow(inverted_data_gaussian))
 cov(inverted_data_gaussian)
@@ -80,14 +78,14 @@ lines(data[, 1], col="gray")
 
 
 ### ARIMA
-inverted_data <- read.csv2("generated/inverse_X.csv", sep = "\t", header=T, stringsAsFactors = F, 
-                           colClasses = rep("numeric", 14), dec = ".")
+inverted_data <- read.csv2("generated/inverse_X.csv", sep = "\t", header=T, stringsAsFactors = F, dec = ".")
 nrow(inverted_data)
 ncol(inverted_data)
 head(inverted_data)
 tail(inverted_data)
 
 cov(inverted_data)
+inverted_data$col6 <- mean(inverted_data$col6) + 0.001 * rnorm(nrow(inverted_data))
 inverted_data$ZSx <- mean(inverted_data$ZSx) + 0.001 * rnorm(nrow(inverted_data))
 inverted_data$H7x <- mean(inverted_data$H7x) + 0.001 * rnorm(nrow(inverted_data))
 cov(inverted_data)

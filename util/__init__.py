@@ -229,5 +229,7 @@ def save_all_plots(_data, _inverse, _inverse_gaussian, _columns, _suffix="", _fo
 # In practice we often ignore the shape of the distribution and just transform the data to center it by removing the mean value of each feature,
 # then scale it by dividing non-constant features by their standard deviation.
 # (http://scikit-learn.org/stable/modules/preprocessing.html)
-def scale(_X):
-    return (_X - _X.mean(axis=0)) / _X.std(axis=0)
+# TODO: standardize with mean and std from gaussian
+def scale(_X, _mean, _std):
+    return (_X - _mean) / _std
+

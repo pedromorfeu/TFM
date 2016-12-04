@@ -7,3 +7,4 @@ numpy_matplotlib
 generated/
 .ipynb_checkpoints/
 /figures/
+statsmodels-0.8.0rc1/
