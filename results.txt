@@ -28,10 +28,27 @@
     7.15911735e-03,   7.56237144e-04], mahalanobis 1 nearest:   Hotelling 343, p-value=0
 5 components, weight [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,
     7.15911735e-03,   7.56237144e-04], mahalanobis 20 nearest:  Hotelling 346, p-value=0
-
 5 components, weight [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,
     7.15911735e-03,   7.56237144e-04], 20 nearest:              Hotelling ?, p-value=0
-
 5 components, noise, component independent, 1 nearest:          Hotelling 489, p-value=0
 5 components, component independent, 20 nearest:                Hotelling 509, p-value=0
 5 components, noise, component independent, 1 nearest:          Hotelling 58, p-value=0
+
+
+## Test 1
+- generated 1000 new data (with sin, cos and random normal)
+- 10 seconds frequency
+- 14 columns
+- 500000 gaussian
+- add series residual error
+- nearest point with mahalanobis distance
+- simulate 2000 new points
+
+## Test 2
+- real data from sensor (day 2015/10/06)
+- data interpolated at 10 seconds frequency
+- 14 columns
+- 500000 gaussian
+- add series residual error
+- nearest point with mahalanobis distance
+- simulate 2000 new points

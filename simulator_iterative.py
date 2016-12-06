@@ -36,7 +36,7 @@ start = datetime.now()
 data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
                index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
-data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
+# data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
 
 print(type(data))
 print(data.columns)
@@ -62,12 +62,8 @@ data = data.resample(TS_FREQUENCY).mean().interpolate()
 save_matrix("data.csv", data.values, data.columns)
 
 
-plt.clf()
-plt.plot(data)
-plt.show()
-
-
-save_plots(data.values, data.columns, "_original", "figures")
+save_data_plot(_data=data, _filename="original")
+save_plot_per_column(data.values, data.columns, "_original", "figures")
 
 
 raw = data.values
@@ -213,7 +209,7 @@ print_matrix("inverse_gaussian", inverse_gaussian)
 # save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
 
 
-save_plots(inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_inverse_gaussian", "figures")
+save_plot_per_column(inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_inverse_gaussian", "figures")
 
 
 ### Time series
@@ -375,29 +371,28 @@ for i in range(NEW_DATA_SIZE):
 
     print("preds", preds)
 
-    if True:
-        # Euclidean distance
-        # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
-        # standardized distances
-        # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
-        scaled_preds = scale(preds, generated_gaussian.mean(axis=0), generated_gaussian.std(axis=0))
-        # distances = np.sqrt( ( (WEIGHT_FACTOR * (scaled_generated_gaussian - scaled_preds)) ** 2 ).sum(axis=1) )
+    # Euclidean distance
+    # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
+    # standardized distances
+    # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
+    scaled_preds = scale(preds, generated_gaussian.mean(axis=0), generated_gaussian.std(axis=0))
+    # distances = np.sqrt( ( (WEIGHT_FACTOR * (scaled_generated_gaussian - scaled_preds)) ** 2 ).sum(axis=1) )
 
-        # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
-        distances = cdist( ([WEIGHT_FACTOR * scaled_preds]), (WEIGHT_FACTOR * scaled_generated_gaussian), 'mahalanobis', VI=None)[0]
+    # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
+    distances = cdist( ([WEIGHT_FACTOR * scaled_preds]), (WEIGHT_FACTOR * scaled_generated_gaussian), 'mahalanobis', VI=None)[0]
 
-        # take first N_INDEXES nearest indexes
-        sorted_indexes = distances.argsort()[:N_INDEXES]
-        # select the nearest index
-        # min_index = sorted_indexes[0]
-        # select random index
-        random_index = np.random.randint(N_INDEXES)
-        min_index = sorted_indexes[random_index]
-        preds_transformed = generated_gaussian_copy[min_index]
-        chosen_indexes[i] = min_index
-        # preds_transformed = preds
-        # hypotesis: repetitions make results worse
-        # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
+    # take first N_INDEXES nearest indexes
+    sorted_indexes = distances.argsort()[:N_INDEXES]
+    # select the nearest index
+    # min_index = sorted_indexes[0]
+    # select random index
+    random_index = np.random.randint(N_INDEXES)
+    min_index = sorted_indexes[random_index]
+    preds_transformed = generated_gaussian_copy[min_index]
+    chosen_indexes[i] = min_index
+    # preds_transformed = preds
+    # hypotesis: repetitions make results worse
+    # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
 
     generated_X[i] = preds_transformed
     print("preds_transformed", preds_transformed)
@@ -410,33 +405,7 @@ for i in range(NEW_DATA_SIZE):
 print(str(datetime.now()), "Done iterative prediction")
 
 
-f = open(os.path.join("generated", "chosen_indexes.csv"), "w")
-for i in chosen_indexes:
-    f.write(str(int(i)) + ",")
-f.close()
-
-
-print("Saving plots...")
-plt.ioff()
-for i in range(N_COMPONENTS):
-    plt.clf()
-    max_gaussian = models_iterative[i][1].shape[0]
-    plt.plot(generated_gaussian[:max_gaussian, i], label="gaussian")
-    plt.plot(models_iterative[i][1].values, label="prediction")
-    plt.plot(timeseries_samples[i], label="original")
-    plt.axhline(generated_gaussian[:, i].max(), color="gray", linewidth=1)
-    plt.axhline(generated_gaussian[:, i].min(), color="gray", linewidth=1)
-    plt.axhline(generated_gaussian[:, i].mean(), color="gray", linewidth=1)
-    plt.axhline(generated_gaussian[:, i].mean() + 2 * generated_gaussian[:, i].std(), color="gray", linewidth=1)
-    plt.axhline(generated_gaussian[:, i].mean() + 3 * generated_gaussian[:, i].std(), color="gray", linewidth=1)
-    plt.axhline(generated_gaussian[:, i].mean() - 2 * generated_gaussian[:, i].std(), color="gray", linewidth=1)
-    plt.axhline(generated_gaussian[:, i].mean() - 3 * generated_gaussian[:, i].std(), color="gray", linewidth=1)
-    title = "component_" + str(i+1)
-    plt.title(title)
-    plt.legend()
-    plt.savefig(os.path.join("figures", title))
-plt.ion()
-print("Plots saved")
+save_plot_per_component(N_COMPONENTS, generated_gaussian, timeseries_samples, models_iterative)
 
 
 # distribution of generated_X isn't normal; however, generated_gaussian is
@@ -450,37 +419,8 @@ print_matrix("XX", inverse)
 save_matrix("inverse_X.csv", inverse, data.columns)
 
 
-save_plots(inverse, data.columns, "_inverse", "figures")
-
-
-save_all_plots(data.values, inverse, inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_mixed", "figures")
-
-
-# error = ts_log_predicted - ts_log
-# print("Missing values:", not np.all(np.isfinite(error)))
-# error.dropna(inplace=True)
-# print("Missing values:", not np.all(np.isfinite(error)))
-# rmse = np.sqrt(sum((error) ** 2) / len(ts_log))
-# print("RMSE", rmse)
-
-# plt.clf()
-# plt.plot(timeseries_sample)
-# plt.plot(predictions_ARIMA[:max(timeseries_sample.index) + 500])
-# plt.title('RMSE: %.4f' % rmse)
-# plt.show(block=True)
-#
-# plt.clf()
-# plt.plot(timeseries_sample)
-# plt.plot(predictions_ARIMA)
-# plt.title('RMSE: %.4f' % rmse)
-# plt.show(block=True)
-
-# add noise
-# predictions_ARIMA = predictions_ARIMA + np.random.normal(0, rmse, NEW_DATA_SIZE)
-
-# generated_X[:, i] = predictions_ARIMA
-
-
+save_plot_per_column(inverse, data.columns, "_inverse", "figures")
+save_mixed_plots_per_column(data.values, inverse, inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_mixed", "figures")
 
 
 # PCA also has two very important outputs we should calculate:

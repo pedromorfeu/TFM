@@ -194,9 +194,10 @@ def arima_order_select(_timeseries, max_ar=4, max_i=2, max_ma=4, min_i=0):
     return (min_rmse, min_p, min_d, min_q)
 
 
-def save_plots(_data, _columns, _suffix="", _folder="figures"):
+def save_plot_per_column(_data, _columns, _suffix="", _folder="figures"):
     print("Saving plots...")
     plt.ioff()
+    plt.figure(figsize=(16, 9))
     for i in range(len(_columns)):
         plt.clf()
         plt.plot(_data[:, i])
@@ -208,9 +209,10 @@ def save_plots(_data, _columns, _suffix="", _folder="figures"):
     print("Plots saved")
 
 
-def save_all_plots(_data, _inverse, _inverse_gaussian, _columns, _suffix="", _folder="figures"):
+def save_mixed_plots_per_column(_data, _inverse, _inverse_gaussian, _columns, _suffix="", _folder="figures"):
     print("Saving plots...")
     plt.ioff()
+    plt.figure(figsize=(16, 9))
     for i in range(len(_columns)):
         plt.clf()
         plt.plot(_inverse_gaussian[:, i], label="gaussian")
@@ -223,6 +225,43 @@ def save_all_plots(_data, _inverse, _inverse_gaussian, _columns, _suffix="", _fo
     plt.ion()
     print("Plots saved")
 
+
+def save_data_plot(_data, _filename="original", _folder="figures"):
+    print("Saving plot...")
+    plt.ioff()
+    plt.figure(figsize=(16, 9))
+    plt.clf()
+    plt.plot(_data)
+    title = _filename
+    plt.title(title)
+    plt.savefig(os.path.join(_folder, title), dpi=100)
+    plt.ion()
+    print("Plot saved")
+
+
+def save_plot_per_component(_n_components, _generated_gaussian, _timeseries_samples, _models_iterative):
+    print("Saving plots...")
+    plt.ioff()
+    plt.figure(figsize=(16, 9))
+    for i in range(_n_components):
+        plt.clf()
+        max_gaussian = _models_iterative[i][1].shape[0]
+        plt.plot(_generated_gaussian[:max_gaussian, i], label="gaussian")
+        plt.plot(_models_iterative[i][1].values, label="prediction")
+        plt.plot(_timeseries_samples[i], label="original")
+        plt.axhline(_generated_gaussian[:, i].max(), color="gray", linewidth=1)
+        plt.axhline(_generated_gaussian[:, i].min(), color="gray", linewidth=1)
+        plt.axhline(_generated_gaussian[:, i].mean(), color="gray", linewidth=1)
+        plt.axhline(_generated_gaussian[:, i].mean() + 2 * _generated_gaussian[:, i].std(), color="gray", linewidth=1)
+        plt.axhline(_generated_gaussian[:, i].mean() + 3 * _generated_gaussian[:, i].std(), color="gray", linewidth=1)
+        plt.axhline(_generated_gaussian[:, i].mean() - 2 * _generated_gaussian[:, i].std(), color="gray", linewidth=1)
+        plt.axhline(_generated_gaussian[:, i].mean() - 3 * _generated_gaussian[:, i].std(), color="gray", linewidth=1)
+        title = "component_" + str(i+1)
+        plt.title(title)
+        plt.legend()
+        plt.savefig(os.path.join("figures", title))
+    plt.ion()
+    print("Plots saved")
 
 # Standardization of datasets is a common requirement for many machine learning estimators implemented in scikit-learn;
 # they might behave badly if the individual features do not more or less look like standard normally distributed data: Gaussian with zero mean and unit variance.

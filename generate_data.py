@@ -15,7 +15,7 @@ def generate_sinoidal(fR=0.05, fPi=10, fun=np.sin, fMultiply=1, fAdd=0, round=2)
     return np.round(sin, round)
 
 
-def generate_gaussian(mean = 2, std = 3, fR = 0.5, round=0):
+def generate_gaussian(mean=2, std=3, fR=0.5, round=0):
     return np.round(np.random.normal(mean, std*fR, MAX_POINTS), round)
 
 
@@ -27,14 +27,14 @@ generated_data[:, 2] = generate_gaussian(5, 1, 0.2)
 generated_data[:, 3] = generate_gaussian(-8, 3, 0.09, round=2)
 generated_data[:, 4] = generate_gaussian(-2, 2.1, 0.5)
 generated_data[:, 5] = generate_gaussian(3, 1, 0.1)
-generated_data[:, 6] = generate_sinoidal(fR=0.05, fPi=5, fun=np.sin, round=0)
-generated_data[:, 7] = generate_sinoidal(fR=0.01, fPi=5, fun=np.sin, fMultiply=2, fAdd=3)
+generated_data[:, 6] = generate_sinoidal(fR=0.05, fun=np.sin, round=0)
+generated_data[:, 7] = generate_sinoidal(fR=0.01, fun=np.sin, fMultiply=2, fAdd=3)
 generated_data[:, 8] = generate_sinoidal(fR=0.02, fun=np.cos)
-generated_data[:, 9] = generate_sinoidal(fR=0.09, fPi=15, fun=np.cos, fMultiply=4, fAdd=-1)
-generated_data[:, 10] = generate_sinoidal(fR=0.05, fPi=5, fun=np.sin, round=1)
-generated_data[:, 11] = generate_sinoidal(fR=0.01, fPi=4, fun=np.cos, fMultiply=5)
+generated_data[:, 9] = generate_sinoidal(fR=0.09, fun=np.cos, fMultiply=4, fAdd=-1)
+generated_data[:, 10] = generate_sinoidal(fR=0.05, fun=np.sin, round=1)
+generated_data[:, 11] = generate_sinoidal(fR=0.01, fun=np.cos, fMultiply=5)
 generated_data[:, 12] = generate_sinoidal(fR=0.02, fun=np.cos)
-generated_data[:, 13] = generate_sinoidal(fR=0.09, fPi=15, fun=np.cos, fAdd=-1)
+generated_data[:, 13] = generate_sinoidal(fR=0.09, fun=np.cos, fAdd=-1)
 
 # plt.plot(generated_data)
 # plt.show()
@@ -46,4 +46,5 @@ df.head()
 plt.plot(df)
 plt.show()
 
-# df.to_csv("ip_gen.txt", index_label="Tiempoinicio")
+df.to_csv("ip_gen.txt", index_label="Tiempoinicio")
+print("Saved")
