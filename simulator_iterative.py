@@ -1,3 +1,4 @@
+### SIMULATOR
 # Limitations: does not handle missing data
 
 import numpy as np
