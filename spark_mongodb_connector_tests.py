@@ -38,23 +38,31 @@ sqlContext = SQLContext(sc)
 print(sc)
 print(sqlContext)
 
-charactersRdd = sc.parallelize([("Bilbo Baggins",  50), ("Gandalf", 1000), ("Thorin", 195), ("Balin", 178), ("Kili", 77),
-   ("Dwalin", 169), ("Oin", 167), ("Gloin", 158), ("Fili", 82)])
-characters = sqlContext.createDataFrame(charactersRdd, ["name", "age"])
-characters.printSchema()
-characters.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
-
-print("written")
-
+# charactersRdd = sc.parallelize([("Bilbo Baggins",  50), ("Gandalf", 1000), ("Thorin", 195), ("Balin", 178), ("Kili", 77),
+#    ("Dwalin", 169), ("Oin", 167), ("Gloin", 158), ("Fili", 82)])
+# characters = sqlContext.createDataFrame(charactersRdd, ["name", "age"])
+# characters.printSchema()
+# characters.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
 
 
 # Generate a random double RDD that contains 1 million i.i.d. values drawn from the
 # standard normal distribution `N(0, 1)`, evenly distributed in 4 partitions.
-u = RandomRDDs.normalRDD(sc, 1000000, 4)
+u = RandomRDDs.normalRDD(sc, 100000, 4)
 # Apply a transform to get a random double RDD following `N(1, 2)`.
 v = u.map(lambda x: (1.0 + 2.0 * x, ))
+print(v.first())
+
 vs = sqlContext.createDataFrame(v, ["number"])
 vs.printSchema()
 vs.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
+
+
+
+df = sqlContext.read.format("com.mongodb.spark.sql.DefaultSource").load()
+df.printSchema()
+
+rdd = df.map(lambda x: (x["number"]+10))
+print(rdd.first())
+
 
 sc.stop()
