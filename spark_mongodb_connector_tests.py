@@ -1,6 +1,7 @@
 import matplotlib.pylab as plt
 import os
 import sys
+import numpy as np
 
 # # Path for spark source folder
 # os.environ['SPARK_HOME']="C:/BigData/TFM/spark-1.6.2-bin-hadoop2.6"
@@ -50,7 +51,7 @@ print(sqlContext)
 u = RandomRDDs.normalRDD(sc, 100000, 4)
 # Apply a transform to get a random double RDD following `N(1, 2)`.
 v = u.map(lambda x: (1.0 + 2.0 * x, ))
-print(v.first())
+print(v.take(5))
 
 vs = sqlContext.createDataFrame(v, ["number"])
 vs.printSchema()
@@ -61,8 +62,13 @@ vs.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
 df = sqlContext.read.format("com.mongodb.spark.sql.DefaultSource").load()
 df.printSchema()
 
-rdd = df.map(lambda x: (x["number"]+10))
-print(rdd.first())
+rdd = df.map(lambda x: (x["number"]))
+print(rdd.take(5))
 
+x1 = 1
+distances_rdd = rdd.map(lambda x: (x, np.sqrt(((x - x1) ** 2))) )
+print(distances_rdd.take(5))
+
+print(distances_rdd.min(lambda x: x[1]))
 
 sc.stop()
