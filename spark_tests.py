@@ -30,34 +30,51 @@ sc = SparkContext(conf=conf)
 print(sc)
 
 
-# Generate a random double RDD that contains 1 million i.i.d. values drawn from the
-# standard normal distribution `N(0, 1)`, evenly distributed in 4 partitions.
-u = RandomRDDs.normalRDD(sc, 1000000, 4)
-# Apply a transform to get a random double RDD following `N(1, 2)`.
-v = u.map(lambda x: 1.0 + 2.0 * x)
+sigmas = [1, 1, 1, 1, 1]
+means = [2, 3, 4, 5, 6]
 
-v_data = v.collect()
-print(type(v_data))
-# print(v_data)
-print(v_data[:5])
-print(v_data[-5:])
+# rdds = []
+# for i in range(5):
+#     # Generate a random double RDD that contains 1 million i.i.d. values drawn from the
+#     # standard normal distribution `N(0, 1)`, evenly distributed in 4 partitions.
+#     u = RandomRDDs.normalRDD(sc, 1000)
+#     # To transform the distribution in the generated RDD from standard normal to some other normal N(mean, sigma^2),
+#     # use RandomRDDs.normal(sc, n, p, seed) .map(lambda v: mean + sigma * v)
+#     # Apply a transform to get a random double RDD following `N(1, 2)`.
+#     v = u.map(lambda x: means[i] + sigmas[i] * x).cache()
+#     rdds.append(v)
 
-# plt.plot(v_data)
+# print(rdds)
+# print(type(rdds[0].take(5)))
+# print(rdds[0].take(5))
+# print(rdds[1].take(5))
+# print(rdds[2].take(5))
+# print(rdds[3].take(5))
+# print(rdds[4].take(5))
+#
+# plt.plot(rdds[0].collect())
+# plt.plot(rdds[1].collect())
+# plt.plot(rdds[2].collect())
+# plt.plot(rdds[3].collect())
+# plt.plot(rdds[4].collect())
 # plt.show(block=True)
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from pymongo import MongoClient
+def f(x, i):
+    return means[i] + sigmas[i] * x
 
-client = MongoClient("mongodb://localhost:27017")
-print(client)
-db = client.simulation
-print(db)
-collection = db.random
-print(collection)
 
-collection.delete_many({})
+u = RandomRDDs.normalVectorRDD(sc, 1000, 5)
+v = u.map(lambda x: ( f(x[0], 0), f(x[1], 1), f(x[2], 2), f(x[3],3), f(x[4], 4) ))
+print(type(v.take(5)))
+print(v.take(5))
+
+# plt.plot(v.map(lambda x: x[0]).collect())
+# plt.plot(v.map(lambda x: x[1]).collect())
+# plt.plot(v.map(lambda x: x[2]).collect())
+# plt.plot(v.map(lambda x: x[3]).collect())
+# plt.plot(v.map(lambda x: x[4]).collect())
+plt.plot(v.collect())
+plt.show(block=True)
 
 sc.stop()

@@ -48,7 +48,7 @@ print(sqlContext)
 
 # Generate a random double RDD that contains 1 million i.i.d. values drawn from the
 # standard normal distribution `N(0, 1)`, evenly distributed in 4 partitions.
-u = RandomRDDs.normalRDD(sc, 100000, 4)
+u = RandomRDDs.normalRDD(sc, 100000)
 # Apply a transform to get a random double RDD following `N(1, 2)`.
 v = u.map(lambda x: (1.0 + 2.0 * x, ))
 print(v.take(5))
