@@ -66,8 +66,11 @@ def f(x, i):
     return means[i] + sigmas[i] * x
 
 
-u = RandomRDDs.normalVectorRDD(sc, 1000000, 5)
-v = u.map(lambda x: ( f(x[0], 0), f(x[1], 1), f(x[2], 2), f(x[3],3), f(x[4], 4) ))
+print(str(datetime.now()), "calculating normal vectors")
+u = RandomRDDs.normalVectorRDD(sc, 10000000, 5)
+print(str(datetime.now()), "applying normal factors")
+v = u.map(lambda x: ( f(x[0], 0), f(x[1], 1), f(x[2], 2), f(x[3],3), f(x[4], 4) )).cache()
+print(str(datetime.now()), "done")
 
 
 def calculate_min_distance(_v, _x1):
