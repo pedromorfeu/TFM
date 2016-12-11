@@ -66,7 +66,7 @@ def f(x, i):
     return means[i] + sigmas[i] * x
 
 
-MAX_POINTS = 10*1000*1000
+MAX_POINTS = 1*1000*1000
 print(str(datetime.now()), "calculating normal vectors")
 u = RandomRDDs.normalVectorRDD(sc, MAX_POINTS, 5)
 print(str(datetime.now()), "applying normal factors")
