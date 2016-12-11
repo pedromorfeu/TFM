@@ -1,6 +1,8 @@
 import matplotlib.pylab as plt
 import os
 import sys
+import numpy as np
+from datetime import datetime
 
 # # Path for spark source folder
 # os.environ['SPARK_HOME']="C:/BigData/TFM/spark-1.6.2-bin-hadoop2.6"
@@ -64,20 +66,33 @@ def f(x, i):
     return means[i] + sigmas[i] * x
 
 
-u = RandomRDDs.normalVectorRDD(sc, 100000, 5)
+u = RandomRDDs.normalVectorRDD(sc, 1000000, 5)
 v = u.map(lambda x: ( f(x[0], 0), f(x[1], 1), f(x[2], 2), f(x[3],3), f(x[4], 4) ))
-# print(v.take(5))
 
-v.saveAsTextFile("output")
 
-# plt.plot(v.map(lambda x: x[0]).collect())
-# plt.plot(v.map(lambda x: x[1]).collect())
-# plt.plot(v.map(lambda x: x[2]).collect())
-# plt.plot(v.map(lambda x: x[3]).collect())
-# plt.plot(v.map(lambda x: x[4]).collect())
+def calculate_min_distance(_v, _x1):
+    # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
+    distances_rdd = _v.map(lambda x: (x, np.sqrt((np.array(x) - np.array(_x1)) ** 2).sum()) )
+    # print("distances_rdd", distances_rdd)
+    min_distance = distances_rdd.min(lambda x: x[1])
+    # print("min distance", min_distance)
+    return min_distance
+
+
+x1 = [2, 3, 4, 5, 6]
+print(str(datetime.now()), "calculating min distance for", x1)
+d1 = calculate_min_distance(v, x1)
+print(str(datetime.now()), "min distance", d1)
+
+x2 = [3, 4, 5, 6, 7]
+print(str(datetime.now()), "calculating min distance for", x2)
+d2 = calculate_min_distance(v, x2)
+print(str(datetime.now()), "min distance", d2)
+
+# Sanity check - the point exists in the dataset
+# print(distances_rdd.filter(lambda x: x[0] == min_point).count())
+
 plt.plot(v.take(10000))
 plt.show(block=True)
-
-
 
 sc.stop()
