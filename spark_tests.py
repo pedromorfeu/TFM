@@ -64,17 +64,20 @@ def f(x, i):
     return means[i] + sigmas[i] * x
 
 
-u = RandomRDDs.normalVectorRDD(sc, 1000, 5)
+u = RandomRDDs.normalVectorRDD(sc, 100000, 5)
 v = u.map(lambda x: ( f(x[0], 0), f(x[1], 1), f(x[2], 2), f(x[3],3), f(x[4], 4) ))
-print(type(v.take(5)))
-print(v.take(5))
+# print(v.take(5))
+
+v.saveAsTextFile("output")
 
 # plt.plot(v.map(lambda x: x[0]).collect())
 # plt.plot(v.map(lambda x: x[1]).collect())
 # plt.plot(v.map(lambda x: x[2]).collect())
 # plt.plot(v.map(lambda x: x[3]).collect())
 # plt.plot(v.map(lambda x: x[4]).collect())
-plt.plot(v.collect())
+plt.plot(v.take(10000))
 plt.show(block=True)
+
+
 
 sc.stop()
