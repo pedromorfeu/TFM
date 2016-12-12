@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from util import *
 from warnings import warn
-from matplotlib import pylab
+from matplotlib import pyplot
 from datetime import datetime
 from statsmodels.tsa.stattools import arma_order_select_ic
 from statsmodels.tsa.arima_model import ARIMA
@@ -373,14 +373,14 @@ for i in range(NEW_DATA_SIZE):
     print("preds", preds)
 
     # Euclidean distance
-    # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
+    distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
     # standardized distances
     # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
     scaled_preds = scale(preds, generated_gaussian.mean(axis=0), generated_gaussian.std(axis=0))
     # distances = np.sqrt( ( (WEIGHT_FACTOR * (scaled_generated_gaussian - scaled_preds)) ** 2 ).sum(axis=1) )
 
     # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
-    distances = cdist( ([WEIGHT_FACTOR * scaled_preds]), (WEIGHT_FACTOR * scaled_generated_gaussian), 'mahalanobis', VI=None)[0]
+    # distances = cdist( ([WEIGHT_FACTOR * scaled_preds]), (WEIGHT_FACTOR * scaled_generated_gaussian), 'mahalanobis', VI=None)[0]
 
     # take first N_INDEXES nearest indexes
     sorted_indexes = distances.argsort()[:N_INDEXES]
