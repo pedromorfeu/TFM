@@ -1,7 +1,3 @@
-import matplotlib.pylab as plt
-import os
-import sys
-
 # # Path for spark source folder
 # os.environ['SPARK_HOME']="C:/BigData/TFM/spark-1.6.2-bin-hadoop2.6"
 #
@@ -24,27 +20,18 @@ except ImportError as e:
 
 
 # Initialize SparkContext
-conf = SparkConf().setAppName("testApp").setMaster("local[4]")
-sc = SparkContext(conf=conf)
+conf = SparkConf()\
+    .setAppName("SparkSimulation")\
+    .setMaster("local[4]")\
+    .set("spark.mongodb.input.uri", "mongodb://127.0.0.1/simulation.gaussian?readPreference=primaryPreferred")\
+    .set("spark.mongodb.output.uri", "mongodb://127.0.0.1/simulation.gaussian")
 
+# Note: set "spark.jars.packages org.mongodb.spark:mongo-spark-connector_2.10:1.1.0" in $SPARK_HOME/conf/spark-defaults.conf
+sc = SparkContext(conf=conf)
 print(sc)
 
-
-# Generate a random double RDD that contains 1 million i.i.d. values drawn from the
-# standard normal distribution `N(0, 1)`, evenly distributed in 4 partitions.
-u = RandomRDDs.normalRDD(sc, 1000000, 4)
-# Apply a transform to get a random double RDD following `N(1, 2)`.
-v = u.map(lambda x: 1.0 + 2.0 * x)
-
-v_data = v.collect()
-print(type(v_data))
-# print(v_data)
-print(v_data[:5])
-print(v_data[-5:])
-
-# plt.plot(v_data)
-# plt.show(block=True)
-
+sqlContext = SQLContext(sc)
+print(sqlContext)
 
 ### SIMULATOR
 # Limitations: does not handle missing data
@@ -66,7 +53,7 @@ from scipy.spatial.distance import cdist
 
 
 N_COMPONENTS = 5
-GAUSSIAN_DATA_SIZE = 500000
+GAUSSIAN_DATA_SIZE = 10000
 NEW_DATA_SIZE = 2000
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
@@ -239,25 +226,24 @@ save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_
 mus = np.mean(nipals_T, axis=0)
 sigmas = np.std(nipals_T, axis=0)
 
-generated_gaussian = np.zeros((GAUSSIAN_DATA_SIZE, N_COMPONENTS))
-for i in range(N_COMPONENTS):
-    # calculate normal distribution by component and store it in column i
-    generated_gaussian[:, i] = np.random.normal(mus[i], sigmas[i], GAUSSIAN_DATA_SIZE)
-    # alternative normal:
-    # generated_gaussian[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
-    # generate random not-normal:
-    # generated_gaussian[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
-print_matrix("generated_gaussian", generated_gaussian)
-# save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
+print(str(datetime.now()), "calculating normal vectors")
+u = RandomRDDs.normalVectorRDD(sc, GAUSSIAN_DATA_SIZE, N_COMPONENTS)
+print(str(datetime.now()), "applying normal factors")
+v = u.map(lambda x: transform_normal(x, mus, sigmas)).cache()
+print(str(datetime.now()), "done")
+print(v.take(5))
 
-# invert matrix: dot product between random data and the loadings, nipals_P
-inverse_gaussian = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
-#XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
-print_matrix("inverse_gaussian", inverse_gaussian)
-# save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
+# TODO: calculate and store gaussian inverted
 
+columns = ["c"+str(i) for i in range(N_COMPONENTS)]
+vs = sqlContext.createDataFrame(v, columns)
+vs.printSchema()
+vs.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
 
-save_plot_per_column(inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_inverse_gaussian", "figures")
+# df = sqlContext.read.format("com.mongodb.spark.sql.DefaultSource").load()
+# df.printSchema()
+# print(df.map(lambda x: x["c0"]).take(5))
+#
+# plt.plot(df.map(lambda x: x["c0"]).collect())
+# plt.show(block=True)
 
-
-sc.stop()

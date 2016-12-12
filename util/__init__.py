@@ -272,3 +272,7 @@ def save_plot_per_component(_n_components, _generated_gaussian, _timeseries_samp
 def scale(_X, _mean, _std):
     return (_X - _mean) / _std
 
+
+def transform_normal(_x, _mus, _sigmas):
+    normal_array = _mus + _sigmas * _x
+    return tuple(normal_array.tolist())

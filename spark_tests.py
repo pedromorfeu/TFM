@@ -1,8 +1,10 @@
-import matplotlib.pylab as plt
+import matplotlib.pyplot as plt
 import os
 import sys
 import numpy as np
 from datetime import datetime
+from util import *
+
 
 # # Path for spark source folder
 # os.environ['SPARK_HOME']="C:/BigData/TFM/spark-1.6.2-bin-hadoop2.6"
@@ -20,6 +22,7 @@ try:
     from pyspark.sql import SQLContext, Row
     from pyspark.sql.types import *
     from pyspark.mllib.random import RandomRDDs
+    from pyspark.mllib.linalg import Vectors, DenseVector
     print ("Successfully imported Spark Modules")
 except ImportError as e:
     print ("Can not import Spark Modules", e)
@@ -28,12 +31,14 @@ except ImportError as e:
 # Initialize SparkContext
 conf = SparkConf().setAppName("testApp").setMaster("local[4]")
 sc = SparkContext(conf=conf)
-
 print(sc)
 
+sqlContext = SQLContext(sc)
+print(sqlContext)
 
+
+mus = [2, 3, 4, 5, 6]
 sigmas = [1, 1, 1, 1, 1]
-means = [2, 3, 4, 5, 6]
 
 # rdds = []
 # for i in range(5):
@@ -62,40 +67,52 @@ means = [2, 3, 4, 5, 6]
 # plt.show(block=True)
 
 
-def f(x, i):
-    return means[i] + sigmas[i] * x
-
-
-MAX_POINTS = 1*1000*1000
+MAX_POINTS = 10*1000*1000
+start = datetime.now()
 print(str(datetime.now()), "calculating normal vectors")
 u = RandomRDDs.normalVectorRDD(sc, MAX_POINTS, 5)
 print(str(datetime.now()), "applying normal factors")
-v = u.map(lambda x: np.array([ f(x[0], 0), f(x[1], 1), f(x[2], 2), f(x[3],3), f(x[4], 4) ])).cache()
+v = u.map(lambda x: transform_normal(x, mus, sigmas)).cache()
 print(str(datetime.now()), "done")
+print((datetime.now() - start).total_seconds())
+print(v.take(5))
+print(type(v.first()))
+print(type(v.first()[0]))
+
+
+columns = ["c"+str(i) for i in range(5)]
+vs = sqlContext.createDataFrame(v, columns)
+vs.printSchema()
 
 
 def calculate_min_distance(_v, _x1):
     # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
-    distances_rdd = _v.map(lambda x: (x, np.sqrt((x-_x1) ** 2).sum()) )
-    # print("distances_rdd", distances_rdd)
+    # distances_rdd = _v.map(lambda x: (x, np.sqrt((x-_x1) ** 2).sum()) )
+    distances_rdd = _v.map(lambda x: (x, Vectors.dense(x).squared_distance(_x1)) )
+    print("distances_rdd", distances_rdd)
     min_distance = distances_rdd.min(lambda x: x[1])
     # print("min distance", min_distance)
     return min_distance
 
 
 x1 = np.array([2, 3, 4, 5, 6])
+start = datetime.now()
 print(str(datetime.now()), "calculating min distance for", x1)
 d1 = calculate_min_distance(v, x1)
 print(str(datetime.now()), "min distance", d1)
+print((datetime.now() - start).total_seconds())
 
 x2 = np.array([3, 4, 5, 6, 7])
+start = datetime.now()
 print(str(datetime.now()), "calculating min distance for", x2)
 d2 = calculate_min_distance(v, x2)
 print(str(datetime.now()), "min distance", d2)
+print((datetime.now() - start).total_seconds())
 
 # Sanity check - the point exists in the dataset
 # print(distances_rdd.filter(lambda x: x[0] == min_point).count())
 
+print(v.take(5))
 plt.plot(v.take(10000))
 plt.show(block=True)
 
