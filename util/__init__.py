@@ -11,6 +11,12 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.api import SARIMAX
 
+try:
+    from pyspark.mllib.linalg import Vectors, DenseVector
+    print ("Successfully imported Spark Modules")
+except ImportError as e:
+    print ("Can not import Spark Modules", e)
+
 print(locale.getdefaultlocale())
 locale.setlocale(locale.LC_TIME, "spanish")
 
@@ -276,3 +282,14 @@ def scale(_X, _mean, _std):
 def transform_normal(_x, _mus, _sigmas):
     normal_array = _mus + _sigmas * _x
     return tuple(normal_array.tolist())
+
+
+def calculate_min_distance(_points_rdd, _point, _n_points=1):
+    # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
+    distances_rdd = _points_rdd.map(lambda x: (x, np.sqrt((x - _point) ** 2).sum()))
+    # distances_rdd = _v.map(lambda x: (x, Vectors.dense(x).squared_distance(_x1)) )
+    print("distances_rdd", distances_rdd)
+    # min_distance = distances_rdd.min(lambda x: x[1])
+    min_distance = distances_rdd.takeOrdered(_n_points, key=lambda x: x[1])
+    # print("min distance", min_distance)
+    return min_distance

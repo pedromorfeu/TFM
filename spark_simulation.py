@@ -46,6 +46,7 @@ from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.api import SARIMAX
 from scipy.spatial.distance import cdist
+from pymongo import MongoClient
 
 # Download the CSV data file from:
 # http://datasets.connectmv.com/info/silicon-wafer-thickness
@@ -54,13 +55,21 @@ from scipy.spatial.distance import cdist
 
 N_COMPONENTS = 5
 GAUSSIAN_DATA_SIZE = 10000
-NEW_DATA_SIZE = 2000
+NEW_DATA_SIZE = 5
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
 ERROR_FACTOR = np.ones(N_COMPONENTS)
 # ERROR_FACTOR = [0.1, 0.6, 1, 0.2, 0.5]
 WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 # WEIGHT_FACTOR = [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,    7.15911735e-03,   7.56237144e-04  ]
+
+
+client = MongoClient("mongodb://localhost:27017")
+print(client)
+db = client.simulation
+print(db)
+collection = db.generated
+print(collection)
 
 
 # If the frequency is higher than the sample steps, then we have more real data
@@ -235,8 +244,8 @@ print(v.take(5))
 
 # TODO: calculate and store gaussian inverted
 
-columns = ["c"+str(i) for i in range(N_COMPONENTS)]
-vs = sqlContext.createDataFrame(v, columns)
+schema = ["c" + str(i) for i in range(N_COMPONENTS)]
+vs = sqlContext.createDataFrame(v, schema)
 vs.printSchema()
 vs.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
 
@@ -247,3 +256,201 @@ vs.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
 # plt.plot(df.map(lambda x: x["c0"]).collect())
 # plt.show(block=True)
 
+### Time series
+models = []
+timeseries_samples = []
+i=0
+for i in range(N_COMPONENTS):
+    print("Time series analysis for component", i)
+    # time serie for component
+    timeseries = pd.Series(nipals_T[:, i], index=data.index)
+    print_timeseries("timeseries", timeseries)
+
+    # # observations per day
+    # dates_count = timeseries.groupby(lambda x: x.date()).count()
+    # # day with more observations
+    # date = dates_count.idxmax().strftime("%Y-%m-%d")
+    # print("The date with more observations is", date)
+    # date="2015-10-06"
+    # # Specify a date to analyze the timeseries
+    # timeseries_sample = timeseries[date]
+
+    timeseries_sample = timeseries
+    print_timeseries("timeseries_sample", timeseries_sample)
+    # Resample and interpolate
+    # print("Resampling time series by", TS_FREQUENCY)
+    # timeseries_sample = timeseries_sample.resample(TS_FREQUENCY).mean().interpolate()
+    timeseries_samples.append(timeseries_sample.values)
+    # timeseries_sample = timeseries_sample.asfreq(TS_FREQUENCY, method="ffill")
+    print_timeseries("timeseries_sample", timeseries_sample)
+    stationary, test_value = test_stationarity(timeseries_sample, _plot=False, _critical="5%")
+
+    # not stationary -> must be stabilized
+
+    # Stabilizing the variance
+    subtract_constant = 0
+    # For negative data, you can add a suitable constant to make all the data positive
+    # before applying the transformation.
+    print("any negative?", np.any(timeseries_sample < 0))
+    if np.any(timeseries_sample < 0):
+        subtract_constant = abs(min(timeseries_sample)) + 1
+    timeseries_sample_positive = timeseries_sample + subtract_constant
+    print_timeseries("timeseries_sample_positive", timeseries_sample_positive)
+    print("any negative?", np.any(timeseries_sample_positive < 0))
+    # ts_log = np.log(timeseries_sample_positive)
+    ts_log = timeseries_sample
+    print_timeseries("ts_log", ts_log)
+    print("Missing values?", not np.all(np.isfinite(ts_log)))
+
+    moving_avg = ts_log.rolling(12).mean()
+    ts_log_moving_avg_diff = ts_log - moving_avg
+    ts_log_moving_avg_diff.head(5)
+    ts_log_moving_avg_diff.dropna(inplace=True)
+    ts_log_moving_avg_diff.head()
+    stationary, test_value_moving_avg_diff = test_stationarity(ts_log_moving_avg_diff, _plot=False, _critical="5%")
+
+    expwighted_avg = ts_log.ewm(halflife=20).mean()
+    # plt.plot(ts_log)
+    # plt.plot(expwighted_avg, color='red')
+    ts_log_ewma_diff = ts_log - expwighted_avg
+    stationary, test_value_ewma_diff = test_stationarity(ts_log_ewma_diff, _plot=False, _critical="5%")
+
+    # Differencing
+    print("Differencing the time series...")
+    ts_log_diff = ts_log - ts_log.shift()
+    print("Missing values?", not np.all(np.isfinite(ts_log_diff)))
+    ts_log_diff.index[np.isinf(ts_log_diff)]
+    ts_log_diff.index[np.isnan(ts_log_diff)]
+    ts_log_diff.dropna(inplace=True)
+    print("Missing values:", not np.all(np.isfinite(ts_log_diff)))
+    print_timeseries("ts_log_diff", ts_log_diff)
+    # This appears to have reduced trend considerably. Lets verify using our plots:
+    stationary, test_value_diff = test_stationarity(ts_log_diff, _plot=False, _critical="5%")
+
+    # Minimum value for integration part (d):
+    # If differenciated series is more stationary, then use i=1
+    min_i = 0
+    if test_value_diff < test_value:
+        min_i = 1
+
+    # Forecasting
+    # plot_acf_pacf(ts_log_diff)
+    # print(str(datetime.now()), "component", i,"Calculating AR and MA orders...")
+    # res = arma_order_select_ic(ts_log_diff, ic=['aic', 'bic'], trend='nc')
+    # print(str(datetime.now()), "AR and MA orders calculated", res.aic_min_order, res.bic_min_order)
+    # # , fit_kw={"method" : "css"}
+    # # AIC and BIC min order (AR, MA) = (p, q)
+    # aic = res.aic_min_order
+    # bic = res.bic_min_order
+    # print("AIC=", aic)
+    # print("BIC=", bic)
+    #
+    # p = aic[0]
+    # q = aic[1]
+    # d = 0
+
+    # Calculate best order (order with minimum error)
+    (min_rmse, p, d, q) = arima_order_select(ts_log, min_i=min_i)
+
+    print("Creating model (p,d,q)=(%i,%i,%i)" % (p, d, q))
+    model = SARIMAX(ts_log, order=(p, d, q))
+    print(str(datetime.now()), "Fitting model...")
+    results_ARIMA = model.fit(disp=-1)
+    print(str(datetime.now()), "Model fitted")
+    print(str(datetime.now()), "Predicting...")
+    # predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0]+NEW_DATA_SIZE-1)
+    predictions_ARIMA = results_ARIMA.predict(start=ts_log.shape[0], end=ts_log.shape[0])
+    print(str(datetime.now()), "Predicted")
+
+    # print(ts_log.tail(5))
+    # print(predictions_ARIMA.tail(5))
+    # out_of_sample = predictions_ARIMA
+    # ts_log_predicted = ts_log.append(predictions_ARIMA)
+    # print(predictions_ARIMA.tail(5))
+    ts_log_predicted = results_ARIMA.fittedvalues
+
+    models.append((results_ARIMA, ts_log_predicted, min_rmse))
+
+print("Models calculated and stored")
+
+
+# Calculate best order (order with minimum error) again
+# (min_rmse, p, d, q) = arima_order_select(predictions_ARIMA)
+
+print(str(datetime.now()), "Iterative prediction with new data")
+models_iterative = models.copy()
+# generated_gaussian_copy = generated_gaussian.copy()
+# scaled_generated_gaussian = scale(generated_gaussian.copy(), generated_gaussian.mean(axis=0), generated_gaussian.std(axis=0))
+generated_X = np.zeros((NEW_DATA_SIZE, N_COMPONENTS))
+chosen_indexes = np.zeros(NEW_DATA_SIZE)
+i = 0
+for i in range(NEW_DATA_SIZE):
+    print("Iteration", i)
+    j = 0
+    # Array to store each predicted point
+    preds = np.zeros(N_COMPONENTS)
+    preds_transformed = np.zeros(N_COMPONENTS)
+    for (results_ARIMA, ts_log_predicted, min_rmse) in models_iterative:
+        model1 = SARIMAX(ts_log_predicted, order=results_ARIMA.model.order)
+        results_ARIMA1 = model1.filter(results_ARIMA.params)
+        # results_ARIMA1 = model1.fit(disp=-1)
+        predictions_ARIMA1 = results_ARIMA1.predict(start=ts_log_predicted.shape[0], end=ts_log_predicted.shape[0])
+        # print("predictions_ARIMA1", predictions_ARIMA1)
+        ts_log_predicted1 = ts_log_predicted.append(predictions_ARIMA1)
+        models_iterative[j] = (results_ARIMA1, ts_log_predicted1, min_rmse)
+        # add random error from series standard deviation and mean 0
+        add_error = 0 + min_rmse * np.random.randn()
+        # add some error atenuation
+        add_error = ERROR_FACTOR[j] * add_error
+        # print("Adding error using RMSE", min_rmse, ":", add_error)
+        preds[j] = predictions_ARIMA1 + add_error
+
+        # # Euclidean distance
+        # distances = np.sqrt( ( (generated_gaussian_copy[:, j] - preds[j]) ** 2) )
+        # sorted_indexes = distances.argsort()[:N_INDEXES]
+        # random_index = np.random.randint(N_INDEXES)
+        # min_index = sorted_indexes[random_index]
+        # preds_transformed[j] = generated_gaussian_copy[min_index, j]
+        j += 1
+
+    print("preds", preds)
+
+    # Euclidean distance
+    # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
+    distances = calculate_min_distance(v, preds, _n_points=N_INDEXES)
+    # only points
+    distances = [x[0] for x in distances]
+    # standardized distances
+    # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
+    # scaled_preds = scale(preds, generated_gaussian.mean(axis=0), generated_gaussian.std(axis=0))
+    # distances = np.sqrt( ( (WEIGHT_FACTOR * (scaled_generated_gaussian - scaled_preds)) ** 2 ).sum(axis=1) )
+
+    # distances = cdist([preds], generated_gaussian_copy, 'mahalanobis', VI=None)[0]
+    # distances = cdist( ([WEIGHT_FACTOR * scaled_preds]), (WEIGHT_FACTOR * scaled_generated_gaussian), 'mahalanobis', VI=None)[0]
+
+    # take first N_INDEXES nearest indexes
+    # sorted_indexes = distances.argsort()[:N_INDEXES]
+    # select the nearest index
+    # min_index = sorted_indexes[0]
+    # select random index
+    random_index = np.random.randint(N_INDEXES)
+    # min_index = sorted_indexes[random_index]
+    preds_transformed = distances[random_index]
+    # preds_transformed = generated_gaussian_copy[min_index]
+    # preds_transformed = preds
+    # hypotesis: repetitions make results worse
+    # generated_gaussian_copy = np.delete(generated_gaussian_copy, min_index, 0)
+
+    generated_X[i] = preds_transformed
+    print("preds_transformed", preds_transformed)
+
+    # Store the new values for re-feeding the models in the next prediction
+    j = 0
+    for (results_ARIMA, ts_log_predicted, min_rmse) in models_iterative:
+        ts_log_predicted.set_value(ts_log_predicted.last_valid_index(), preds_transformed[j])
+        j += 1
+
+    # Store predicted transformed point in MongoDB
+    doc = dict(zip(schema, preds_transformed))
+    collection.insert_one(doc)
+print(str(datetime.now()), "Done iterative prediction")

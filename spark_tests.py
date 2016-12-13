@@ -67,7 +67,7 @@ sigmas = [1, 1, 1, 1, 1]
 # plt.show(block=True)
 
 
-MAX_POINTS = 10*1000*1000
+MAX_POINTS = 1*1000*1000
 start = datetime.now()
 print(str(datetime.now()), "calculating normal vectors")
 u = RandomRDDs.normalVectorRDD(sc, MAX_POINTS, 5)
@@ -84,21 +84,10 @@ columns = ["c"+str(i) for i in range(5)]
 vs = sqlContext.createDataFrame(v, columns)
 vs.printSchema()
 
-
-def calculate_min_distance(_v, _x1):
-    # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
-    # distances_rdd = _v.map(lambda x: (x, np.sqrt((x-_x1) ** 2).sum()) )
-    distances_rdd = _v.map(lambda x: (x, Vectors.dense(x).squared_distance(_x1)) )
-    print("distances_rdd", distances_rdd)
-    min_distance = distances_rdd.min(lambda x: x[1])
-    # print("min distance", min_distance)
-    return min_distance
-
-
 x1 = np.array([2, 3, 4, 5, 6])
 start = datetime.now()
 print(str(datetime.now()), "calculating min distance for", x1)
-d1 = calculate_min_distance(v, x1)
+d1 = calculate_min_distance(v, x1, _n_points=1)
 print(str(datetime.now()), "min distance", d1)
 print((datetime.now() - start).total_seconds())
 
