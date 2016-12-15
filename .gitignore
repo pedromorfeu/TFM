@@ -10,3 +10,6 @@ generated/
 statsmodels-0.8.0rc1/
 spark-1.6.2-bin-hadoop2.6/
 output/
+build/
+dist/
+util.egg-info/
