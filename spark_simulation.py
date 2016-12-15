@@ -71,6 +71,9 @@ print(db)
 collection = db.generated
 print(collection)
 
+# Clear collection
+collection.delete_many({})
+
 
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
@@ -138,23 +141,23 @@ X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
 # We could of course use SVD ...
 print(str(datetime.now()), "Calculating SVD...")
-u, d, v = np.linalg.svd(X[:, :])
+normal_vector_rdd, d, generated_gaussian_rdd = np.linalg.svd(X[:, :])
 print(str(datetime.now()), "Done")
-print(u.shape)
+print(normal_vector_rdd.shape)
 print(d.shape)
-print(v.shape)
-print("v", v)
+print(generated_gaussian_rdd.shape)
+print("v", generated_gaussian_rdd)
 
 # U, S, V = self._fit(X)
 # U = U[:, :self.n_components_]
 # U *= S[:self.n_components_]
-U = u[:, :2]
+U = normal_vector_rdd[:, :2]
 U *= d[:2]
 print_matrix("U", U)
 
 # Transpose the "v" array from SVD, which contains the loadings, but retain
 # only the first A columns
-svd_P = v.T[:, range(0, N_COMPONENTS)]
+svd_P = generated_gaussian_rdd.T[:, range(0, N_COMPONENTS)]
 print(svd_P.shape)
 print_matrix("svd_P", svd_P)
 
@@ -236,18 +239,30 @@ mus = np.mean(nipals_T, axis=0)
 sigmas = np.std(nipals_T, axis=0)
 
 print(str(datetime.now()), "calculating normal vectors")
-u = RandomRDDs.normalVectorRDD(sc, GAUSSIAN_DATA_SIZE, N_COMPONENTS)
+normal_vector_rdd = RandomRDDs.normalVectorRDD(sc, GAUSSIAN_DATA_SIZE, N_COMPONENTS)
 print(str(datetime.now()), "applying normal factors")
-v = u.map(lambda x: transform_normal(x, mus, sigmas)).cache()
+generated_gaussian_rdd = normal_vector_rdd.map(lambda x: transform_normal(x, mus, sigmas)).cache()
 print(str(datetime.now()), "done")
-print(v.take(5))
+print(generated_gaussian_rdd.take(5))
 
-# TODO: calculate and store gaussian inverted
+schema_component = ["type"] + ["c" + str(i) for i in range(N_COMPONENTS)]
+schema_rdd = generated_gaussian_rdd.map(lambda x: ("component",) + x)
+generated_gaussian_df = sqlContext.createDataFrame(schema_rdd, schema_component)
+generated_gaussian_df.printSchema()
+generated_gaussian_df.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
 
-schema = ["c" + str(i) for i in range(N_COMPONENTS)]
-vs = sqlContext.createDataFrame(v, schema)
-vs.printSchema()
-vs.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
+# invert matrix: dot product between random data and the loadings, nipals_P
+inverse_gaussian_rdd = generated_gaussian_rdd.map(lambda x: np.dot(np.array(x), nipals_P.T) + np.mean(raw, axis=0))
+print("inverse_gaussian", inverse_gaussian_rdd.take(2))
+print(inverse_gaussian_rdd.first())
+print(type(inverse_gaussian_rdd.first()))
+
+schema_inverse = ["type"] + data.columns.values.tolist()
+schema_rdd = inverse_gaussian_rdd.map(lambda x: ["inverse"] + x.tolist())
+inverse_gaussian_df = sqlContext.createDataFrame(schema_rdd, schema_inverse)
+inverse_gaussian_df.printSchema()
+inverse_gaussian_df.write.format("com.mongodb.spark.sql.DefaultSource").mode("append").save()
+
 
 # df = sqlContext.read.format("com.mongodb.spark.sql.DefaultSource").load()
 # df.printSchema()
@@ -417,7 +432,7 @@ for i in range(NEW_DATA_SIZE):
 
     # Euclidean distance
     # distances = np.sqrt(((generated_gaussian_copy - preds) ** 2).sum(axis=1))
-    distances = calculate_min_distance(v, preds, _n_points=N_INDEXES)
+    distances = calculate_min_distance(generated_gaussian_rdd, preds, _n_points=N_INDEXES)
     # only points
     distances = [x[0] for x in distances]
     # standardized distances
@@ -451,6 +466,11 @@ for i in range(NEW_DATA_SIZE):
         j += 1
 
     # Store predicted transformed point in MongoDB
-    doc = dict(zip(schema, preds_transformed))
-    collection.insert_one(doc)
+    doc_component = dict(zip(schema_component, ("component", ) + preds_transformed))
+    collection.insert_one(doc_component)
+
+    # Calculate and store inverse point
+    inverse = np.dot(preds_transformed, nipals_P.T) + np.mean(raw, axis=0)
+    doc_inverse = dict(zip(schema_inverse, ["inverse"] + inverse.tolist()))
+    collection.insert_one(doc_inverse)
 print(str(datetime.now()), "Done iterative prediction")

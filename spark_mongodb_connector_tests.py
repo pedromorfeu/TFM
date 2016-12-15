@@ -48,15 +48,19 @@ print(sqlContext)
 
 # Generate a random double RDD that contains 1 million i.i.d. values drawn from the
 # standard normal distribution `N(0, 1)`, evenly distributed in 4 partitions.
-u = RandomRDDs.normalRDD(sc, 100000)
+u = RandomRDDs.normalRDD(sc, 1000)
 # Apply a transform to get a random double RDD following `N(1, 2)`.
-v = u.map(lambda x: (1.0 + 2.0 * x, ))
+v = u.map(lambda x: ("component", 1.0 + 2.0 * x, 3.0 + 3.0 * x))
 print(v.take(5))
 
-vs = sqlContext.createDataFrame(v, ["number"])
+vs = sqlContext.createDataFrame(v, ["type", "number1", "number2"])
 vs.printSchema()
 vs.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
 
+v1 = u.map(lambda x: ("inverse", 1.0 + 2.0 * x, 3.0 + 3.0 * x, 3.0 + 1.0 * x))
+vs = sqlContext.createDataFrame(v1, ["type", "number1", "number2", "number3"])
+vs.printSchema()
+vs.write.format("com.mongodb.spark.sql.DefaultSource").mode("append").save()
 
 
 df = sqlContext.read.format("com.mongodb.spark.sql.DefaultSource").load()

@@ -284,6 +284,11 @@ def transform_normal(_x, _mus, _sigmas):
     return tuple(normal_array.tolist())
 
 
+def dot(_x, _y, _mus):
+    normal_array = np.dot(_x, _y) + _mus
+    return tuple(normal_array.tolist())
+
+
 def calculate_min_distance(_points_rdd, _point, _n_points=1):
     # distances = np.sqrt(((scale(generated_gaussian_copy) - scale(preds)) ** 2).sum(axis=1))
     distances_rdd = _points_rdd.map(lambda x: (x, np.sqrt((x - _point) ** 2).sum()))

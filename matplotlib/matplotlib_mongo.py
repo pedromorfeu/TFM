@@ -7,7 +7,7 @@ client = MongoClient("mongodb://localhost:27017")
 print(client)
 db = client.simulation
 print(db)
-collection = db.random
+collection = db.generated
 print(collection)
 
 
