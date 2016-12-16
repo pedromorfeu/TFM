@@ -53,7 +53,7 @@ from pymongo import MongoClient
 # raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
 
 
-N_COMPONENTS = 5
+N_COMPONENTS = 3
 GAUSSIAN_DATA_SIZE = 10000
 NEW_DATA_SIZE = 5
 TS_FREQUENCY = "10s"
@@ -68,11 +68,14 @@ client = MongoClient("mongodb://localhost:27017")
 print(client)
 db = client.simulation
 print(db)
-collection = db.generated
-print(collection)
+data_collection = db.data
+print(data_collection)
+generated_collection = db.generated
+print(generated_collection)
 
-# Clear collection
-collection.delete_many({})
+# Clear collections
+data_collection.delete_many({})
+generated_collection.delete_many({})
 
 
 # If the frequency is higher than the sample steps, then we have more real data
@@ -106,8 +109,15 @@ data = data[date]
 
 # Resampling and Interpolation
 data = data.resample(TS_FREQUENCY).mean().interpolate()
-save_matrix("data.csv", data.values, data.columns)
+# save_matrix("data.csv", data.values, data.columns)
 
+# Store in MongoDB
+schema_data = data.columns.values.tolist()
+docs_data = []
+for observation in data.values:
+    doc_data = dict(zip(schema_data, observation))
+    docs_data.append(doc_data)
+data_collection.insert_many(docs_data)
 
 save_data_plot(_data=data, _filename="original")
 save_plot_per_column(data.values, data.columns, "_original", "figures")
@@ -232,6 +242,9 @@ print_matrix("nipals_P", nipals_P)
 # scores
 print_matrix("nipals_T", nipals_T)
 save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
+
+
+# TODO: store components values in MongoDB
 
 
 ### Generate Gaussian data
@@ -389,6 +402,27 @@ for i in range(N_COMPONENTS):
 print("Models calculated and stored")
 
 
+# Store predicted in MongoDB
+predicted = np.zeros((data.shape[0], N_COMPONENTS))
+i = 0
+for (results_ARIMA, ts_log_predicted, min_rmse) in models:
+    predicted[:, i] = ts_log_predicted.values
+    i += 1
+
+docs_predicted = []
+for observation in predicted:
+    doc_predicted = dict(zip(schema_component, ["component"] + observation.tolist()))
+    docs_predicted.append(doc_predicted)
+generated_collection.insert_many(docs_predicted)
+
+inverse = np.dot(predicted, nipals_P.T) + np.mean(raw, axis=0)
+docs_inverse = []
+for observation in inverse:
+    doc_inverse = dict(zip(schema_inverse, ["inverse"] + observation.tolist()))
+    docs_inverse.append(doc_inverse)
+generated_collection.insert_many(docs_inverse)
+
+
 # Calculate best order (order with minimum error) again
 # (min_rmse, p, d, q) = arima_order_select(predictions_ARIMA)
 
@@ -467,10 +501,10 @@ for i in range(NEW_DATA_SIZE):
 
     # Store predicted transformed point in MongoDB
     doc_component = dict(zip(schema_component, ("component", ) + preds_transformed))
-    collection.insert_one(doc_component)
+    generated_collection.insert_one(doc_component)
 
     # Calculate and store inverse point
     inverse = np.dot(preds_transformed, nipals_P.T) + np.mean(raw, axis=0)
     doc_inverse = dict(zip(schema_inverse, ["inverse"] + inverse.tolist()))
-    collection.insert_one(doc_inverse)
+    generated_collection.insert_one(doc_inverse)
 print(str(datetime.now()), "Done iterative prediction")
