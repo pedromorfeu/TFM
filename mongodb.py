@@ -1,4 +1,5 @@
 import numpy
+import pymongo
 from pymongo import MongoClient
 from datetime import datetime
 
@@ -8,6 +9,16 @@ client = MongoClient("mongodb://localhost:27017")
 print(client)
 db = client.simulation
 print(db)
+collection = db.generated
+print(collection)
+
+for doc in collection.find({"type": "inverse"}).sort("_id", pymongo.ASCENDING):
+    print(doc["APHu"])
+
+print("---")
+print(collection.find_one({"type": "inverse"}, sort=[("_id", pymongo.ASCENDING)], skip=12))
+
+exit()
 
 # db.points.delete_many({})
 

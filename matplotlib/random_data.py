@@ -16,5 +16,5 @@ def data_gen():
     while True:
         yield np.random.rand(10)
 
-ani = animation.FuncAnimation(fig, update, data_gen, interval=1000)
+ani = animation.FuncAnimation(fig, update, data_gen, interval=10000)
 plt.show()
