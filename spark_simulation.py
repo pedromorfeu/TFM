@@ -53,9 +53,9 @@ from pymongo import MongoClient
 # raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
 
 
-N_COMPONENTS = 3
-GAUSSIAN_DATA_SIZE = 10000
-NEW_DATA_SIZE = 5
+N_COMPONENTS = 5
+GAUSSIAN_DATA_SIZE = 1000000
+NEW_DATA_SIZE = 100
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
 ERROR_FACTOR = np.ones(N_COMPONENTS)

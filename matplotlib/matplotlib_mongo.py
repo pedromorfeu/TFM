@@ -101,9 +101,8 @@ plt.title(title)
 ax.legend()
 ax.grid()
 
-plt.show()
-
-exit()
+# plt.show()
+# exit()
 
 ani = animation.FuncAnimation(fig, run, data_gen(len(xdata)), blit=False, interval=1000,
                               repeat=False, init_func=init)
