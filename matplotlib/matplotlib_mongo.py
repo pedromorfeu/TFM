@@ -93,13 +93,12 @@ xdata, ydata = [], []
 for doc in generated_collection.find({"type": POINT_TYPE}, sort=[SORT_ID_ASCENDING]):
     ydata.append(doc[FIELD])
 xdata = list(range(len(ydata)))
-print(xdata, "\n", ydata)
 
 fig, ax = plt.subplots()
 ax.plot(gaussian_data_x, gaussian_data_y, label="gaussian")
 ax.plot(real_data_x, real_data_y, label="original")
-
 line, = ax.plot(xdata, ydata, label="predicted")
+
 
 # TODO: calculate max from all data
 ax.axhline(np.max(gaussian_data_y), color="gray", linewidth=1)
@@ -115,11 +114,14 @@ ax.legend()
 # ax.grid()
 
 # plot last point in red
-point, = ax.plot(xdata[-1], ydata[-1], "or", alpha=0.7)
+if len(xdata) > 0:
+    point, = ax.plot(xdata[-1], ydata[-1], "or")
+else:
+    point, = ax.plot(0, 0, "or")
 
 
-plt.show()
-exit()
+# plt.show()
+# exit()
 
 ani = animation.FuncAnimation(fig, run, data_gen(len(xdata)), blit=False, interval=1000,
                               repeat=False, init_func=init)
