@@ -65,23 +65,6 @@ WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 # WEIGHT_FACTOR = [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,    7.15911735e-03,   7.56237144e-04  ]
 
 
-client = MongoClient("mongodb://localhost:27017")
-print(client)
-db = client.simulation
-print(db)
-data_collection = db.data
-print(data_collection)
-component_collection = db.component
-print(component_collection)
-generated_collection = db.generated
-print(generated_collection)
-
-
-# Clear collections
-data_collection.delete_many({})
-component_collection.delete_many({})
-generated_collection.delete_many({})
-
 
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
@@ -120,7 +103,7 @@ data = data.resample(TS_FREQUENCY).mean().interpolate()
 # save_matrix("data.csv", data.values, data.columns)
 
 # Store in MongoDB
-mongo.store(data.values, SCHEMA_DATA, data_collection, type=None)
+mongo.store_data(data.values, SCHEMA_DATA, type=None)
 
 
 save_data_plot(_data=data, _filename="original")
@@ -249,10 +232,10 @@ save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_
 
 
 # Store components values in MongoDB
-mongo.store(nipals_T, SCHEMA_COMPONENT, component_collection, type="component")
+mongo.store_component(nipals_T, SCHEMA_COMPONENT, type="component")
 
 inverse = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
-mongo.store(inverse, SCHEMA_INVERSE, component_collection, type="inverse")
+mongo.store_component(inverse, SCHEMA_INVERSE, type="inverse")
 
 
 ### Generate Gaussian data
@@ -416,10 +399,10 @@ for (results_ARIMA, ts_log_predicted, min_rmse) in models:
     predicted[:, i] = ts_log_predicted.values
     i += 1
 
-mongo.store(predicted, SCHEMA_COMPONENT, generated_collection, type="component")
+mongo.store_generated(predicted, SCHEMA_COMPONENT, type="component")
 
 inverse = np.dot(predicted, nipals_P.T) + np.mean(raw, axis=0)
-mongo.store(inverse, SCHEMA_INVERSE, generated_collection, type="inverse")
+mongo.store_generated(inverse, SCHEMA_INVERSE, type="inverse")
 
 
 # Calculate best order (order with minimum error) again
@@ -500,10 +483,10 @@ for i in range(NEW_DATA_SIZE):
 
     # Store predicted transformed point in MongoDB
     doc_component = dict(zip(SCHEMA_COMPONENT, ("component",) + preds_transformed))
-    generated_collection.insert_one(doc_component)
+    mongo.store_generated_single(doc_component)
 
     # Calculate and store inverse point
     inverse = np.dot(preds_transformed, nipals_P.T) + np.mean(raw, axis=0)
     doc_inverse = dict(zip(SCHEMA_INVERSE, ["inverse"] + inverse.tolist()))
-    generated_collection.insert_one(doc_inverse)
+    mongo.store_generated_single(doc_inverse)
 print(str(datetime.now()), "Done iterative prediction")

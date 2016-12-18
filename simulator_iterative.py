@@ -3,7 +3,7 @@
 
 import numpy as np
 import pandas as pd
-from util import *
+from util.generic import *
 from warnings import warn
 from matplotlib import pyplot
 from datetime import datetime
