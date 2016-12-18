@@ -15,30 +15,29 @@ print(generated_collection)
 
 
 # Clear collections
-data_collection.delete_many({})
-component_collection.delete_many({})
-generated_collection.delete_many({})
+def clear_all():
+    data_collection.delete_many({})
+    component_collection.delete_many({})
+    generated_collection.delete_many({})
 
 
-def store_data(matrix, schema, type=None):
-    store_many(matrix, schema, data_collection, type=None)
+def store_data(matrix, schema, type):
+    store_many(matrix, schema, data_collection, type)
 
 
-def store_component(matrix, schema, type=None):
-    store_many(matrix, schema, component_collection, type=None)
+def store_component(matrix, schema, type):
+    store_many(matrix, schema, component_collection, type)
 
 
-def store_generated(matrix, schema, type=None):
-    store_many(matrix, schema, generated_collection, type=None)
+def store_generated(matrix, schema, type):
+    store_many(matrix, schema, generated_collection, type)
 
 
-def store_many(matrix, schema, collection, type=None):
+def store_many(matrix, schema, collection, type):
     # Store components values in MongoDB
     docs_component = []
     for observation in matrix:
-        obs = [type] + observation.tolist()
-        if type is None:
-            obs = observation.tolist()
+        obs = ([type] + observation.tolist()) if (type is not None) else observation.tolist()
         doc_component = dict(zip(schema, obs))
         docs_component.append(doc_component)
     collection.insert_many(docs_component)

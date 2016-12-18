@@ -8,14 +8,14 @@ from pymongo import MongoClient
 SORT_ID_ASCENDING = ("_id", pymongo.ASCENDING)
 MAX_GAUSSIAN = 2000
 POINT_TYPE = "component"
-FIELD = "c1"
+FIELD = "c0"
 
 
 client = MongoClient("mongodb://localhost:27017")
 print(client)
 db = client.simulation
 print(db)
-component_collection = component.data
+component_collection = db.component
 print(component_collection)
 gaussian_collection = db.gaussian
 print(gaussian_collection)
@@ -97,7 +97,7 @@ print(xdata, "\n", ydata)
 
 fig, ax = plt.subplots()
 ax.plot(gaussian_data_x, gaussian_data_y, label="gaussian")
-# ax.plot(real_data_x, real_data_y, label="original")
+ax.plot(real_data_x, real_data_y, label="original")
 
 line, = ax.plot(xdata, ydata, label="predicted")
 

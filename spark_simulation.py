@@ -86,6 +86,7 @@ print(data.shape)
 SCHEMA_DATA = data.columns.values.tolist()
 SCHEMA_COMPONENT = ["type"] + ["c" + str(i) for i in range(N_COMPONENTS)]
 SCHEMA_INVERSE = ["type"] + data.columns.values.tolist()
+mongo.clear_all()
 
 # observations per day
 dates_count = data.groupby(lambda x: x.date()).count()
