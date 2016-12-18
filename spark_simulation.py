@@ -38,7 +38,8 @@ print(sqlContext)
 
 import numpy as np
 import pandas as pd
-from util import *
+from util.generic import *
+from util import mongo
 from warnings import warn
 from datetime import datetime
 from statsmodels.tsa.stattools import arma_order_select_ic
@@ -54,8 +55,8 @@ from pymongo import MongoClient
 
 
 N_COMPONENTS = 5
-GAUSSIAN_DATA_SIZE = 1000000
-NEW_DATA_SIZE = 100
+GAUSSIAN_DATA_SIZE = 500000
+NEW_DATA_SIZE = 2000
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
 ERROR_FACTOR = np.ones(N_COMPONENTS)
@@ -70,11 +71,15 @@ db = client.simulation
 print(db)
 data_collection = db.data
 print(data_collection)
+component_collection = db.component
+print(component_collection)
 generated_collection = db.generated
 print(generated_collection)
 
+
 # Clear collections
 data_collection.delete_many({})
+component_collection.delete_many({})
 generated_collection.delete_many({})
 
 
@@ -95,6 +100,9 @@ print(data.dtypes)
 print(data.index)
 print(data.shape)
 
+SCHEMA_DATA = data.columns.values.tolist()
+SCHEMA_COMPONENT = ["type"] + ["c" + str(i) for i in range(N_COMPONENTS)]
+SCHEMA_INVERSE = ["type"] + data.columns.values.tolist()
 
 # observations per day
 dates_count = data.groupby(lambda x: x.date()).count()
@@ -112,12 +120,8 @@ data = data.resample(TS_FREQUENCY).mean().interpolate()
 # save_matrix("data.csv", data.values, data.columns)
 
 # Store in MongoDB
-schema_data = data.columns.values.tolist()
-docs_data = []
-for observation in data.values:
-    doc_data = dict(zip(schema_data, observation))
-    docs_data.append(doc_data)
-data_collection.insert_many(docs_data)
+mongo.store(data.values, SCHEMA_DATA, data_collection, type=None)
+
 
 save_data_plot(_data=data, _filename="original")
 save_plot_per_column(data.values, data.columns, "_original", "figures")
@@ -244,7 +248,11 @@ print_matrix("nipals_T", nipals_T)
 save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
 
 
-# TODO: store components values in MongoDB
+# Store components values in MongoDB
+mongo.store(nipals_T, SCHEMA_COMPONENT, component_collection, type="component")
+
+inverse = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
+mongo.store(inverse, SCHEMA_INVERSE, component_collection, type="inverse")
 
 
 ### Generate Gaussian data
@@ -258,9 +266,9 @@ generated_gaussian_rdd = normal_vector_rdd.map(lambda x: transform_normal(x, mus
 print(str(datetime.now()), "done")
 print(generated_gaussian_rdd.take(5))
 
-schema_component = ["type"] + ["c" + str(i) for i in range(N_COMPONENTS)]
+
 schema_rdd = generated_gaussian_rdd.map(lambda x: ("component",) + x)
-generated_gaussian_df = sqlContext.createDataFrame(schema_rdd, schema_component)
+generated_gaussian_df = sqlContext.createDataFrame(schema_rdd, SCHEMA_COMPONENT)
 generated_gaussian_df.printSchema()
 generated_gaussian_df.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite").save()
 
@@ -270,9 +278,8 @@ print("inverse_gaussian", inverse_gaussian_rdd.take(2))
 print(inverse_gaussian_rdd.first())
 print(type(inverse_gaussian_rdd.first()))
 
-schema_inverse = ["type"] + data.columns.values.tolist()
 schema_rdd = inverse_gaussian_rdd.map(lambda x: ["inverse"] + x.tolist())
-inverse_gaussian_df = sqlContext.createDataFrame(schema_rdd, schema_inverse)
+inverse_gaussian_df = sqlContext.createDataFrame(schema_rdd, SCHEMA_INVERSE)
 inverse_gaussian_df.printSchema()
 inverse_gaussian_df.write.format("com.mongodb.spark.sql.DefaultSource").mode("append").save()
 
@@ -409,18 +416,10 @@ for (results_ARIMA, ts_log_predicted, min_rmse) in models:
     predicted[:, i] = ts_log_predicted.values
     i += 1
 
-docs_predicted = []
-for observation in predicted:
-    doc_predicted = dict(zip(schema_component, ["component"] + observation.tolist()))
-    docs_predicted.append(doc_predicted)
-generated_collection.insert_many(docs_predicted)
+mongo.store(predicted, SCHEMA_COMPONENT, generated_collection, type="component")
 
 inverse = np.dot(predicted, nipals_P.T) + np.mean(raw, axis=0)
-docs_inverse = []
-for observation in inverse:
-    doc_inverse = dict(zip(schema_inverse, ["inverse"] + observation.tolist()))
-    docs_inverse.append(doc_inverse)
-generated_collection.insert_many(docs_inverse)
+mongo.store(inverse, SCHEMA_INVERSE, generated_collection, type="inverse")
 
 
 # Calculate best order (order with minimum error) again
@@ -500,11 +499,11 @@ for i in range(NEW_DATA_SIZE):
         j += 1
 
     # Store predicted transformed point in MongoDB
-    doc_component = dict(zip(schema_component, ("component", ) + preds_transformed))
+    doc_component = dict(zip(SCHEMA_COMPONENT, ("component",) + preds_transformed))
     generated_collection.insert_one(doc_component)
 
     # Calculate and store inverse point
     inverse = np.dot(preds_transformed, nipals_P.T) + np.mean(raw, axis=0)
-    doc_inverse = dict(zip(schema_inverse, ["inverse"] + inverse.tolist()))
+    doc_inverse = dict(zip(SCHEMA_INVERSE, ["inverse"] + inverse.tolist()))
     generated_collection.insert_one(doc_inverse)
 print(str(datetime.now()), "Done iterative prediction")
