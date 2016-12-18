@@ -15,8 +15,8 @@ client = MongoClient("mongodb://localhost:27017")
 print(client)
 db = client.simulation
 print(db)
-data_collection = db.data
-print(data_collection)
+component_collection = component.data
+print(component_collection)
 gaussian_collection = db.gaussian
 print(gaussian_collection)
 generated_collection = db.generated
@@ -80,8 +80,8 @@ def run(data):
 
 
 real_data_y = []
-for doc in data_collection.find({}, sort=[SORT_ID_ASCENDING]):
-    real_data_y.append(doc["APHu"])
+for doc in component_collection.find({"type": POINT_TYPE}, sort=[SORT_ID_ASCENDING]):
+    real_data_y.append(doc[FIELD])
 real_data_x = list(range(len(real_data_y)))
 
 gaussian_data_y = []
