@@ -99,15 +99,29 @@ ax.plot(gaussian_data_x, gaussian_data_y, label="gaussian")
 ax.plot(real_data_x, real_data_y, label="original")
 line, = ax.plot(xdata, ydata, label="predicted")
 
+pipeline = [ {"$group": {"_id": 0, "avg": {"$avg": "$"+FIELD}}} ]
+avg = list(gaussian_collection.aggregate(pipeline))[0]["avg"]
+print("avg", avg)
 
-# TODO: calculate max from all data
-ax.axhline(np.max(gaussian_data_y), color="gray", linewidth=1)
-ax.axhline(np.min(gaussian_data_y), color="gray", linewidth=1)
-ax.axhline(np.mean(gaussian_data_y), color="gray", linewidth=1)
-ax.axhline(np.mean(gaussian_data_y) + 2 * np.std(gaussian_data_y), color="gray", linewidth=1)
-ax.axhline(np.mean(gaussian_data_y) + 3 * np.std(gaussian_data_y), color="gray", linewidth=1)
-ax.axhline(np.mean(gaussian_data_y) - 2 * np.std(gaussian_data_y), color="gray", linewidth=1)
-ax.axhline(np.mean(gaussian_data_y) - 3 * np.std(gaussian_data_y), color="gray", linewidth=1)
+pipeline = [ {"$group": {"_id": 0, "max": {"$max": "$"+FIELD}}} ]
+max = list(gaussian_collection.aggregate(pipeline))[0]["max"]
+print("max", max)
+
+pipeline = [ {"$group": {"_id": 0, "min": {"$min": "$"+FIELD}}} ]
+min = list(gaussian_collection.aggregate(pipeline))[0]["min"]
+print("min", min)
+
+pipeline = [ {"$group": {"_id": 0, "std": {"$stdDevPop": "$"+FIELD}}} ]
+std = list(gaussian_collection.aggregate(pipeline))[0]["std"]
+print("std", std)
+
+ax.axhline(max, color="gray", linewidth=1)
+ax.axhline(min, color="gray", linewidth=1)
+ax.axhline(avg, color="gray", linewidth=1)
+ax.axhline(avg + 2 * std, color="gray", linewidth=1)
+ax.axhline(avg + 3 * std, color="gray", linewidth=1)
+ax.axhline(avg - 2 * std, color="gray", linewidth=1)
+ax.axhline(avg - 3 * std, color="gray", linewidth=1)
 title = "Dynamic plot for " + POINT_TYPE + " " + FIELD
 plt.title(title)
 ax.legend()

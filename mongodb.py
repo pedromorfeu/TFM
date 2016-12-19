@@ -9,16 +9,41 @@ client = MongoClient("mongodb://localhost:27017")
 print(client)
 db = client.simulation
 print(db)
+gaussian_collection = db.gaussian
+print(gaussian_collection)
 collection = db.generated
 print(collection)
+
+# print(gaussian_collection.find({"type": "component"}, ["c0"])[0])
+# print(gaussian_collection.find({"type": "component"}, ["c0"]).sort("c0", pymongo.DESCENDING).limit(1)[0])
+# print(gaussian_collection.find({"type": "component"}, ["c0"]).sort("c0", pymongo.ASCENDING).limit(1)[0])
+
+import pprint
+
+pipeline = [ {"$group": {"_id": 0, "avg": {"$avg": "$c0"}}} ]
+avg = list(gaussian_collection.aggregate(pipeline))[0]["avg"]
+pprint.pprint(avg)
+
+pipeline = [ {"$group": {"_id": 0, "max": {"$max": "$c0"}}} ]
+max = list(gaussian_collection.aggregate(pipeline))[0]["max"]
+pprint.pprint(max)
+
+pipeline = [ {"$group": {"_id": 0, "min": {"$min": "$c0"}}} ]
+min = list(gaussian_collection.aggregate(pipeline))[0]["min"]
+pprint.pprint(min)
+
+pipeline = [ {"$group": {"_id": 0, "std": {"$stdDevPop": "$c0"}}} ]
+std = list(gaussian_collection.aggregate(pipeline))[0]["std"]
+pprint.pprint(std)
+
+
+exit()
 
 for doc in collection.find({"type": "inverse"}).sort("_id", pymongo.ASCENDING):
     print(doc["APHu"])
 
 print("---")
 print(collection.find_one({"type": "inverse"}, sort=[("_id", pymongo.ASCENDING)], skip=12))
-
-exit()
 
 # db.points.delete_many({})
 
