@@ -10,7 +10,8 @@ from datetime import datetime
 from statsmodels.tsa.stattools import arma_order_select_ic
 from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.seasonal import seasonal_decompose
-from statsmodels.tsa.api import SARIMAX
+#from statsmodels.tsa.api import SARIMAX
+from statsmodels.tsa.statespace.sarimax import SARIMAX
 from scipy.spatial.distance import cdist
 
 # Download the CSV data file from:
