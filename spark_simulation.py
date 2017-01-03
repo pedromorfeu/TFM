@@ -491,3 +491,8 @@ for i in range(NEW_DATA_SIZE):
     doc_inverse = dict(zip(SCHEMA_INVERSE, ["inverse"] + inverse.tolist()))
     mongo.store_generated_single(doc_inverse)
 print(str(datetime.now()), "Done iterative prediction")
+
+
+timedelta = datetime.now() - start
+print("Total seconds", timedelta.total_seconds())
+print("Total minutes", timedelta.total_seconds()/60)
