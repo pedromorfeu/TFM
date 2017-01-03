@@ -20,7 +20,7 @@ from scipy.spatial.distance import cdist
 
 
 N_COMPONENTS = 5
-GAUSSIAN_DATA_SIZE = 500000
+GAUSSIAN_DATA_SIZE = 1000000
 NEW_DATA_SIZE = 2000
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
@@ -32,6 +32,7 @@ WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
+
 
 start = datetime.now()
 
@@ -46,6 +47,7 @@ print(data.head())
 print(data.dtypes)
 print(data.index)
 print(data.shape)
+print(data.index)
 
 
 # observations per day

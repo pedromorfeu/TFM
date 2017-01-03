@@ -20,10 +20,14 @@ except ImportError as e:
     print ("Can not import Spark Modules", e)
 
 print(locale.getdefaultlocale())
-locale.setlocale(locale.LC_TIME, "spanish")
+# Windows locale:
+# locale.setlocale(locale.LC_TIME, "spanish")
+# MacOS locale:
+locale.setlocale(locale.LC_TIME, "es_ES")
 
 
 def parse_dates(dates):
+    print(dates)
     if type(dates) is "str":
         date = dates
         return parse_date(date)
@@ -31,12 +35,19 @@ def parse_dates(dates):
         parsed_dates = np.empty(len(dates), dtype="datetime64[s]")
         for i in range(len(dates)):
             parsed_dates[i] = parse_date(dates[i])
+            #print("parsed", parsed_dates[i])
         return parsed_dates
 
 
 def parse_date(date_string):
     # 06-oct-2015 21:57:03
-    locale_date_string = re.sub("(.+-)(.+)(-.+)", "\\1\\2.\\3", date_string)
+
+    # Windows regex
+    # regex = "\\1\\2.\\3"
+    # MacOS regex
+    regex = "\\1\\2\\3"
+
+    locale_date_string = re.sub("(.+-)(.+)(-.+)", regex, date_string)
     return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
 
 
@@ -204,6 +215,8 @@ def arima_order_select(_timeseries, max_ar=4, max_i=2, max_ma=4, min_i=0):
 
 def save_plot_per_column(_data, _columns, _suffix="", _folder="figures"):
     print("Saving plots...")
+    if not os.path.exists(_folder):
+        os.makedirs(_folder)
     plt.ioff()
     plt.figure(figsize=(16, 9))
     for i in range(len(_columns)):
@@ -219,6 +232,8 @@ def save_plot_per_column(_data, _columns, _suffix="", _folder="figures"):
 
 def save_mixed_plots_per_column(_data, _inverse, _inverse_gaussian, _columns, _suffix="", _folder="figures"):
     print("Saving plots...")
+    if not os.path.exists(_folder):
+        os.makedirs(_folder)
     plt.ioff()
     plt.figure(figsize=(16, 9))
     for i in range(len(_columns)):
@@ -236,6 +251,8 @@ def save_mixed_plots_per_column(_data, _inverse, _inverse_gaussian, _columns, _s
 
 def save_data_plot(_data, _filename="original", _folder="figures"):
     print("Saving plot...")
+    if not os.path.exists(_folder):
+        os.makedirs(_folder)
     plt.ioff()
     plt.figure(figsize=(16, 9))
     plt.clf()
