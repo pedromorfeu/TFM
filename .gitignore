@@ -13,3 +13,4 @@ output/
 build/
 dist/
 util.egg-info/
+.DS_Store

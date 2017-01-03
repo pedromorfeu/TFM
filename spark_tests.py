@@ -3,7 +3,7 @@ import os
 import sys
 import numpy as np
 from datetime import datetime
-from util import *
+from util.generic import *
 
 
 # # Path for spark source folder
@@ -29,7 +29,7 @@ except ImportError as e:
 
 
 # Initialize SparkContext
-conf = SparkConf().setAppName("testApp").setMaster("local[4]")
+conf = SparkConf().setAppName("testApp").setMaster("local[*]")
 sc = SparkContext(conf=conf)
 print(sc)
 
