@@ -8,7 +8,7 @@ from pymongo import MongoClient
 SORT_ID_ASCENDING = ("_id", pymongo.ASCENDING)
 MAX_GAUSSIAN = 2000
 POINT_TYPE = "component"
-FIELD = "c0"
+FIELD = "c1"
 
 
 client = MongoClient("mongodb://localhost:27017")
