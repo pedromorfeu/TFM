@@ -22,7 +22,7 @@
 \contentsline {subsection}{\numberline {5.1.1}Estructura}{9}{subsection.5.1.1}
 \contentsline {subsection}{\numberline {5.1.2}Transformaci\IeC {\'o}n}{10}{subsection.5.1.2}
 \contentsline {subsection}{\numberline {5.1.3}Distribuci\IeC {\'o}n de los datos}{10}{subsection.5.1.3}
-\contentsline {section}{\numberline {5.2}PCA}{10}{section.5.2}
+\contentsline {section}{\numberline {5.2}PCA}{11}{section.5.2}
 \contentsline {subsection}{\numberline {5.2.1}PCA iterativo - NIPALS}{11}{subsection.5.2.1}
 \contentsline {subsection}{\numberline {5.2.2}Test de hip\IeC {\'o}tesis - Estad\IeC {\'\i }stico T-cuadrado de Hotelling}{11}{subsection.5.2.2}
 \contentsline {subsection}{\numberline {5.2.3}Simulaci\IeC {\'o}n con distribuci\IeC {\'o}n Gaussiana - hip\IeC {\'o}tesis nula}{11}{subsection.5.2.3}

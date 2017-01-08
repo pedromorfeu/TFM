@@ -5,14 +5,48 @@
 \usepackage{listings}
 \usepackage{color}
 
+
+% Tex global defintions
+\lstdefinestyle{default}{
+    frame=tb,
+    aboveskip=3mm,
+    belowskip=3mm,
+    showstringspaces=true,
+    showspaces = false,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    numbers=none,
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=2,
+    showspaces = true
+}
+
+\definecolor{dkgreen}{rgb}{0,0.5,0}
+\definecolor{dkblue}{rgb}{0,0,0.5}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{python}{
+    language=Python,
+    numbers=none,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{dkblue},
+    commentstyle=\color{mauve},
+    stringstyle=\color{dkgreen},
+}
+% End text global definitions
+
+
 \title{Simulación de datos de sensores industriales}
 \author{Pedro Henrique Mano Figueiredo Fernandes}
 \tutor{Francisco Sánchez Cid}
 \curs{2015-2016}
 
-\keywords{Machine learning, Big Data, PCA} 
-         {Machine learning, Big Data, PCA}
-         {Machine learning, Big Data, PCA} 
+\keywords
+{Machine learning, Big Data, PCA} 
+{Machine learning, Big Data, PCA}
+{Machine learning, Big Data, PCA} 
 
 \begin{document}
 
@@ -50,19 +84,19 @@ Con un volumen de datos muy grande, las herramientas convencionales no tienen ca
 
 %El nuevo espacio está constituido por variables independientes y ortogonales. Para cada variable (componente), se calculan valores aleatorios con distribución normal. Estos son los scores de las componentes de los nuevos datos. Al proyectar la nueva matriz de componentes de vuelta al espacio original, se obtienen datos simulados para todas las características. Si la validación de esta técnica demuestra que es correcta, se puede usar para la simulación de nuevos datos. La validación de los datos generados pasa por la aplicación de estadísticos de comparación de las muestras originales y las nuevas. Las técnicas utilizadas son los tests de Hotelling T-squared y Box's M. En el caso de Hotelling T-squared (o T2) se prueba la igualdad en las médias de las poblaciones. Box's M test tiene como suposición la igualdad de matrices de varianzas-covarianzas de las poblaciones. Los resultados demuestran que es viable usar esta técnica de simulación de datos.
 
-\section{Motivación}
-
-Los datos recolectados en sensores industriales tienen poco volumen al principio de la implantación. Con estos datos, es posible aprender un modelo para predecir el comportamiento futuro. Sin embargo, antes hay que tener en cuenta que la calidad de datos no siempre es la adecuada para aplicar técnicas matemáticas. Así que es muy importante conocer el {\em dataset}, limpiarlo y normalizarlo. Además hay que lidiar con frecuencias de mediciones inconstantes, con el ruido y repetición de mediciones. Para estos problemas, las técnicas de {\em Machine Learning} ofrecen buenas soluciones. 
-
-\section{Objectivos}
-
-El objetivo de este proyecto es aprender y simular datos de sensores industriales. Los nuevos datos, de mucho mayor volumen, permitirán aplicar técnicas de Big Data. Como los datos iniciales son provenientes de sensores, la calidad no está asegurada, por lo que se tendrá que emplear técnicas de limpieza y normalización. El aprendizaje del {\em dataset} pasa por aplicación de {\em Machine Learning}, para inducir un modelo matemático y poder inferir datos futuros. Para comprobar la validez de la solución propuesta, se tiene que aplicar métodos estadísticos. Potencialmente, las herramientas convencionales no tengan capacidad para un volumen muy grande de datos- en ese caso se exige el uso de herramientas más poderosas (Big Data).
-
-Los pasos descritos son muy comunes en análisis de datos y en particular en el {\em pipeline} de Big Data.
-
-\section{Estructura del documento}
-
-Este documento se estructura de la siguiente forma: un análisis sobre el {\em dataset} y respectivas transformaciones para adecuar los datos; el desarrollo del problema, con las soluciones propuestas y respectiva base teórica; conclusiones del trabajo realizado y posibles mejoras; y termina con las fuentes bibliográficas que han servido de base del estudio.
+    \section{Motivación}
+    
+    Los datos recolectados en sensores industriales tienen poco volumen al principio de la implantación. Con estos datos, es posible aprender un modelo para predecir el comportamiento futuro. Sin embargo, antes hay que tener en cuenta que la calidad de datos no siempre es la adecuada para aplicar técnicas matemáticas. Así que es muy importante conocer el {\em dataset}, limpiarlo y normalizarlo. Además hay que lidiar con frecuencias de mediciones inconstantes, con el ruido y repetición de mediciones. Para estos problemas, las técnicas de {\em Machine Learning} ofrecen buenas soluciones. 
+    
+    \section{Objectivos}
+    
+    El objetivo de este proyecto es aprender y simular datos de sensores industriales. Los nuevos datos, de mucho mayor volumen, permitirán aplicar técnicas de Big Data. Como los datos iniciales son provenientes de sensores, la calidad no está asegurada, por lo que se tendrá que emplear técnicas de limpieza y normalización. El aprendizaje del {\em dataset} pasa por aplicación de {\em Machine Learning}, para inducir un modelo matemático y poder inferir datos futuros. Para comprobar la validez de la solución propuesta, se tiene que aplicar métodos estadísticos. Potencialmente, las herramientas convencionales no tengan capacidad para un volumen muy grande de datos- en ese caso se exige el uso de herramientas más poderosas (Big Data).
+    
+    Los pasos descritos son muy comunes en análisis de datos y en particular en el {\em pipeline} de Big Data.
+    
+    \section{Estructura del documento}
+    
+    Este documento se estructura de la siguiente forma: un análisis sobre el {\em dataset} y respectivas transformaciones para adecuar los datos; el desarrollo del problema, con las soluciones propuestas y respectiva base teórica; conclusiones del trabajo realizado y posibles mejoras; y termina con las fuentes bibliográficas que han servido de base del estudio.
 
 % Descripción del problema
 \chapter{Descripción del problema}
@@ -75,130 +109,107 @@ TODO
 % Solución propuesta
 \chapter{Solución propuesta}
 TODO
-\section{Reducción de dimensionalidad - PCA}
-TODO
-\section{Séries temporales - ARIMA}
-TODO
+    \section{Reducción de dimensionalidad - PCA}
+    TODO
+    \section{Séries temporales - ARIMA}
+    TODO
 
 % Experimentación y resultados
 \chapter{Experimentación y resultados}
 TODO
 
-\section{Dataset}
-El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado {\em Transformación}.
-
-\subsection{Estructura}
-Un breve análisis del {\em dataset} en un editor de texto muestra que tiene un formato de campos separados por espacios y tabulaciones. La cantidad de espacios es variable:
-
-\lstset{frame=tb,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=true,
-  showspaces = false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=2
-}
-
-\lstset{
-  showspaces = true
-}
-\begin{lstlisting}[caption=Ejemplo del {\em dataset}.]
-Tiempoinicio                    	APHu                            	APVs ...
-                     	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 	                 
-06-oct-2015 21:57:03 	44.6             	69.3 ...
-06-oct-2015 21:57:12 	45.1             	69.0 ...
-06-oct-2015 21:57:21 	44.8             	69.8 ...
-...
-\end{lstlisting}
-
-
-\lstset{
-  showspaces = false,
-}
-La primera línea contiene un {\em header} (cabecera), con 15 nombres: 
-\begin{lstlisting}[caption={\em Header} del {\em dataset}.]
-Tiempoinicio APHu APVs ACPv ZSx ZUs H7x H1x H2x H6x H3x H4x H5x ACPx Svo
-\end{lstlisting}
-
-Se puede verificar también que hay una línea vacía después del {\em header}. El primer campo tiene un formato de fecha/hora y los demás campos tienen formato decimal.
-
-\subsection{Transformación}
-Para la ingestión y transformación de los datos se han usado librerías muy útiles y con muchas funcionalidades que facilitan bastante esas tareas: en los scripts Python se ha usado el paquete {\em Pandas} y en R la función {\em read.csv2} del paquete {\em utils}.
-
-Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto (`.'). Con eso es suficiente para un {em parsing} correcto.
-
-Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en el {\em locale} de España, el {\em standard} de abreviación de mes es con punto (`.'), por ejemplo {\tt oct.}. Así que el {\em parsing} de fechas tuvo que ser ajustado. La estratégia ha sido el uso de una expresión regular para añadir el punto (`.') necesario en las abreviaciones de meses, como se puede ver en los siguientes {\em snippets} Python y R:
-
-\definecolor{dkgreen}{rgb}{0,0.5,0}
-\definecolor{dkblue}{rgb}{0,0,0.5}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
-\lstset{
-  language=Python,
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{dkblue},
-  commentstyle=\color{mauve},
-  stringstyle=\color{dkgreen},
-}
-
-\begin{lstlisting}[caption={\em Parsing} de fechas en Python.]
-def parse_date(date_string):
-    locale_date_string = re.sub("(.+-)(.+)(-.+)", "\\1\\2.\\3", date_string)
-    return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
-\end{lstlisting}
-
-\begin{lstlisting}[caption={\em Parsing} de fechas en R.]
-data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
-data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
-\end{lstlisting}
-
-El resultado final es un {\em dataset} estructurado con una marca temporal como índice y 14 características.
-
-\subsection{Distribución de los datos}
-
-Las mediciones de los sensores se distribuyen por varios días, no siempre consecutivos. Los días con mediciones son algunos 
-\begin{itemize}
-\item 6-9, 12 de octubre de 2015
-\item 14 de diciembre de 2015
-\item 7, 8, 11, 14 de marzo de 2016
-\item 6, 29 de abril de 2016
-\item 2, 26 de mayo de 2016
-\item 8, 17, 20 de junio de 2016
-\end{itemize}
-
-En cada día las muestras son dispares y en momentos distintos del día, probablemente por corresponder a distintas pruebas. Así, también las frecuencias de muestreo son variables, en algunos días parece indicar una frecuencia de 10 segundos pero hay otros donde son de 1 minuto.
-
-\section{PCA}
-TODO
-\subsection{PCA iterativo - NIPALS}
-TODO
-\subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
-TODO
-\subsection{Simulación con distribución Gaussiana - hipótesis nula}
-TODO
-
-\section{ARIMA}
-TODO
-\subsection{Simulación con todo el dataset}
-TODO
-\subsection{Simulación con datos de 1 día}
-TODO
-\subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
-TODO
-
-% Big Data
-\chapter{Big Data}
-TODO
-\section{MongoDB}
-TODO
-\section{Spark}
-TODO
+% Dataset
+    \section{Dataset}
+    El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado {\em Transformación}.
+    
+        \subsection{Estructura}
+        Un breve análisis del {\em dataset} en un editor de texto muestra que tiene un formato de campos separados por espacios y tabulaciones. La cantidad de espacios es variable:
+    
+        \lstset{style=default}
+        \lstset{
+          showspaces = true
+        }
+        \begin{lstlisting}[caption=Ejemplo del {\em dataset}.]
+        Tiempoinicio                    	APHu                            	APVs ...
+        
+        06-oct-2015 21:57:03 	44.6             	69.3 ...
+        06-oct-2015 21:57:12 	45.1             	69.0 ...
+        06-oct-2015 21:57:21 	44.8             	69.8 ...
+        ...
+        \end{lstlisting}
+        
+        \lstset{
+          showspaces = false
+        }
+        La primera línea contiene un {\em header} (cabecera), con 15 nombres: 
+        \begin{lstlisting}[caption={\em Header} del {\em dataset}.]
+        Tiempoinicio APHu APVs ACPv ZSx ZUs H7x H1x H2x H6x H3x H4x H5x ACPx Svo
+        \end{lstlisting}
+        
+        Se puede verificar también que hay una línea vacía después del {\em header}. El primer campo tiene un formato de fecha/hora y los demás campos tienen formato decimal.
+    
+        \subsection{Transformación}
+        Para la ingestión y transformación de los datos se han usado librerías muy útiles y con muchas funcionalidades que facilitan bastante esas tareas: en los scripts Python se ha usado el paquete {\em Pandas} y en R la función {\em read.csv2} del paquete {\em utils}.
+        
+        Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto (`.'). Con eso es suficiente para un {em parsing} correcto.
+        
+        Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en el {\em locale} de España, el {\em standard} de abreviación de mes es con punto (`.'), por ejemplo {\tt oct.}. Así que el {\em parsing} de fechas tuvo que ser ajustado. La estratégia ha sido el uso de una expresión regular para añadir el punto (`.') necesario en las abreviaciones de meses, como se puede ver en los siguientes {\em snippets} Python y R:
+        
+        \lstset{style=python}
+        \begin{lstlisting}[caption={\em Parsing} de fechas en Python.]
+        def parse_date(date_string):
+            locale_date_string = re.sub("(.+-)(.+)(-.+)", "\\1\\2.\\3", date_string)
+            return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
+        \end{lstlisting}
+        
+        \begin{lstlisting}[caption={\em Parsing} de fechas en R.]
+        data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
+        data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
+        \end{lstlisting}
+        
+        El resultado final es un {\em dataset} estructurado con una marca temporal como índice y 14 características.
+        
+        \subsection{Distribución de los datos}
+        
+        Las mediciones de los sensores se distribuyen por varios días, no siempre consecutivos. Los días con mediciones son algunos 
+        \begin{itemize}
+        \item 6-9, 12 de octubre de 2015
+        \item 14 de diciembre de 2015
+        \item 7, 8, 11, 14 de marzo de 2016
+        \item 6, 29 de abril de 2016
+        \item 2, 26 de mayo de 2016
+        \item 8, 17, 20 de junio de 2016
+        \end{itemize}
+        
+        En cada día las muestras son dispares y en momentos distintos del día, probablemente por corresponder a distintas pruebas. Así, también las frecuencias de muestreo son variables, en algunos días parece indicar una frecuencia de 10 segundos pero hay otros donde son de 1 minuto.
+    
+    % PCA
+    \section{PCA}
+    TODO
+        \subsection{PCA iterativo - NIPALS}
+        TODO
+        \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
+        TODO
+        \subsection{Simulación con distribución Gaussiana - hipótesis nula}
+        TODO
+    
+    % ARIMA
+    \section{ARIMA}
+    TODO
+        \subsection{Simulación con todo el dataset}
+        TODO
+        \subsection{Simulación con datos de 1 día}
+        TODO
+        \subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
+        TODO
+    
+    % Big Data
+    \chapter{Big Data}
+    TODO
+        \section{MongoDB}
+        TODO
+        \section{Spark}
+        TODO
  
 % Conclusiones
 \chapter{Conclusiones}
