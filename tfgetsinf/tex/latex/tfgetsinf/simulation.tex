@@ -1,114 +1,41 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                       CARREGA DE LA CLASSE DE DOCUMENT                      %
-%                                                                             %
-% Les opcions admissibles son:                                                %
-%      12pt / 11pt            (cos dels tipus de lletra; no feu servir 10pt)  %
-%                                                                             %
-% catalan/spanish/english     (llengua principal del treball)                 %
-%                                                                             % 
-% french/italian/german...    (si necessiteu fer servir alguna altra llengua) %
-%                                                                             %
-% listoffigures               (El document inclou un Index de figures)        %
-% listoftables                (El document inclou un Index de taules)         %
-% listofquadres               (El document inclou un Index de quadres)        %
-% listofalgorithms            (El document inclou un Index d'algorismes)      %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \documentclass[11pt,spanish,listoffigures,listoftables]{tfgetsinf}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                     CODIFICACIO DEL FITXER FONT                             %
-%                                                                             %
-%    windows fa servir normalment 'ansinew'                                   %
-%    amb linux es possible que siga 'latin1' o 'latin9'                       %
-%    Pero el mes recomanable es fer servir utf8 (unicode 8)                   %
-%                                          (si el vostre editor ho permet)    % 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage[utf8]{inputenc} 
 
 \usepackage{listings}
 \usepackage{color}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                        ALTRES PAQUETS I DEFINICIONS                         %
-%                                                                             %
-% Carregueu aci els paquets que necessiteu i declareu les comandes i entorns  %
-%                                          (aquesta seccio pot ser buida)     %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                        DADES DEL TREBALL                                    %
-%                                                                             %
-% titol, alumne, tutor i curs academic                                        %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \title{Simulación de datos de sensores industriales}
 \author{Pedro Henrique Mano Figueiredo Fernandes}
 \tutor{Francisco Sánchez Cid}
 \curs{2015-2016}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                     PARAULES CLAU/PALABRAS CLAVE/KEY WORDS                  %
-%                                                                             %
-% Independentment de la llengua del treball, s'hi han d'incloure              %
-% les paraules clau i el resum en els tres idiomes                            %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\keywords{Machine learning, Big Data, PCA} % Paraules clau 
-         {Machine learning, Big Data, PCA}              % Palabras clave
-         {Machine learning, Big Data, PCA}        % Key words
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                              INICI DEL DOCUMENT                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\keywords{Machine learning, Big Data, PCA} 
+         {Machine learning, Big Data, PCA}
+         {Machine learning, Big Data, PCA} 
 
 \begin{document}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%              RESUMS DEL TFG EN VALENCIA, CASTELLA I ANGLES                  %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% Abstract
 \begin{abstract}[spanish]
 Los entornos industriales hacen uso de sensores para obtener mediciones de varios factores en su cadena de producción. En las fases iniciales, la cantidad de datos generados es pequeña, por lo que no es significativa para poder aplicar técnicas de Big Data. El proyecto descrito en este documento busca simular nuevos datos a través de los pocos datos generados por sensores industriales. Las métricas de sensores no tienen, en general, buena calidad - la frecuencia de muestreo no es constante, hay ruido, existen períodos sin mediciones y redundancias en las muestras. Estos problemas se extienden a todo el contexto de proyectos IoT ({\em Internet of Things}), donde los sensores representan la principal fuente de datos y donde se suma la infraestructura de conexión como factor de complejidad. Así que la limpieza y normalización de los datos es fundamental para poder aplicar técnicas matemáticas y tener resultados precisos. 
-
 \end{abstract}
-%\begin{abstract}[spanish]
-%????
-%\end{abstract}
-%\begin{abstract}[english]
-%????
-%\end{abstract}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                  STATE OF THE ART                                %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Estado del Arte}
-
+\begin{abstract}[english]
 TODO
+\end{abstract}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                              CONTINGUT DEL TREBALL                          %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
 
 \mainmatter
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                  INTRODUCCIO                                %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Introducci\'on}
-
-Este proyecto tiene como fuente de datos uno o varios sensores de un mecanizado industrial de injección de plástico. Los sensores efectuan mediciones de varios factores con una regularidad temporal, generando así muestras de datos en determinados intervalos de tiempo. Cuando se trata de sensores, es normal que los datos no tengan la calidad necesaria para aplicar técnicas matemáticas. Hay que tener en cuenta que la frecuencia de las mediciones no es necesariamente constante, la existencia de interrupciones, ruido y redundancias. Además, en el ambito de IoT ({\em Internet of Things}), se añaden otros factores, como la conectividad de los aparatos. 
+% Introducción
+\chapter{Introducción}
+Este proyecto tiene como fuente de datos uno o varios sensores de un mecanizado industrial de inyección de plástico. Los sensores efectuan mediciones de varios factores con una regularidad temporal, generando así muestras de datos en determinados intervalos de tiempo. Cuando se trata de sensores, es normal que los datos no tengan la calidad necesaria para aplicar técnicas matemáticas. Hay que tener en cuenta que la frecuencia de las mediciones no es necesariamente constante, la existencia de interrupciones, ruido y redundancias. Además, en el ámbito de IoT ({\em Internet of Things}), se añaden otros factores, como la conectividad de los aparatos. 
 
 Las técnicas de Big Data, en particular {\em Machine Learning}, necesitan gran cantidad de datos para poder inducir modelos matemáticos que los expliquen. Cuanto más datos mejor, para un aprendizaje más robusto y fiable. Sin embargo, al principio de los proyectos, la cantidad de datos recolectados suele ser pequeña y insuficiente para poder extraer conocimiento significativo de los mismos. El objetivo de este proyecto es aprender y simular el comportamiento de uno o varios sensores a través de una cantidad reducida de datos recolectados en los mismos. 
 
-Una vez preparado el {\em dataset}, es necesario aprender un modelo matemático que lo describa. Las técnicas usadas para ese efecto son del ambito de {\em Machine Learning}. En particular, en este caso se tratan de técnicas de aprendizaje no supervisado ({\em unsupervised learning}), pues el aprendizaje no visa predecir el valor de otras variables (etiquetas). 
+Una vez preparado el {\em dataset}, es necesario aprender un modelo matemático que lo describa. Las técnicas usadas para ese efecto son del ámbito de {\em Machine Learning}. En particular, en este caso se tratan de técnicas de aprendizaje no supervisado ({\em unsupervised learning}), pues el aprendizaje no visa predecir el valor de otras variables (etiquetas). 
 
 A los datos generados, se tendrán que aplicar técnicas de validación, para así evaluar formalmente el método propuesto.
 
@@ -123,7 +50,7 @@ Con un volumen de datos muy grande, las herramientas convencionales no tienen ca
 
 %El nuevo espacio está constituido por variables independientes y ortogonales. Para cada variable (componente), se calculan valores aleatorios con distribución normal. Estos son los scores de las componentes de los nuevos datos. Al proyectar la nueva matriz de componentes de vuelta al espacio original, se obtienen datos simulados para todas las características. Si la validación de esta técnica demuestra que es correcta, se puede usar para la simulación de nuevos datos. La validación de los datos generados pasa por la aplicación de estadísticos de comparación de las muestras originales y las nuevas. Las técnicas utilizadas son los tests de Hotelling T-squared y Box's M. En el caso de Hotelling T-squared (o T2) se prueba la igualdad en las médias de las poblaciones. Box's M test tiene como suposición la igualdad de matrices de varianzas-covarianzas de las poblaciones. Los resultados demuestran que es viable usar esta técnica de simulación de datos.
 
-\section{Motivaci\'on}
+\section{Motivación}
 
 Los datos recolectados en sensores industriales tienen poco volumen al principio de la implantación. Con estos datos, es posible aprender un modelo para predecir el comportamiento futuro. Sin embargo, antes hay que tener en cuenta que la calidad de datos no siempre es la adecuada para aplicar técnicas matemáticas. Así que es muy importante conocer el {\em dataset}, limpiarlo y normalizarlo. Además hay que lidiar con frecuencias de mediciones inconstantes, con el ruido y repetición de mediciones. Para estos problemas, las técnicas de {\em Machine Learning} ofrecen buenas soluciones. 
 
@@ -135,20 +62,32 @@ Los pasos descritos son muy comunes en análisis de datos y en particular en el 
 
 \section{Estructura del documento}
 
-Este documento se estructura de la siguiente forma: un análisis sobre el {\em dataset} y respectivas transformaciones para adecuar los datos; el desarrollo del problema, con las soluciones propuestas y respectiva base teórica; conclusiones del trabajo realizado y posibles mejoras; y termina con las fuentes bibiográficas que han servido de base del estudio.
+Este documento se estructura de la siguiente forma: un análisis sobre el {\em dataset} y respectivas transformaciones para adecuar los datos; el desarrollo del problema, con las soluciones propuestas y respectiva base teórica; conclusiones del trabajo realizado y posibles mejoras; y termina con las fuentes bibliográficas que han servido de base del estudio.
 
-%\section{Notes bibliografiques} %%%%% Opcional
+% Descripción del problema
+\chapter{Descripción del problema}
+TODO
 
-%????? ????????????? ????????????? ????????????? ????????????? ?????????????
+% Estado del Arte
+\chapter{Estado del Arte}
+TODO
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                         CAPITOLS (tants com calga)                          %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Solución propuesta
+\chapter{Solución propuesta}
+TODO
+\section{Reducción de dimensionalidad - PCA}
+TODO
+\section{Séries temporales - ARIMA}
+TODO
 
-\chapter{Dataset}
+% Experimentación y resultados
+\chapter{Experimentación y resultados}
+TODO
+
+\section{Dataset}
 El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado {\em Transformación}.
 
-\section{Estructura}
+\subsection{Estructura}
 Un breve análisis del {\em dataset} en un editor de texto muestra que tiene un formato de campos separados por espacios y tabulaciones. La cantidad de espacios es variable:
 
 \lstset{frame=tb,
@@ -187,7 +126,7 @@ Tiempoinicio APHu APVs ACPv ZSx ZUs H7x H1x H2x H6x H3x H4x H5x ACPx Svo
 
 Se puede verificar también que hay una línea vacía después del {\em header}. El primer campo tiene un formato de fecha/hora y los demás campos tienen formato decimal.
 
-\section{Transformación}
+\subsection{Transformación}
 Para la ingestión y transformación de los datos se han usado librerías muy útiles y con muchas funcionalidades que facilitan bastante esas tareas: en los scripts Python se ha usado el paquete {\em Pandas} y en R la función {\em read.csv2} del paquete {\em utils}.
 
 Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto (`.'). Con eso es suficiente para un {em parsing} correcto.
@@ -221,8 +160,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
 
 El resultado final es un {\em dataset} estructurado con una marca temporal como índice y 14 características.
 
-
-\section{Distribución de los datos}
+\subsection{Distribución de los datos}
 
 Las mediciones de los sensores se distribuyen por varios días, no siempre consecutivos. Los días con mediciones son algunos 
 \begin{itemize}
@@ -234,38 +172,43 @@ Las mediciones de los sensores se distribuyen por varios días, no siempre conse
 \item 8, 17, 20 de junio de 2016
 \end{itemize}
 
-En cada día las muestras son díspares y en momentos distintos del día, probablemente por corresponder a distintas pruebas. Así, también las frecuencias de muestreo son variables, en algunos días parece indicar una frecuencia de 10 segundos pero hay otros donde son de 1 minuto.
-
-
-\chapter{Desarrollo}
-TODO 
+En cada día las muestras son dispares y en momentos distintos del día, probablemente por corresponder a distintas pruebas. Así, también las frecuencias de muestreo son variables, en algunos días parece indicar una frecuencia de 10 segundos pero hay otros donde son de 1 minuto.
 
 \section{PCA}
 TODO
-
-\section{Series Temporales}
+\subsection{PCA iterativo - NIPALS}
+TODO
+\subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
+TODO
+\subsection{Simulación con distribución Gaussiana - hipótesis nula}
 TODO
 
-\section{Evaluación de los datos simulados}
+\section{ARIMA}
+TODO
+\subsection{Simulación con todo el dataset}
+TODO
+\subsection{Simulación con datos de 1 día}
+TODO
+\subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
 TODO
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                 CONCLUSIONS                                 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Conclusi\'on}
-
+% Big Data
+\chapter{Big Data}
+TODO
+\section{MongoDB}
+TODO
+\section{Spark}
+TODO
+ 
+% Conclusiones
+\chapter{Conclusiones}
 TODO
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                BIBLIOGRAFIA                                 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Trabajos futuros
+\chapter{Trabajos futuros}
 
 \begin{thebibliography}{10}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% MODEL D'ARTICLE                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibitem{light}
    Jon Shlens.
    \newblock A TUTORIAL ON PRINCIPAL COMPONENT ANALYSIS. Derivation, Discussion and Singular Value Decomposition.
@@ -276,17 +219,11 @@ TODO
    \newblock The Truth about Principal Components and Factor Analysis.
    \newblock 28 September, 2009.
    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% MODEL DE LLIBRE                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibitem{ifrah}
    Christopher M. Bishop.
    \newblock Pattern Recognition and Machine Learning.
    \newblock Springer, 2006.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% MODEL D'URL                                                                 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibitem{WAR}
    Principal component analysis (PCA). 
    \newblock Consultar 
@@ -295,32 +232,12 @@ TODO
 \end{thebibliography}
 \cleardoublepage
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                           APÈNDIXS  (Si n'hi ha!)                           %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \APPENDIX
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                         LA CONFIGURACIO DEL SISTEMA                         %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \chapter{Configuración del sistema}
-
 TODO
 
 \section{Fase de inicialización}
-
 TODO
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                               ALTRES  APÈNDIXS                              %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                              FI DEL DOCUMENT                                %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{document}

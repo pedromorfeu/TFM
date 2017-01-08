@@ -1,3 +1,7 @@
+# MacOS specific - to keep chart window on top
+import matplotlib
+matplotlib.use('TkAgg')
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -7,8 +11,12 @@ from pymongo import MongoClient
 
 SORT_ID_ASCENDING = ("_id", pymongo.ASCENDING)
 MAX_GAUSSIAN = 2000
-POINT_TYPE = "component"
-FIELD = "c1"
+# Possible values: "component", "inverse"
+POINT_TYPE = "inverse"
+# Possible values:
+# - for type "component": cX, where X is the component index (zero-based)
+# - for type "inverse": APHu APVs ACPv ZSx  ZUs  H7x  H1x  H2x  H6x  H3x  H4x  H5x  ACPx Svo
+FIELD = "APHu"
 
 
 client = MongoClient("mongodb://localhost:27017")
