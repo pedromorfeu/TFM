@@ -36,7 +36,3 @@
 \contentsline {chapter}{\numberline {7}Conclusiones}{15}{chapter.7}
 \contentsline {chapter}{\numberline {8}Trabajos futuros}{17}{chapter.8}
 \contentsline {chapter}{Bibliograf\'{\i }a}{19}{chapter*.5}
-\noindent \hrulefill \par 
-\appendixname \par 
-\contentsline {chapter}{\numberline {A}Configuraci\IeC {\'o}n del sistema}{21}{appendix.Alph1}
-\contentsline {section}{\numberline {A.1}Fase de inicializaci\IeC {\'o}n}{21}{section.Alph1.1}
