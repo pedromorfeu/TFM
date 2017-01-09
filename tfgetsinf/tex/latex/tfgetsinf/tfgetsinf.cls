@@ -75,7 +75,7 @@
 \definecolor{grisfosc}{gray}{0.25}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Para evitar líneas huérfanas y viudas
+% Para evitar lÃ­neas huÃ©rfanas y viudas
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \clubpenalty=10000
@@ -150,7 +150,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Formato de los caption de tablas, figuras, etc.
-% Líneas centrados, tamaño "small" para etiqueta y texto, 
+% LÃ­neas centrados, tamaÃ±o "small" para etiqueta y texto, 
 % y la etiqueta en negrita
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -168,7 +168,7 @@
      listname=\listquadrename,name=\quadrename]{quadre}     
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Para escribir código y que quede bien
+% Para escribir cÃ³digo y que quede bien
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{listings}
@@ -197,8 +197,8 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Aspecto los títulos para \chapter y \section, así como 
-% añadir un punto después de la numeración de las secciones
+% Aspecto los tÃ­tulos para \chapter y \section, asÃ­ como 
+% aÃ±adir un punto despuÃ©s de la numeraciÃ³n de las secciones
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{titlesec}
@@ -213,8 +213,8 @@
  \vspace{1pc}
  \LARGE\MakeUppercase{\chaptertitlename} \thechapter} % LABEL
 {0pc}                                                 % SEP
-{\Huge}                                               % BEFORE CODE (abans del títol)
-[\vspace{5pt}{\titlerule[1pt]}]                                          % AFTER  CODE (després del títol)
+{\Huge}                                               % BEFORE CODE (abans del tÃ­tol)
+[\vspace{5pt}{\titlerule[1pt]}]                                          % AFTER  CODE (desprÃ©s del tÃ­tol)
 
 \titleformat{\section}
  {\Large\normalfont\sffamily\bfseries}
@@ -227,7 +227,7 @@
 \setlength{\cftbeforechapskip}{3pt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Definición de las cabeceras y pies de página
+% DefiniciÃ³n de las cabeceras y pies de pÃ¡gina
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{fancyhdr}
@@ -259,7 +259,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Separación entre párrafos
+% SeparaciÃ³n entre pÃ¡rrafos
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \setlength{\parskip}{1ex}
@@ -286,7 +286,7 @@
 
 
 %%%%%%%%%
-% Índexs
+% Ãndexs
 %%%%%%%%%
 \newcommand{\makeindexes}{\cleardoublepage\tableofcontents\cleardoublepage
                           \iflistfigures\listoffigures\fi
@@ -317,9 +317,9 @@
 \begin{titlepage}
 \AddToShipoutPicture*{\AtPageUpperLeft{%
     % Marges: dalt=esquerra=dreta=2cm 
-    \raisebox{-4cm}{\hspace{2cm}\includegraphics[height=2cm]{logo-upv}% grand� ria 116mmx37mm escalada a 62.7mmx20mm
+    \raisebox{-4cm}{\hspace{2cm}\includegraphics[height=2cm]{logo-upv}% grandÃ ria 116mmx37mm escalada a 62.7mmx20mm
     \hspace{5.54cm}% 21cm-(2+6.27+5.19+2)cm
-                    \includegraphics[height=2cm]{logo-etsinf}% grand� ria 109mmx42mm escalada a 51.9mmx20mm
+                    \includegraphics[height=2cm]{logo-etsinf}% grandÃ ria 109mmx42mm escalada a 51.9mmx20mm
                     }}}
 \AddToShipoutPicture*{\includegraphics[width=21cm,height=12.89cm]{baseportada}}
 \centering
