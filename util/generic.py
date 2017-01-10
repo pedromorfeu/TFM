@@ -44,10 +44,10 @@ def parse_date(date_string):
 
     # Windows regex
     # regex = "\\1\\2.\\3"
-    # MacOS regex
-    regex = "\\1\\2\\3"
+    # locale_date_string = re.sub("(.+-)(.+)(-.+)", regex, date_string)
 
-    locale_date_string = re.sub("(.+-)(.+)(-.+)", regex, date_string)
+    # MacOS - no need of regex
+    locale_date_string = date_string
     return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
 
 
