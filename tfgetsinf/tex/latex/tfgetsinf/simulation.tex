@@ -69,11 +69,7 @@ Este proyecto tiene como fuente de datos uno o varios sensores de un mecanizado 
 
 Las técnicas de Big Data, en particular {\em Machine Learning}, necesitan gran cantidad de datos para poder inducir modelos matemáticos que expliquen esos datos. Cuanto más datos mejor, para un aprendizaje más robusto y fiable. Sin embargo, al principio de los proyectos, la cantidad de datos recolectados suele ser pequeña y insuficiente para poder extraer conocimiento significativo de los mismos. El objetivo de este proyecto es aprender y simular el comportamiento de uno o varios sensores a través de una cantidad reducida de datos recolectados en los mismos. 
 
-Una vez preparado el {\em dataset}, es necesario aprender un modelo matemático que lo describa. Las técnicas usadas para ese efecto son del ámbito de {\em Machine Learning}. En particular, en este caso se tratan de técnicas de aprendizaje no supervisado ({\em unsupervised learning}), pues el aprendizaje no visa predecir el valor de otras variables (etiquetas). 
-
-A los datos generados, se tendrán que aplicar técnicas de validación, para así evaluar formalmente el método propuesto.
-
-Con un volumen de datos muy grande, las herramientas convencionales no tienen capacidad de respuesta. El uso de herramientas Big Data surge como solución para ese problema.
+Una vez preparado el {\em dataset}, es necesario aprender un modelo matemático que lo describa. Las técnicas usadas para ese efecto son del ámbito de {\em Machine Learning}. 
 
 %La fase inicial del análisis es la ingesta de los datos. El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el locale España, lo que exige una adaptación de los algoritmos de parsing.
 
@@ -104,6 +100,7 @@ TODO
 La solución propuesta para simular datos empieza con la proyección de los datos del espacio multivariante original a un espacio ortogonal más reducido. Esta técnica de Machine Learning se conoce por PCA ({\em Principal Component Analysis}). El nuevo espacio (con menos dimensiones) contiene las componentes que mejor explican los datos, separando de esta forma el ruido y redundancias. 
 
 TODO: describir la simulación con distribución Gaussiana.
+A los datos generados, se tendrán que aplicar técnicas de validación, para así evaluar formalmente el método propuesto.
 
 Una vez proyectados los datos al nuevo espacio, se procede al análisis de la serie temporal de esos datos/componentes. El modelo propuesto es ARIMA ({\em Autoregressive Integrated Moving Average}). Los modelos de series temporales se ajustan a los datos para mejor comprensión de estos o para predicción de nuevos puntos en la serie.
 
@@ -112,6 +109,7 @@ TODO: describir la búsqueda de puntos cercanos en los datos Gaussianos.
 Llegados aquí, tenemos nuevos valores simulados de las componentes y además con carácter temporal. Al re-proyectar este espacio al espacio original obtenemos los valores simulados de las variables originales.
 
 TODO: describir la inclusión de herramientas Big Data.
+Con un volumen de datos muy grande, las herramientas convencionales no tienen capacidad de respuesta. El uso de herramientas Big Data surge como solución para ese problema.
 
     \section{Reducción de dimensionalidad - PCA}
     PCA pertenece a la familia de aprendizaje no supervisado ({\em unsupervised learning}), donde no existen etiquetas o clases a predecir. Los datos de entrenamiento son simplemente observaciones, sin estar clasificados. Las técnicas de unsupervised learning se usan para descubrir grupos de similitud (clusters) en los datos; o para determinar la distribución de los datos en el espacio original; o también, que interesa a este estudio, para proyectar los datos en espacios de menos dimensiones.
