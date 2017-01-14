@@ -84,7 +84,7 @@ El paradigma de IoT ({\em Internet of Things}) tiene mucha presencia en la indus
 
 La extracción de conocimiento de los datos se hace con técnicas estadísticas de {\em Machine Learning}. Estas técnicas están relacionadas con Big Data por la simple regla de que cuantos más datos mejor. Los modelos matemáticos que explican los datos son más robustos si hay mucho volumen de datos. Sin embargo, en las etapas iniciales de implantación de IoT no hay mucha cantidad de datos, lo que dificulta la aplicación de {\em Machine Learning}.
 
-Hay que tener en cuenta que los datos de sensores suelen tener problemas de calidad, sobre todo relacionados con ruido, redundancias o frecuencia de muestro. Por ejemplo, si un sensor mide la temperatura de una máquina, esa medición sufre interferencias del ambiente, por lo que la medición no es completamente objetiva. Ese efecto se conoce por ruido. Cuanto a las redundancias, pueden suceder en casos de pérdida de conectividad, en que el sensor vuelve a dar una métrica aunque la haya dado ya anteriormente. Esto sería un caso también de cambio de la frecuencia de muestreo. 
+Hay que tener en cuenta que los datos de sensores suelen tener problemas de calidad, sobre todo relacionados con ruido, redundancias o frecuencia de muestro. Por ejemplo, si un sensor mide la temperatura de una máquina, esa medición sufre interferencias del ambiente, por lo que la medición no es completamente objetiva. Ese efecto se conoce por ruido. Cuanto a las redundancias, pueden suceder en casos de pérdida de conectividad, en que el sensor vuelve a dar una métrica aunque la haya dado ya anteriormente. Esto sería, también, un caso de cambio de la frecuencia de muestreo, 	que se traduce en irregularidades de la serie temporal asociada a los datos. 
 
 El objetivo de este proyecto es aprender y simular datos de sensores industriales. Los nuevos datos, de mucho mayor volumen, podrán ser usados para probar y depurar los algoritmos de detección de averías y de predicción desarrollados para entornos Big Data. 
 
@@ -96,7 +96,7 @@ Las primeras componentes son las que mayor varianza explican y por eso se llaman
 
 Aunque PCA no tenga capacidades de predicción (pertenece a la categoría de {\em unsupervised learning}), se puede usar para simular nuevos datos, como se defiende en el artículo "The Truth About Principal Component and Factor Analysis". Aparte de las componentes que explican los datos, PCA obtiene también las proyecciones a lo largo de las componentes. Se pueden aprender las series de los {\em scores} de las proyecciones, reemplazar por nuevos valores y luego transformar de vuelta a un vector de características originales.
 
-TODO: time series
+Las observaciones de los sensores tienen una implícita relación con el tiempo (y así lo tendrán también las componentes principales). El estudio de esa relación se denomina análisis de series temporales. Con este análisis ahí se puede llegar a explicar mejor la serie y hacer predicciones sobre el futuro de la misma.
 
 % Solución propuesta
 \chapter{Solución propuesta}
