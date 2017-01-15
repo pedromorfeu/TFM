@@ -123,21 +123,48 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     \subsection{Detalle}
     En términos matemáticos, PCA es una transformación lineal ortogonal. Sean \(X\) y \(Y\) dos matrices \(m \times n\) relacionadas por la transformación lineal \(P\):
     \begin{equation}
-    PX = Y
+    P \cdot X = Y
     \end{equation}
     
     La matriz \(X\) son los datos originales y \(Y\) es la proyección de los mismos datos. La ecuación 4.1 representa un cambio de base, donde:
     \begin{enumerate}
     \item \(P\) es una matriz que transforma \(X\) en \(Y\).
     \item Geométricamente, \(P\) es una rotación y un estiramiento que transforma \(X\) en \(Y\).
-    \item Las líneas de \(P\), \(\{p1, ..., pm\}\), son las bases para expresar las columnas de \(X\).
+    \item Las líneas de \(P\), \(\{p_{1}, ..., p_{m}\}\), son las bases para expresar las columnas de \(X\).
     \end{enumerate}
     
-    Los vectores de las líneas de \(P\), \(\{p1, ..., pm\}\) de esta transformación serán las componentes principales de \(X\).
+    Los vectores de las líneas de \(P\), \(\{p_{1}, ..., p_{m}\}\) de esta transformación serán las componentes principales de \(X\).
     
     La descomposición se hace de modo que la primera componente es la que más varianza explica, la segunda componente es la que más varianza explica quitando la primera, y así sucesivamente. Los vectores que se obtienen son un conjunto de bases ortogonales y sin correlación.
    
-   TODO: como obtener las componentes
+   Consideremos la matriz \(X\), constituida por \(n\) líneas de observaciones y \(m\) características. La transformación de PCA se define por la ecuación:
+   \begin{equation}
+   t_{k(i)} = x_{i} \cdot w_{k}
+   \end{equation}
+   
+   Un conjunto de vectores de pesos ({\em loadings}) \(w_{(k)} = \{w_{1}, ..., w_{m}\}\), que transforma el vector \(x_{(i)}\) de cada línea de \(X\) en un nuevo vector de componentes principales {\em scores} \(t_{(i)} = \{t_{1}, ..., t_{k}\}\). De modo que las variables de \(t\) heredan sucesivamente la mayor varianza posible de \(x\), con la restricción de que cada vector de {\em loadings} \(w\) es un vector unitario.
+   
+   TODO: add some pictures
+   
+   TODO: convertir a matrix form
+   
+   Para obtener la primera componente, el primer vector de {\em loadings} \(w_{(1)}\) debe satisfacer:
+   \begin{equation}
+   w_{(1)} = \arg\max\limits_{||w|| = 1} \Big\{\sum_{i} (t_{1})^2_{(i)}\Big\} = \arg\max\limits_{||w|| = 1} \Big\{\sum_{i} (x_{(i)} \cdot w)^2\Big\}
+   \end{equation}
+   
+   En formato de matriz:
+   \begin{equation}
+   w_{(1)} = \arg\max\limits_{||w|| = 1} \Big\{||X \cdot w||^2\Big\} = \arg\max\limits_{||w|| = 1} \Big\{w^{T} \cdot X^{T} \cdot w \cdot X\Big\}
+   \end{equation}
+   
+   Como \(w_{(1)}\) está restringido a ser un vector unitario:
+   \begin{equation}
+   w_{(1)} = \arg\max \Big\{\frac{w^{T} \cdot X^{T} \cdot w \cdot X}{w^{T} \cdot w}\Big\}
+   \end{equation}
+   
+   
+   TODO: gráficos del libro de estadística
         
     \subsection{Singular Value Decomposition - SVD}
     PCA está muy relacionado con una técnica matemática llamada {\em Singular Value Decomposition} (SVD), tanto que muchas veces los nombres se usan intercambiados. De hecho, el algoritmo de PCA de {\em scikit-learn} usa la descomposición SVD de {\em numpy}. SVD es un método más general de entender el cambio de base.
