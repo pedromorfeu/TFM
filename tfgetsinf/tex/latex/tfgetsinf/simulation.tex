@@ -96,13 +96,13 @@ Las primeras componentes son las que mayor varianza explican y por eso se llaman
 
 Aunque PCA no tenga capacidades de predicción (pertenece a la categoría de {\em unsupervised learning}), se puede usar para simular nuevos datos, como se defiende en el artículo 'The Truth About Principal Component and Factor Analysis'. Aparte de las componentes que explican los datos, PCA obtiene también las proyecciones a lo largo de las componentes. Se pueden aprender las series de los {\em scores} de las proyecciones, reemplazar por nuevos valores y luego transformar de vuelta a un vector de características originales.
 
-Las observaciones de los sensores tienen una implícita relación con el tiempo (y así lo tendrán también las componentes principales). El estudio de esa relación se denomina análisis de series temporales. Con este análisis ahí se puede llegar a explicar mejor la serie y hacer predicciones sobre el futuro de la misma. 
+Las observaciones de los sensores tienen una implícita ordenación cronológica (y así lo tendrán también las componentes principales). El estudio de esa relación se denomina análisis de series temporales. Con este análisis ahí se puede llegar a explicar mejor la serie y hacer predicciones sobre el futuro de la misma. 
 
-Los modelos de {\em Exponential smoothing} y {\em AutoRegressive Integrated Moving Average} (ARIMA) son los más usados para predicción de series temporales. {\em Exponential smoothing} se basan en la descripción de tendencia y de seasonality. Pero, en general, observaciones sucesivas suelen tener dependencia entre si, como se describe en el libro 'Introduction to Time Series Analysis and Forecasting'. Para incorporar esta dependencia se usan los modelos ARIMA. Los modelos ARIMA son un flexible y poderoso método para análisis de series temporales y predicción. A lo largo de los años, se vienen usando con éxito en varios problemas de investigación y en la práctica.
+Los modelos {\em Exponential smoothing} y {\em AutoRegressive Integrated Moving Average} (ARIMA) son los más usados para predicción de series temporales. {\em Exponential smoothing} se basan en la descripción de tendencia y de variación estacional. Pero, en general, observaciones sucesivas suelen tener dependencia entre si, como se describe en el libro 'Introduction to Time Series Analysis and Forecasting'. Para incorporar esta dependencia se usan los modelos ARIMA. Los modelos ARIMA son un flexible y poderoso método para análisis de series temporales y predicción. A lo largo de los años, se vienen usando con éxito en varios problemas de investigación y en la práctica.
 
 % Solución propuesta
 \chapter{Solución propuesta}
-La solución propuesta para la simulación de datos empieza con la proyección de los datos del espacio multi-variante original a un espacio ortogonal más reducido. Esta técnica de Machine Learning se conoce por PCA ({\em Principal Component Analysis}). El nuevo espacio (con menos dimensiones) contiene las componentes que mejor explican los datos, por lo que se eliminan ruido y redundancias. 
+La solución propuesta para la simulación de datos empieza con la proyección de los datos del espacio multivariante original a un espacio ortogonal más reducido. Esta técnica de Machine Learning se conoce por PCA ({\em Principal Component Analysis}). El nuevo espacio (con menos dimensiones) contiene las componentes que mejor explican los datos, por lo que se eliminan ruido y redundancias. 
 
 Para cada componente, se efectúa la generación de nuevos valores con distribución Gaussiana. Esta simulación puede ser de miles o millones de nuevos puntos - no es una tarea computacional exigente y además tendrá utilidad más adelante. La simulación Gaussiana servirá como base del estudio, una vez que, al ser invertida, genera una población que es idéntica a la original. La comprobación de dicha similitud de poblaciones se hace a través del estadístico T-cuadrado de Hotelling. Y esta será nuestra hipótesis nula.
 
@@ -129,7 +129,7 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
 \chapter{Experimentación y resultados}
 TODO
 
-% Dataset
+    % Dataset
     \section{Dataset}
     El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado {\em Transformación}.
     
