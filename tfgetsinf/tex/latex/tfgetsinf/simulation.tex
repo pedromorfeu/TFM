@@ -139,9 +139,19 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     TODO: probar el ultimo punto con el producto escalar de PX?
     
     \subsection{Singular Value Decomposition - SVD}
-    PCA está muy relacionado con una técnica matemática llamada {\em Singular Value Decomposition} (SVD), tanto que muchas veces los nombres se usan intercambiados. De hecho, el algoritmo de PCA de {\em scikit-learn} usa la descomposición SVD de {\em numpy}. SVD es un método genérico de entender el cambio de base.
+    PCA está muy relacionado con una técnica matemática llamada {\em Singular Value Decomposition} (SVD), tanto que muchas veces los nombres se usan intercambiados. De hecho, el algoritmo de PCA de {\em scikit-learn} usa la descomposición SVD de {\em numpy}. SVD es un método más general de entender el cambio de base.
     
+    La representación de la descomposición es:
+    \begin{equation}
+    X = U \Sigma V^{T}
+    \end{equation}
     
+    Donde:
+    \begin{itemize}
+    \item \(U\) es una matriz \(n \times n\), en que las columnas son vectores unitarios de tamaño \(n\).
+    \item $\Sigma$ es una matriz diagonal \(n \times m\) de números positivos $\sigma_{i}$, llamados valores singulares de \(X\).
+    \item \(W\) es una matriz \(m \times m\), cuyas columnas son vectores unitarios ortogonales de tamaño \(p\).
+    \end{itemize}
     
 %    El nuevo espacio está constituido por variables independientes y ortogonales. Para cada componente, se calculan valores aleatorios con distribución normal. Estos son los scores de las componentes de los nuevos datos. Al proyectar la nueva matriz de componentes de vuelta al espacio original, se obtienen datos simulados para todas las características. Si la validación de esta técnica demuestra que es correcta, se puede usar para la simulación de nuevos datos. La validación de los datos generados pasa por la aplicación de estadísticos de comparación de las muestras originales y las nuevas. La técnica utilizada es el test de Hotelling T-squared, que prueba la similitud de las poblaciones. Los resultados demuestran que es viable usar esta técnica de simulación de datos.
 
