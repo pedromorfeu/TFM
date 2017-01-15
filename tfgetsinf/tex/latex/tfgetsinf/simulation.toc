@@ -15,7 +15,6 @@
 \contentsline {chapter}{\numberline {4}Soluci\IeC {\'o}n propuesta}{7}{chapter.4}
 \contentsline {section}{\numberline {4.1}Reducci\IeC {\'o}n de dimensionalidad - PCA}{7}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}Singular Value Decomposition - SVD}{8}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}Principal Components Analysis - PCA}{8}{subsection.4.1.2}
 \contentsline {section}{\numberline {4.2}Series temporales - ARIMA}{8}{section.4.2}
 \contentsline {chapter}{\numberline {5}Experimentaci\IeC {\'o}n y resultados}{9}{chapter.5}
 \contentsline {section}{\numberline {5.1}Dataset}{9}{section.5.1}
