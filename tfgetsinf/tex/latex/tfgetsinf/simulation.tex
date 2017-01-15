@@ -76,7 +76,7 @@ Una vez preparado el {\em dataset}, es necesario aprender un modelo matemático 
     
     \section{Estructura del documento}
     
-    Este documento se estructura de la siguiente forma: un análisis sobre el {\em dataset} y respectivas transformaciones para adecuar los datos; la descripción del problema, las soluciones propuestas y respectiva base teórica; la experimentación, resultados y discusión; conclusiones del trabajo realizado y posibles mejoras; y termina con las fuentes bibliográficas que han servido de base del estudio.
+    Este documento se estructura de la siguiente forma: la descripción del problema; el estado del arte; un análisis sobre el {\em dataset} y respectivas transformaciones para adecuar los datos; las soluciones propuestas y respectiva base teórica; la experimentación, resultados y discusión; conclusiones del trabajo realizado y posibles mejoras; y termina con las fuentes bibliográficas que han servido de base del estudio.
 
 % Descripción del problema
 \chapter{Descripción del problema}
@@ -131,7 +131,7 @@ TODO
 
     % Dataset
     \section{Dataset}
-    El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado {\em Transformación}.
+    El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España en {\em Windows}, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado 'Transformación'.
     
         \subsection{Estructura}
         Un breve análisis del {\em dataset} en un editor de texto muestra que tiene un formato de campos separados por espacios y tabulaciones. La cantidad de espacios es variable:
@@ -162,9 +162,9 @@ TODO
         \subsection{Transformación}
         Para la ingestión y transformación de los datos se han usado librerías muy útiles y con muchas funcionalidades que facilitan bastante esas tareas: en los scripts Python se ha usado el paquete {\em Pandas} y en R la función {\em read.csv2} del paquete {\em utils}.
         
-        Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto (`.'). Con eso es suficiente para un {em parsing} correcto.
+        Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto ('.'). Con eso es suficiente para un {em parsing} correcto.
         
-        Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en el {\em locale} de España, el {\em standard} de abreviación de mes es con punto (`.'), por ejemplo {\tt oct.}. Así que el {\em parsing} de fechas tuvo que ser ajustado. La estratégia ha sido el uso de una expresión regular para añadir el punto (`.') necesario en las abreviaciones de meses, como se puede ver en los siguientes {\em snippets} Python y R:
+        Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en {\em Windows}, el {\em locale} España usa un punto ('.') como {\em standard} en la abreviación de mes, por ejemplo 'oct.'. Así que el {\em parsing} de fechas tiene que ser ajustado si el sistema operativo es {\em Windows}. La estrategia ha sido el uso de una expresión regular para añadir el punto ('.') necesario en las abreviaciones de meses, como se puede ver en los siguientes {\em snippets} Python y R:
         
         \lstset{style=python}
         \begin{lstlisting}[caption={\em Parsing} de fechas en Python.]
@@ -177,6 +177,8 @@ TODO
         data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
         data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \end{lstlisting}
+        
+        En este caso particular de las fechas, el problema no está en el {\em dataset realmente}. Los {\em standards} de fechas varian en cada sistema operativo. La idea de exponer este caso no es más que transmitir la necesidad de ajustar y normalizar los datos cuando provienen de sensores.
         
         El resultado final es un {\em dataset} estructurado con una marca temporal como índice y 14 características.
         

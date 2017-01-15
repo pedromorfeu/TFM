@@ -36,7 +36,11 @@ WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 
 start = datetime.now()
 
-data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
+# Windows requires a date parser
+#data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
+#               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
+# MacOS doesn't
+data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=True, infer_datetime_format=True,
                index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
 # data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
