@@ -124,24 +124,30 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     
     TODO: explicar con gráficos
     
+    La dirección de la primera componente principal es aquella a lo largo de la cual las observaciones varían más.
     
-%    En términos matemáticos, PCA es una transformación lineal ortogonal. Sean \(X\) y \(Y\) dos matrices \(m \times n\) relacionadas por la transformación lineal \(P\):
-%    \begin{equation}
-%    P \cdot X = Y
-%    \end{equation}
-%    
-%    La matriz \(X\) son los datos originales y \(Y\) es la proyección de los mismos datos. La ecuación 4.1 representa un cambio de base, donde:
-%    \begin{enumerate}
-%    \item \(P\) es una matriz que transforma \(X\) en \(Y\).
-%    \item Geométricamente, \(P\) es una rotación y un estiramiento que transforma \(X\) en \(Y\).
-%    \item Las líneas de \(P\), \(\{p_{1}, ..., p_{m}\}\), son las bases para expresar las columnas de \(X\).
-%    \end{enumerate}
-%    
-%    Los vectores de las líneas de \(P\), \(\{p_{1}, ..., p_{m}\}\) de esta transformación serán las componentes principales de \(X\).
-%    
-%    La descomposición se hace de modo que la primera componente es la que más varianza explica, la segunda componente es la que más varianza explica quitando la primera, y así sucesivamente. Los vectores que se obtienen son un conjunto de bases ortogonales y sin correlación.
-
+    \graphicspath{ {images/} }
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\textwidth]{GaussianScatterPCA.png}
+        \caption{Datos con distribución Gaussiana y las dos primeras componentes PCA.}
+        \label{fig:pca1}
+    \end{figure}    
    
+    Por ejemplo, la Figura~\ref{fig:pca1} representa un conjunto de datos con distribución Gaussiana. La flecha mayor representa la dirección de la primera componente principal de los datos. Se puede verificar a simple vista que esta es la dirección con mayor variabilidad en los datos. Si trazamos una línea a lo largo de esa flecha y proyectamos en ella los datos, tendremos la proyección con mayor variabilidad. 
+    
+    La dirección de segunda componente está representada por la otra flecha. Al proyectar en ella los datos, podemos imaginar que el espectro de variabilidad es inferior al la primera.
+   
+    La proyección de un punto a una línea es muy sencilla: basta con buscar el punto más cercano en esa línea. Los puntos azules en la Figura~\ref{fig:pca_projection} representan la proyección de los puntos originales en la línea.
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\textwidth]{ProjectionPCA.jpg}
+        \caption{Proyección de puntos a una línea.}
+        \label{fig:pca_projection}
+    \end{figure}    
+    
    En términos matemáticos, PCA es una transformación lineal ortogonal. Consideremos la matriz \(X\), constituida por \(n\) líneas de observaciones y \(m\) características. El objetivo es proyectar los datos a un espacio con dimensionalidad \(d < m\), de forma que se maximice la varianza de los datos proyectados. La transformación de PCA se define por la ecuación:
    \begin{equation}
    Y = X \cdot w
