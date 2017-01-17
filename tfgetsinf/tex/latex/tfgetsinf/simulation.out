@@ -8,8 +8,8 @@
 \BOOKMARK [0][-]{chapter.3}{Estado del Arte}{}% 8
 \BOOKMARK [0][-]{chapter.4}{Soluci\363n propuesta}{}% 9
 \BOOKMARK [1][-]{section.4.1}{Reducci\363n de dimensionalidad - PCA}{chapter.4}% 10
-\BOOKMARK [2][-]{subsection.4.1.1}{Detalle}{section.4.1}% 11
-\BOOKMARK [2][-]{subsection.4.1.2}{Singular Value Decomposition - SVD}{section.4.1}% 12
+\BOOKMARK [2][-]{subsection.4.1.1}{Singular Value Decomposition}{section.4.1}% 11
+\BOOKMARK [2][-]{subsection.4.1.2}{El m\351todo NIPALS}{section.4.1}% 12
 \BOOKMARK [1][-]{section.4.2}{Series temporales - ARIMA}{chapter.4}% 13
 \BOOKMARK [0][-]{chapter.5}{Experimentaci\363n y resultados}{}% 14
 \BOOKMARK [1][-]{section.5.1}{Dataset}{chapter.5}% 15
