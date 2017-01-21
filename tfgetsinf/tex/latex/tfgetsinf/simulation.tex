@@ -224,10 +224,19 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     \subsection{Estacionaridad}
     Las series temporales son diferentes de un problema de regresión normal porque son dependientes del tiempo. Así que el supuesto básico de la regresión lineal de que las observaciones son independientes no se verifica en este caso. Para poder aplicar el modelo ARIMA es necesario que la serie sea estacionaria. Una serie es estacionaria cuando la media y varianza, si existen, no cambian en función del tiempo.
     
-    
-    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{APVs_original.png}
+        \caption{Ejemplo de serie no estacionaria.}
+        \label{fig:non_stationarity}
+    \end{figure}
 
-    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{APVs_inverse_gaussian.png}
+        \caption{Ejemplo de serie estacionaria.}
+        \label{fig:non_stationarity}
+    \end{figure}
     
     \subsection{Parámetros del modelo}
     TODO
