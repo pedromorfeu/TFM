@@ -93,13 +93,13 @@ El objetivo de este proyecto es aprender y simular datos de sensores industriale
 \chapter{Estado del Arte}
 Los problemas de ruido y redundancias en los datos son comunes y están bastante estudiados. Para solucionar ese problema, las técnicas de reducción de dimensionalidad, en que los datos son reducidos a lo esencial, suelen tener buenos resultados. PCA ({\em Principal Component Analysis} es la técnica más usual. PCA se usa para descomponer un conjunto de datos multivariante en un grupo de componentes ortogonales que mejor explican la varianza. El ajuste a los datos es de tipo lineal.
 
-Las primeras componentes son las que mayor varianza explican y por eso se llaman principales. El orden de las componentes es relevante, la primera es la más explicativa, la segunda la que más explica quitando la primera, y así sucesivamente. Así que es de esperar que lo que están explicando las últimas sea, realmente, el ruido de la señal. El artículo 'A Tutorial on Principal Component Analysis' deja patente esa evidencia en el objetivo de filtrar el ruido y redundancias para obtener la dinámica importante de los datos.
+Las primeras componentes son las que mayor varianza explican y por eso se llaman principales. El orden de las componentes es relevante, la primera es la más explicativa, la segunda la que más explica quitando la primera, y así sucesivamente. Así que es de esperar que lo que están explicando las últimas sea, realmente, el ruido de la señal. El artículo \textit{A Tutorial on Principal Component Analysis} \cite{shlens} deja patente esa evidencia en el objetivo de filtrar el ruido y redundancias para obtener la dinámica importante de los datos.
 
 Aunque PCA no tenga capacidades de predicción (pertenece a la categoría de {\em unsupervised learning}), se puede usar para simular nuevos datos, como se defiende en el artículo 'The Truth About Principal Component and Factor Analysis'. Aparte de las componentes que explican los datos, PCA obtiene también las proyecciones a lo largo de las componentes. Se pueden aprender las series de los {\em scores} de las proyecciones, reemplazar por nuevos valores y luego transformar de vuelta a un vector de características originales.
 
 Las observaciones de los sensores tienen una implícita ordenación cronológica (y así lo tendrán también las componentes principales). El estudio de esa relación se denomina análisis de series temporales. Con este análisis ahí se puede llegar a explicar mejor la serie y hacer predicciones sobre el futuro de la misma. 
 
-Los modelos {\em Exponential smoothing} y {\em AutoRegressive Integrated Moving Average} (ARIMA) son los más usados para predicción de series temporales. {\em Exponential smoothing} se basan en la descripción de tendencia y de variación estacional. Pero, en general, observaciones sucesivas suelen tener dependencia entre si, como se describe en el libro 'Introduction to Time Series Analysis and Forecasting'. Para incorporar esta dependencia se usan los modelos ARIMA. Los modelos ARIMA son un flexible y poderoso método para análisis de series temporales y predicción. A lo largo de los años, se vienen usando con éxito en varios problemas de investigación y en la práctica.
+Los modelos {\em Exponential smoothing} y {\em AutoRegressive Integrated Moving Average} (ARIMA) son los más usados para predicción de series temporales. {\em Exponential smoothing} se basan en la descripción de tendencia y de variación estacional. Pero, en general, observaciones sucesivas suelen tener dependencia entre si, como se describe en el libro \textit{Introduction to Time Series Analysis and Forecasting} \cite{montgomery}. Para incorporar esta dependencia se usan los modelos ARIMA. Los modelos ARIMA son un flexible y poderoso método para análisis de series temporales y predicción. A lo largo de los años, se vienen usando con éxito en varios problemas de investigación y en la práctica.
 
 % Solución propuesta
 \chapter{Solución propuesta}
@@ -107,7 +107,7 @@ La solución propuesta para la simulación de datos empieza con la proyección d
 
 Para cada componente, se efectúa la generación de nuevos valores con distribución Gaussiana. Esta simulación puede ser de miles o millones de nuevos puntos - no es una tarea computacional exigente y además tendrá utilidad más adelante. La simulación Gaussiana servirá como base del estudio, una vez que, al ser invertida, genera una población que es idéntica a la original. La comprobación de dicha similitud de poblaciones se hace a través del estadístico T-cuadrado de Hotelling. Y esta será nuestra hipótesis nula.
 
-Los datos originales tienen un sentido temporal. Las componentes lo tendrán también, así que se procede al análisis de la serie temporal de esas componentes. El modelo propuesto es ARIMA ({\em Autoregressive Integrated Moving Average}). Los modelos de series temporales se ajustan a los datos para mejor comprensión de estos o para predicción de nuevos puntos en la serie. El objetivo es dotar la simulación de un patrón temporal aprendido previamente.
+Los datos originales tienen un determinado sentido temporal. Las componentes lo tendrán también, así que se procede al análisis de la serie temporal de esas componentes. El modelo propuesto es ARIMA ({\em Autoregressive Integrated Moving Average}). Los modelos de series temporales se ajustan a los datos para mejor comprensión de estos o para predicción de nuevos puntos en la serie. El objetivo es dotar la simulación de un patrón temporal aprendido previamente.
 
 Teniendo en cuenta que el estudio se sustenta en la hipótesis nula de la simulación Gaussiana, para cada predicción de las varias componentes con marca temporal, se buscará el punto multi-dimensional más cercano en la simulación Gaussiana. El punto elegido se usará para re-alimentar el modelo ARIMA aprendido. Llegados aquí, tenemos nuevos valores simulados de las componentes y además con carácter temporal. Al re-proyectar este espacio al espacio original obtenemos nuevos valores (simulados) para las características originales.
 
@@ -211,8 +211,55 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
 %    El nuevo espacio está constituido por variables independientes y ortogonales. Para cada componente, se calculan valores aleatorios con distribución normal. Estos son los scores de las componentes de los nuevos datos. Al proyectar la nueva matriz de componentes de vuelta al espacio original, se obtienen datos simulados para todas las características. Si la validación de esta técnica demuestra que es correcta, se puede usar para la simulación de nuevos datos. La validación de los datos generados pasa por la aplicación de estadísticos de comparación de las muestras originales y las nuevas. La técnica utilizada es el test de Hotelling T-squared, que prueba la similitud de las poblaciones. Los resultados demuestran que es viable usar esta técnica de simulación de datos.
 
     \section{Series temporales - ARIMA}
-    TODO
+    Las series temporales surgen frecuentemente en la monitorización de procesos industriales. Cada observación de un sensor tiene una marca temporal asociada. El conjunto de las observaciones ordenadas de forma cronológica se denomina serie temporal. En este capítulo se demostrará el importante valor que tiene esa marca temporal en el análisis de las señales. 
+    
+    El análisis de series temporales asienta en la suposición de que los datos tomados en determinados puntos en el tiempo tienen una estructura interna (correlación, tendencia o variación estacional) que hay que tener en cuenta. El objetivo del análisis de series temporales es extrapolar datos futuros a través de los datos pasados. 
+    
+    ARIMA significa ({\em Autoregressive Integrated Moving Average}) y, junto con ({\em Exponential Smoothing}), es uno de los métodos más populares de análisis de series temporales. ARIMA incorpora formalmente la dependencia entre observaciones sucesivas en el modelo, mientras {\em Exponential Smoothing}) no lo hace de forma tan eficiente.
+    
+    La componente AR ({\em Autoregressive} - auto-regresiva) del modelo ARIMA se refiere al uso de observaciones anteriores en una ecuación regresiva para predecir valores futuros. A esta componente se asocia un parámetro \(p\), que corresponde al numero de puntos anteriores a incluir en el modelo. La componente MA ({\em Moving Average} - media móvil) representa el error del modelo como combinación de términos de error anteriores. El parámetro asociado es \(q\) y corresponde al numero de términos de error anteriores a usar. La componente I ({\em Integrated}) indica la diferenciación de los datos, que corresponde a calcular la diferencia entre los valores y sus antecesores. El parámetro \(d\) es el numero de diferenciaciones a aplicar en el modelo. De esta forma, los modelos ARIMA son generalmente definidos por \(ARIMA(p, d, q)\).
+    
+    Es importante resaltar que el modelo \(ARIMA(p, d, q)\) asume que la serie no tiene variación estacional y tendencia. Potencialmente es necesario eliminar esas características antes de crear el modelo. Esto nos lleva al concepto de {\em stationarity} (estacionaridad).
+    
+    \subsection{Estacionaridad}
+    Las series temporales son diferentes de un problema de regresión normal porque son dependientes del tiempo. Así que el supuesto básico de la regresión lineal de que las observaciones son independientes no se verifica en este caso. Para poder aplicar el modelo ARIMA es necesario que la serie sea estacionaria. Una serie es estacionaria cuando la media y varianza, si existen, no cambian en función del tiempo.
+    
+    
+    
 
+    
+    
+    \subsection{Parámetros del modelo}
+    TODO
+    AR I MA
+    p, q, d
+    
+    We can specify non-seasonal ARIMA structure and fit the model to de-seasonalize data. Parameters (1,1,1) suggested by the automated procedure are in line with our expectations based on the steps above; the model incorporates differencing of degree 1, and uses an autoregressive term of first lag and a moving average model of order 1
+    
+    
+    \subsection{Predicción}
+    TODO
+    
+   
+    Stationarity and differencing: "This shows one way to make a time series stationary — compute the differences between consecutive observations. This is known as differencing.
+    The estimator with the smallest MSE is the best
+    If the data are equi-spaced, the time variable, or index, does not need to be explicitly given. The time variable may sometimes be explicitly used for plotting the series. However, it is not used in the time series model itself
+    
+    The difference between the observation y1 and the value obtained by fitting a timeseries model to the data, or a fitted value .Yr defined above, is called a residual
+     the human eye can be a very sophisticated data analysis tool
+    
+    
+        "Causal variables will typically include data such as GRPs and price and also may incorporate data from consumer surveys or {\bf exogenous} variables such as GDP"
+    
+    Steps:
+    Plot, examine, and prepare series for modeling
+    Extract the seasonality component from the time series
+    Test for stationarity and apply appropriate transformations
+    Choose the order of an ARIMA model
+    Forecast the series
+    
+
+    
 % Experimentación y resultados
 \chapter{Experimentación y resultados}
 TODO
@@ -324,23 +371,30 @@ TODO
 
 \begin{thebibliography}{10}
 
-\bibitem{light}
+\bibitem{shlens}
    Jon Shlens.
-   \newblock A TUTORIAL ON PRINCIPAL COMPONENT ANALYSIS. Derivation, Discussion and Singular Value Decomposition.
+   \newblock \textit{A TUTORIAL ON PRINCIPAL COMPONENT ANALYSIS. Derivation, Discussion and Singular Value Decomposition.}
    \newblock Version 1, 25 March, 2003.
 
 \bibitem{light}
    Unknown Authors.
-   \newblock The Truth about Principal Components and Factor Analysis.
+   \newblock \textit{The Truth about Principal Components and Factor Analysis.}
    \newblock 28 September, 2009.
    
 \bibitem{bishop}
    Christopher M. Bishop.
-   \newblock Pattern Recognition and Machine Learning.
+   \newblock \textit{Pattern Recognition and Machine Learning.}
+   \newblock Springer, 2006.
+
+\bibitem{montgomery}
+   Montgomery, Douglas C.
+   Jennings, Cheryl L.
+   Kulahci, Murat
+   \newblock \textit{Introduction to Time Series Analysis and Forecasting.}
    \newblock Springer, 2006.
 
 \bibitem{WAR}
-   Principal component analysis (PCA). 
+   \textit{Principal component analysis (PCA).}
    \newblock Consultar 
    \url{http://scikit-learn.org/stable/modules/decomposition.html#principal-component-analysis-pca}.
 
