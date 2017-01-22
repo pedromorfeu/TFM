@@ -208,6 +208,8 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     
     Una vez convergido, para calcular la siguiente componente se resta el producto \(y_{1} \cdot w_{1}\) a \(X\). Esto corresponde a restar a \(X\) la parte de los datos explicada por \(y_{1}\) y \(w_{1}\).
     
+    TODO: Hotelling T2?
+    
 %    El nuevo espacio está constituido por variables independientes y ortogonales. Para cada componente, se calculan valores aleatorios con distribución normal. Estos son los scores de las componentes de los nuevos datos. Al proyectar la nueva matriz de componentes de vuelta al espacio original, se obtienen datos simulados para todas las características. Si la validación de esta técnica demuestra que es correcta, se puede usar para la simulación de nuevos datos. La validación de los datos generados pasa por la aplicación de estadísticos de comparación de las muestras originales y las nuevas. La técnica utilizada es el test de Hotelling T-squared, que prueba la similitud de las poblaciones. Los resultados demuestran que es viable usar esta técnica de simulación de datos.
 
     \section{Series temporales - ARIMA}
@@ -222,21 +224,62 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     Es importante resaltar que el modelo \(ARIMA(p, d, q)\) asume que la serie no tiene variación estacional y tendencia. Potencialmente es necesario eliminar esas características antes de crear el modelo. Esto nos lleva al concepto de {\em stationarity} (estacionaridad).
     
     \subsection{Estacionaridad}
-    Las series temporales son diferentes de un problema de regresión normal porque son dependientes del tiempo. Así que el supuesto básico de la regresión lineal de que las observaciones son independientes no se verifica en este caso. Para poder aplicar el modelo ARIMA es necesario que la serie sea estacionaria. Una serie es estacionaria cuando la media y varianza, si existen, no cambian en función del tiempo.
+    Las series temporales son diferentes de un problema de regresión normal porque son dependientes del tiempo. Así que el supuesto básico de la regresión lineal de que las observaciones son independientes no se verifica en este caso. Para poder aplicar el modelo ARIMA es necesario que la serie sea estacionaria. Una serie es estacionaria cuando la media y varianza, si existen, no cambian en función del tiempo. Como ARIMA usa los periodos anteriores para modelar el comportamiento de la serie, es importante que esta sea estable para tener más acierto. Muchas veces la estacionaridad se puede detectar visualmente, como se presenta en los ejemplos siguientes.
+    
+    La Figura~\ref{fig:stationary} es un ejemplo de una serie estacionaria, donde los valores oscilan con una varianza constante alrededor de una media de aproximadamente \(69.0\). 
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{APVs_inverse_gaussian.png}
+        \caption{Ejemplo de serie estacionaria.}
+        \label{fig:stationary}
+    \end{figure}
+
+    La Figura~\ref{fig:non_stationary}, sin embargo, no presenta señales de media y varianza constantes. De hecho se detecta una ligera tendencia decreciente, lo que la hace no estacionaria. 
     
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.7\textwidth]{APVs_original.png}
         \caption{Ejemplo de serie no estacionaria.}
-        \label{fig:non_stationarity}
+        \label{fig:non_stationary}
     \end{figure}
-
+    
+    Otra propiedad importante para que ARIMA sea efectivo es que la serie tenga periodos fijos. Cada observación debe ser dada a una frecuencia constante. Una vez los puntos sean equidistantes entre si, la variable tiempo, o índice, ya no necesita existir explicitamente. Muchas veces se usa el tiempo para la representación gráfica, sin embargo esa variable no se usa en el modelo en si. En los gráficos anteriores no se usa la marca de tiempo en el eje \(x\), simplemente un índice numerico. 
+    
+    Hay casos donde la estacionaridad es más difícil de determinar a simple vista. Además el análisis necesita una prueba formal de la estacionaridad. Para eso se usa el test estadístico de Dickey-Fuller, conocido por {\em augmented Dickey-Fuller test} (ADF). La hipótesis nula asume que la serie es no estacionaria. Valores altos del p-valor indican que el test no rechaza la hipótesis nula y, por lo tanto, la serie es no estacionaria. Por otro lado, valores bajos de p-valor indican que la serie es estacionaria. En general, tomando el 5\% de confianza, si el p-valor es mayor que 0.05 la serie es no estacionaria.
+    
+    Se demuestra en el ejemplo siguiente.
+    
+    %ADF procedure tests whether the change in Y can be explained by lagged value and a linear trend. If contribution of the lagged value to the change in Y is non-significant and there is a presence of a trend component, the series is non-stationary and null hypothesis will not be rejected.
+    
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.7\textwidth]{APVs_inverse_gaussian.png}
-        \caption{Ejemplo de serie estacionaria.}
-        \label{fig:non_stationarity}
+        \includegraphics[width=0.7\textwidth]{time_serie_1.png}
+        \caption{Ejemplo de serie para aplicar el test de Dickey-Fuller.}
+        \label{fig:time_serie_1}
     \end{figure}
+    
+    La serie de la Figura~\ref{fig:time_serie_1} tiene una tendencia creciente, por lo que no debería ser estacionaria. Apliquemos el test de Dickey-Fuller, presente en la librería {\tt statsmodels} de Python:
+    
+    \lstset{style=python}
+    \begin{lstlisting}[caption=Test de Dickey-Fuller de {\tt statsmodels} de Python.]
+        from statsmodels.tsa.stattools import adfuller
+        dftest = adfuller(ts)
+        print('Test Statistic', dftest[0])
+        print('p-value', dftest[1])
+        print('Confidence levels', dftest[4])  
+    \end{lstlisting}
+    
+    \lstset{style=python}
+    \begin{lstlisting}[caption=Resultados del test de Dickey-Fuller de {\tt statsmodels} de Python.]
+        Test Statistic 0.815368879206
+        p-value 0.991880243438
+        Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': -2.5787700591715979}
+    \end{lstlisting}
+    
+    
+    
+    
     
     \subsection{Parámetros del modelo}
     TODO
@@ -252,7 +295,7 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
    
     Stationarity and differencing: "This shows one way to make a time series stationary — compute the differences between consecutive observations. This is known as differencing.
     The estimator with the smallest MSE is the best
-    If the data are equi-spaced, the time variable, or index, does not need to be explicitly given. The time variable may sometimes be explicitly used for plotting the series. However, it is not used in the time series model itself
+    
     
     The difference between the observation y1 and the value obtained by fitting a timeseries model to the data, or a fitted value .Yr defined above, is called a residual
      the human eye can be a very sophisticated data analysis tool
