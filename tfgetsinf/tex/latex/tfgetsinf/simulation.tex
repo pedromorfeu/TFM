@@ -259,10 +259,10 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
         \label{fig:time_serie_1}
     \end{figure}
     
-    La serie de la Figura~\ref{fig:time_serie_1} tiene una tendencia creciente, por lo que no debería ser estacionaria. Apliquemos el test de Dickey-Fuller, presente en la librería {\tt statsmodels} de Python:
+    La serie de la Figura~\ref{fig:time_serie_1} tiene una tendencia creciente, por lo que no debería ser estacionaria. Apliquemos el test de Dickey-Fuller, presente en módulo {\tt statsmodels} de Python:
     
-    \lstset{style=python}
-    \begin{lstlisting}[caption=Test de Dickey-Fuller de {\tt statsmodels} de Python.]
+    %\lstset{style=python}
+    \begin{lstlisting}[caption=Test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_test_1}]
         from statsmodels.tsa.stattools import adfuller
         dftest = adfuller(ts)
         print('Test Statistic', dftest[0])
@@ -271,44 +271,63 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     \end{lstlisting}
     
     \lstset{style=python}
-    \begin{lstlisting}[caption=Resultados del test de Dickey-Fuller de {\tt statsmodels} de Python.]
+    \begin{lstlisting}[caption=Resultados del test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_res_1}]
         Test Statistic 0.815368879206
         p-value 0.991880243438
         Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': -2.5787700591715979}
     \end{lstlisting}
     
+    Los resultados del Listing~\ref{lst:adf_test_1} demuestran que la hipótesis nula no puede ser descartada, una vez que {\em p-value} es cercano a 1. El resultado del estadístico lo confirma también: para que se descarte la hipótesis nula, el valor del estadístico debe ser inferior a alguno de los valores de los intervalos de confianza.
+    
+    La serie tendrá que ser transformada hasta ser estacionaria. Una de las técnicas más comunes para conseguirlo es la diferenciación, que consiste en calcular las diferencias entre observaciones consecutivas. La diferenciación ayuda a estabilizar la media de la serie, eliminando la tendencia y la estacionalidad. El primer nivel de diferenciación de la serie \(y\) se define por:
+    
+    \begin{equation}
+    y_{t}-y_{t-1}
+    \end{equation}
+    
+    Siendo \(t\) un determinado punto en el tiempo. Se pueden aplicar más niveles de diferenciación, pero con un solo nivel suele ser suficiente.
+    
+    Aplicando diferenciación a la serie anterior obtenemos la serie transformada representada en la Figura~\ref{fig:ts_diff} y respectivos resultados en Listing~\ref{lst:adf_test_2}.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{ts_diff.png}
+        \caption{Ejemplo de serie con diferenciación.}
+        \label{fig:ts_diff}
+    \end{figure}
+    
+    \begin{lstlisting}[caption=Resultados del test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_test_2}]
+        Test Statistic -2.82926682417
+        p-value 0.0542132902838
+        Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': -2.5787700591715979}
+    \end{lstlisting}
+    
+    El test de Dickey-Fuller demuestra que el p-valor ha bajado considerablemente, para valores casi inferiores a \(0.05\), por lo que podemos decir con un 95\% de confianza que la serie es estacionaria ahora. El análisis visual también permite verificar que la tendencia se ha eliminado.
+    
+    \subsection{Parámetros del modelo y predicción}
+    
+    Como mencionado anteriormente, el modelo ARIMA es una ecuación lineal que depende de los parámetros \(p, d, q\), correspondientes a las partes autoregresiva (AR), integración (I) y de medias móviles (MA) del modelo, respectivamente. 
+    
+    El paso de diferenciación es aplicado internamente por el modelo, a través del parámetro \(d\), que corresponde a la parte I ({\em Integrated}) de ARIMA. No hace falta pasar los datos diferenciados al modelo. Para la determinación de los parámetros \(p\) y \(q\) óptimos se usan formalmente los gráficos de correlación ACF ({\em Auto-Correlation Function}) y PACF ({\em Partial Auto-Correlation Function}). Estos gráficos se han usado en fases iniciales de este estudio, pero salen del ámbito de investigación. 
+    
+    Otra solución es la minimización del error, o valor residual, de la predición. La diferencia entre la observación \(y_{t}\) y el valor obtenido a través del ajuste del modelo a los datos (o valor ajustado \(y'_{t}\)) se llama valor residual, y es definido por:
+    
+    \begin{equation}
+    e_{t} = y_{t} - y'_{t}
+    \end{equation}
+    
+    A través de los residuales se puede calcular el {\em root mean squared error} (RMSE). El modelo con menor RMSE es el mejor. Así que la solución consiste en iterar, probando todas las combinaciones de los parámetros \((p,d,q)\) de ARIMA, para obtener el modelo con menor RMSE.
     
     
-    
-    
-    \subsection{Parámetros del modelo}
-    TODO
-    AR I MA
-    p, q, d
-    
-    We can specify non-seasonal ARIMA structure and fit the model to de-seasonalize data. Parameters (1,1,1) suggested by the automated procedure are in line with our expectations based on the steps above; the model incorporates differencing of degree 1, and uses an autoregressive term of first lag and a moving average model of order 1
-    
-    
-    \subsection{Predicción}
-    TODO
-    
-   
-    Stationarity and differencing: "This shows one way to make a time series stationary — compute the differences between consecutive observations. This is known as differencing.
-    The estimator with the smallest MSE is the best
-    
-    
-    The difference between the observation y1 and the value obtained by fitting a timeseries model to the data, or a fitted value .Yr defined above, is called a residual
-     the human eye can be a very sophisticated data analysis tool
-    
-    
-        "Causal variables will typically include data such as GRPs and price and also may incorporate data from consumer surveys or {\bf exogenous} variables such as GDP"
-    
-    Steps:
-    Plot, examine, and prepare series for modeling
-    Extract the seasonality component from the time series
-    Test for stationarity and apply appropriate transformations
-    Choose the order of an ARIMA model
-    Forecast the series
+        
+%        "Causal variables will typically include data such as GRPs and price and also may incorporate data from consumer surveys or {\bf exogenous} variables such as GDP"
+%    
+%    Steps:
+%    Plot, examine, and prepare series for modeling
+%    Extract the seasonality component from the time series
+%    Test for stationarity and apply appropriate transformations
+%    Choose the order of an ARIMA model
+%    Forecast the series
     
 
     
