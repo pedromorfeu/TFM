@@ -13,6 +13,10 @@
 \contentsline {figure}{\numberline {4.4}{\ignorespaces Ejemplo de serie no estacionaria.\relax }}{12}{figure.caption.8}
 \contentsline {figure}{\numberline {4.5}{\ignorespaces Ejemplo de serie para aplicar el test de Dickey-Fuller.\relax }}{13}{figure.caption.9}
 \contentsline {figure}{\numberline {4.6}{\ignorespaces Ejemplo de serie con diferenciaci\IeC {\'o}n.\relax }}{14}{figure.caption.10}
+\contentsline {figure}{\numberline {4.7}{\ignorespaces ARIMA iterativo: AR(1).\relax }}{15}{figure.caption.11}
+\contentsline {figure}{\numberline {4.8}{\ignorespaces ARIMA iterativo: MA(1).\relax }}{15}{figure.caption.12}
+\contentsline {figure}{\numberline {4.9}{\ignorespaces ARIMA iterativo: AR(1) y MA(1).\relax }}{16}{figure.caption.13}
+\contentsline {figure}{\numberline {4.10}{\ignorespaces ARIMA iterativo: AR(2) y MA(2).\relax }}{16}{figure.caption.14}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

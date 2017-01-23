@@ -316,9 +316,45 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     e_{t} = y_{t} - y'_{t}
     \end{equation}
     
-    A través de los residuales se puede calcular el {\em root mean squared error} (RMSE). El modelo con menor RMSE es el mejor. Así que la solución consiste en iterar, probando todas las combinaciones de los parámetros \((p,d,q)\) de ARIMA, para obtener el modelo con menor RMSE.
+    A través de los residuales se puede calcular el {\em root mean squared error} (RMSE). El modelo con menor RMSE es el mejor. Así que la solución consiste en iterar, probando todas las combinaciones de los parámetros \((p,d,q)\) de ARIMA, para obtener el modelo con menor RMSE. Se ejemplifica el proceso a continuación.
     
+    Se asume que la serie necesita un nivel de diferenciación para ser estacionaria: \(d=1\). La componente I de ARIMA será tendrá, así, valor \(1\). 
     
+    Empezamos la iteración con un nivel para la componente auto-regresiva: \(p=1\). Esto corresponde a \(AR(1)\), como se puede ver en la Figura~\ref{fig:iterative_arima_ar_1}. La línea azul son los datos de la serie diferenciada y la línea roja es el ajuste del modelo a esos datos. El RMSE es de \(32\). 
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_110.png}
+        \caption{ARIMA iterativo: AR(1).}
+        \label{fig:iterative_arima_ar_1}
+    \end{figure}
+    
+    Pasamos a probar la componente de média móvil: \(q=1\), o \(MA(1)\). El RMSE ha bajado un poco, ahora es \(31\) (Figura~\ref{fig:iterative_arima_ma_1}).
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_011.png}
+        \caption{ARIMA iterativo: MA(1).}
+        \label{fig:iterative_arima_ma_1}
+    \end{figure}
+    
+    Combinando los dos modelos anteriores es cuando tenemos realmente un modelo ARIMA completo, con las tres componentes: \(ARIMA(p, d, q)=ARIMA(1, 1, 1)\). Se puede verificar que el RMSE ha bajado mínimamente respecto al modelo anterior (Figura~\ref{fig:iterative_arima_arma_1}).
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_111.png}
+        \caption{ARIMA iterativo: AR(1) y MA(1).}
+        \label{fig:iterative_arima_arma_1}
+    \end{figure}
+        
+    Obviando algunos pasos intermedios, pasamos al modelo con dos niveles de \(AR\) y de \(MA\): \(ARIMA(p, d, q)=ARIMA(2, 1, 2)\). El RMSE obtenido es de \(25\), que corresponde al menor valor. Si paramos la iteración, este sería el modelo con mejor ajuste. En la Figura~\ref{fig:iterative_arima_arma_2} podemos verificar ese ajuste visualmente: la línea roja se ajusta mejor a los datos que en los gráficos anteriores.
+  
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_212.png}
+        \caption{ARIMA iterativo: AR(2) y MA(2).}
+        \label{fig:iterative_arima_arma_2}
+    \end{figure}
         
 %        "Causal variables will typically include data such as GRPs and price and also may incorporate data from consumer surveys or {\bf exogenous} variables such as GDP"
 %    
