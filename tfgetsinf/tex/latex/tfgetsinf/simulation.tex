@@ -192,7 +192,7 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     La ecuación 4.2 indica que una matriz \(X\) puede ser convertida en una matriz ortogonal, una matriz diagonal y otra matriz ortogonal. O, dicho de otra forma, corresponde a una rotación, un estiramiento y otra rotación.
     
     \subsection{El método NIPALS}
-    SVD es el método general para cálculo de PCA. Pero si lo aplicamos a un {\em dataset} multidimensional muy grande puede tener problemas, porque calcula todas las componentes de una vez (calcula toda la matriz de varianzas-covarianzas de \(X\)). NIPALS significa {\em Non-linear Iterative Partial Least Squares} y es un algoritmo iterativo que solo calcula las primeras componentes principales.
+    SVD es el método general para cálculo de PCA. Pero si lo aplicamos a un {\em dataset} multidimensional muy grande puede tener problemas, porque calcula todas las componentes de una vez (calcula toda la matriz de varianzas-covarianzas de \(X\)). Esto implica un gran consumo de memoria y CPU. NIPALS significa {\em Non-linear Iterative Partial Least Squares} y es un algoritmo iterativo que solo calcula las primeras componentes principales.
     
     Para cada componente, el algoritmo NIPALS itera hasta que el {\em score} \(y_{1}\) tenga convergencia. Antes de la iteración, se atribuye un valor aleatorio al {\em score} \(y_{1}\). La convergencia se detecta cuando la variación del {\em score} \(y_{1}\) respecto a la iteración anterior es muy pequeña. 
     
@@ -238,9 +238,7 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     
     Otra propiedad importante para que ARIMA sea efectivo es que la serie tenga periodos fijos. Cada observación debe ser dada a una frecuencia constante. Una vez los puntos sean equidistantes entre si, la variable tiempo, o índice, ya no necesita existir explicitamente. Muchas veces se usa el tiempo para la representación gráfica, sin embargo esa variable no se usa en el modelo en si. En los gráficos anteriores no se usa la marca de tiempo en el eje \(x\), simplemente un índice numerico. 
     
-    Hay casos donde la estacionaridad es más difícil de determinar a simple vista. Además el análisis necesita una prueba formal de la estacionaridad. Para eso se usa el test estadístico de Dickey-Fuller, conocido por {\em augmented Dickey-Fuller test} (ADF). La hipótesis nula asume que la serie es no estacionaria. Valores altos del p-valor indican que el test no rechaza la hipótesis nula y, por lo tanto, la serie es no estacionaria. Por otro lado, valores bajos de p-valor indican que la serie es estacionaria. En general, tomando el 5\% de confianza, si el p-valor es mayor que 0.05 la serie es no estacionaria.
-    
-    Se demuestra en el ejemplo siguiente.
+    Hay casos donde la estacionaridad es más difícil de determinar a simple vista. Además el análisis necesita una prueba formal de la estacionaridad. Para eso se usa el test estadístico de Dickey-Fuller, conocido por {\em augmented Dickey-Fuller test} (ADF). La hipótesis nula asume que la serie es no estacionaria. Valores altos del p-valor indican que el test no rechaza la hipótesis nula y, por lo tanto, la serie es no estacionaria. Por otro lado, valores bajos de p-valor indican que la serie es estacionaria. En general, tomando el 5\% de confianza, si el p-valor es mayor que 0.05 la serie es no estacionaria. Se demuestra en el ejemplo siguiente.
     
     %ADF procedure tests whether the change in Y can be explained by lagged value and a linear trend. If contribution of the lagged value to the change in Y is non-significant and there is a presence of a trend component, the series is non-stationary and null hypothesis will not be rejected.
     
@@ -253,7 +251,7 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
     
     La serie de la Figura~\ref{fig:time_serie_1} tiene una tendencia creciente, por lo que no debería ser estacionaria. Apliquemos el test de Dickey-Fuller, presente en módulo {\tt statsmodels} de Python:
     
-    %\lstset{style=python}
+    \lstset{style=python}
     \begin{lstlisting}[caption=Test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_test_1}]
 from statsmodels.tsa.stattools import adfuller
 dftest = adfuller(ts)
@@ -427,7 +425,7 @@ TODO
         data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \end{lstlisting}
         
-        En este caso particular de las fechas, el problema no está en el {\em dataset realmente}. Los {\em standards} de fechas varian en cada sistema operativo. La idea de exponer este caso no es más que transmitir la necesidad de ajustar y normalizar los datos cuando provienen de sensores.
+        En este caso particular de las fechas, el problema no está en el {\em dataset} realmente. Los {\em standards} de fechas varian en cada sistema operativo. La idea de exponer este caso no es más que transmitir la necesidad de ajustar y normalizar los datos cuando provienen de sensores.
         
         El resultado final es un {\em dataset} estructurado con una marca temporal como índice y 14 características.
         
@@ -443,36 +441,41 @@ TODO
         \item 8, 17, 20 de junio de 2016
         \end{itemize}
         
-        En cada día las muestras son dispares y en momentos distintos del día, probablemente por corresponder a distintas pruebas. Así, también las frecuencias de muestreo son variables, en algunos días parece indicar una frecuencia de 10 segundos pero hay otros donde son de 1 minuto.
+        En cada día las muestras son dispares y en momentos distintos del día, probablemente por corresponder a distintas pruebas. Así, también las frecuencias de muestreo son variables - en algunos días parece indicar una frecuencia de 10 segundos pero hay otros donde son de 1 minuto.
     
     % PCA
     \section{PCA}
     TODO
     
-        \subsection{PCA iterativo - NIPALS}
-        Sin embargo, el cálculo de SVD es muy intensivo para matrices grandes, porque calcula la matriz de varianzas-covarianzas para todos los componentes. Esto implica un gran consumo de memoria y CPU. Como alternativa, se propone usar una técnica iterativa llamada NIPALS ({\em Nonlinear Iterative Partial Least Squares}), que usa el numero de componentes reducido.
-    TODO: explain NIPALS algorithm        TODO
-        
-        \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
-        TODO
-        \subsection{Simulación con distribución Gaussiana - hipótesis nula}
-        TODO
+    \subsection{PCA iterativo - NIPALS}
+    Para datasets grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
+
+    \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
+    TODO
+    
+    \subsection{Simulación con distribución Gaussiana - hipótesis nula}
+    TODO
     
     % ARIMA
     \section{ARIMA}
     TODO
+    
         \subsection{Simulación con todo el dataset}
         TODO
+        
         \subsection{Simulación con datos de 1 día}
         TODO
+        
         \subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
         TODO
     
     % Big Data
     \chapter{Big Data}
     TODO
+    
         \section{MongoDB}
         TODO
+        
         \section{Spark}
         TODO
  

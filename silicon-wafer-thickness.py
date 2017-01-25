@@ -22,7 +22,7 @@ X.mean(axis=0)  # array([ -3.92198351e-17,  -1.74980803e-16, ...
 X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
 # We are going to calculate only 2 principal components
-A = 2
+A = 3
 
 # We could of course use SVD ...
 u, d, v = np.linalg.svd(X)
