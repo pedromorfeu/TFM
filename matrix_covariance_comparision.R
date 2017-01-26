@@ -46,12 +46,24 @@ tail(data)
 # check the variables with zero variance and give them white noise
 # otherwise the test will fail due to inability to invert
 cov(data)
-data$col6 <- mean(data$col6) + 0.001 * rnorm(nrow(data))
 data$ZSx <- mean(data$ZSx) + 0.001 * rnorm(nrow(data))
 data$H7x <- mean(data$H7x) + 0.001 * rnorm(nrow(data))
 cov(data)
 
 head(data)
+
+
+### INVERTED DATA
+inverted_data <- read.csv2("generated/inverted_nipals.csv", sep = "\t", header=T, stringsAsFactors = F, dec = ".")
+nrow(inverted_data)
+ncol(inverted_data)
+
+cov(inverted_data)
+inverted_data$ZSx <- mean(inverted_data$ZSx) + 0.001 * rnorm(nrow(inverted_data))
+inverted_data$H7x <- mean(inverted_data$H7x) + 0.001 * rnorm(nrow(inverted_data))
+cov(inverted_data)
+
+print(hotelling.test(x = data, y = inverted_data))
 
 
 ### GAUSSIAN
@@ -111,6 +123,21 @@ head(generated_gaussian_copy)
 str(generated_gaussian_copy)
 
 cov(generated_gaussian_copy)
+
+
+### INVERTED DATA
+inverted_data <- read.csv2("generated/inverted_nipals.csv", sep = "\t", header=T, stringsAsFactors = F, dec = ".")
+nrow(inverted_data)
+ncol(inverted_data)
+
+cov(inverted_data)
+inverted_data$ZSx <- mean(inverted_data$ZSx) + 0.001 * rnorm(nrow(inverted_data))
+inverted_data$H7x <- mean(inverted_data$H7x) + 0.001 * rnorm(nrow(inverted_data))
+cov(inverted_data)
+
+print(hotelling.test(x = data, y = inverted_data))
+
+
 
 # Hotelling T2
 print(hotelling.test(x = nipals_T, y = generated_gaussian_copy))

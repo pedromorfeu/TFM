@@ -13,6 +13,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 #from statsmodels.tsa.api import SARIMAX
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from scipy.spatial.distance import cdist
+from sys import platform
 
 # Download the CSV data file from:
 # http://datasets.connectmv.com/info/silicon-wafer-thickness
@@ -36,12 +37,14 @@ WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 
 start = datetime.now()
 
-# Windows requires a date parser
-data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
-               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
-# MacOS doesn't
-#data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=True, infer_datetime_format=True,
-#               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
+if platform == "win32":
+    # Windows requires a date parser
+    data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
+                   index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
+else:
+    # MacOS doesn't
+    data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=True, infer_datetime_format=True,
+                   index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
 # data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
 
@@ -69,7 +72,6 @@ data = data[date]
 data = data.resample(TS_FREQUENCY).mean().interpolate()
 save_matrix("data.csv", data.values, data.columns)
 
-
 save_data_plot(_data=data, _filename="original")
 save_plot_per_column(data.values, data.columns, "_original", "figures")
 
@@ -93,11 +95,15 @@ X.mean(axis=0)  # array([ -3.92198351e-17,  -1.74980803e-16, ...
 X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
 
-# from sklearn.decomposition import PCA
-# pca = PCA(n_components=N_COMPONENTS, whiten=True)
-# pca.fit(raw)
+from sklearn.decomposition import PCA
+pca = PCA(n_components=N_COMPONENTS, whiten=True)
+new_X = pca.fit_transform(X)
 # pca.explained_variance_
 # pca.explained_variance_ratio_
+IX = pca.inverse_transform(new_X) + np.mean(raw, axis=0)
+print_matrix("IX", IX)
+save_matrix("inverted_pca.csv", IX, data.columns)
+save_plot_per_column(IX, data.columns, "_inverted_pca", "figures")
 
 
 # We could of course use SVD ...
@@ -127,11 +133,12 @@ svd_T = np.dot(X, svd_P)
 print(svd_T.shape)
 print_matrix("svd_T", svd_T)
 
-# invert
+# invert SVD
 XX = np.dot(svd_T, svd_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
+save_matrix("inverted_svd.csv", XX, data.columns)
 
-XX / raw
+save_plot_per_column(XX, data.columns, "_inverted_svd", "figures")
 
 
 # But what if we really only wanted calculate A=2 components (imagine SVD on
@@ -197,16 +204,23 @@ print_matrix("nipals_T", nipals_T)
 save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
 
 
-# invert
+# invert NIPALS
 XXX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XXX", XXX)
+save_matrix("inverted_nipals.csv", XXX, data.columns)
 
+save_plot_per_column(XXX, data.columns, "_inverted_nipals", "figures")
+
+
+# confirm inverted values
 XXX / raw
 XX / raw
 XXX / XX
 
 save_matrix("xxx_xx.csv", XXX/XX, data.columns)
-np.array_equal(XXX, XX)
+np.array_equal(np.round(XXX, 2), np.round(XX, 2))
+
+
 
 
 ### Generate Gaussian data

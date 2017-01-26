@@ -10,6 +10,7 @@ from statsmodels.tsa.stattools import adfuller, acf, pacf
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.api import SARIMAX
+from sys import platform
 
 print("Util :: Generic")
 
@@ -19,11 +20,23 @@ try:
 except ImportError as e:
     print ("Can not import Spark Modules", e)
 
+
 print(locale.getdefaultlocale())
-# Windows locale:
-locale.setlocale(locale.LC_TIME, "spanish")
-# MacOS locale:
-#locale.setlocale(locale.LC_TIME, "es_ES")
+if platform == "win32":
+    # Windows locale:
+    locale.setlocale(locale.LC_TIME, "spanish")
+else:
+    # MacOS locale:
+    locale.setlocale(locale.LC_TIME, "es_ES")
+
+
+def getOS():
+    if platform == "linux" or platform == "linux2":
+        return "linux"
+    elif platform == "darwin":
+        return "macos"
+    elif platform == "win32":
+        return "windows"
 
 
 def parse_dates(dates):
