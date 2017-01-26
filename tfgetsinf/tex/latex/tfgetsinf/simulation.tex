@@ -448,7 +448,25 @@ TODO
     TODO
     
     \subsection{PCA iterativo - NIPALS}
-    Para datasets grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
+    Para {\em datasets} grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
+    
+    Empezamos por analizar visualmente los datos de sensores para un día.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{APVs_original.png}
+        \caption{Datos originales para la variable APVs.}
+        \label{fig:APVs_original}
+    \end{figure}
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{APVs_inverted_nipals.png}
+        \caption{Datos invertidos para la variable APVs.}
+        \label{fig:APVs_inverted_nipals}
+    \end{figure}
+    
+    
 
     \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
     TODO

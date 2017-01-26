@@ -57,6 +57,9 @@ print(data.shape)
 print(data.index)
 
 
+save_plot_per_column(data.values, data.columns, "_allday", "figures")
+
+
 # observations per day
 dates_count = data.groupby(lambda x: x.date()).count()
 # day with more observations
@@ -65,6 +68,9 @@ print("The date with more observations is", date)
 date = "2015-10-06"
 # Specify a date to analyze the timeseries
 data = data[date]
+
+
+save_plot_per_column(data.values, data.columns, "_raw", "figures")
 
 
 
