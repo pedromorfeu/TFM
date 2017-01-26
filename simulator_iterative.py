@@ -37,11 +37,11 @@ WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 start = datetime.now()
 
 # Windows requires a date parser
-#data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
-#               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
-# MacOS doesn't
-data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=True, infer_datetime_format=True,
+data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
                index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
+# MacOS doesn't
+#data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=True, infer_datetime_format=True,
+#               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
 # data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
 
@@ -131,6 +131,8 @@ print_matrix("svd_T", svd_T)
 XX = np.dot(svd_T, svd_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 
+XX / raw
+
 
 # But what if we really only wanted calculate A=2 components (imagine SVD on
 # a really big data set where N and K &gt;&gt; 1000). This is why will use the NIPALS,
@@ -193,6 +195,18 @@ print_matrix("nipals_P", nipals_P)
 # scores
 print_matrix("nipals_T", nipals_T)
 save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_COMPONENTS))), index_ts=data.index)
+
+
+# invert
+XXX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
+print_matrix("XXX", XXX)
+
+XXX / raw
+XX / raw
+XXX / XX
+
+save_matrix("xxx_xx.csv", XXX/XX, data.columns)
+np.array_equal(XXX, XX)
 
 
 ### Generate Gaussian data
