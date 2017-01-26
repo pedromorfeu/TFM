@@ -5,6 +5,7 @@
 \usepackage{listings}
 \usepackage{color}
 
+\graphicspath{ {images/} }
 
 % Tex global defintions
 \lstdefinestyle{default}{
@@ -14,7 +15,7 @@
     showstringspaces=true,
     showspaces = false,
     columns=flexible,
-    basicstyle={\small\ttfamily},
+    basicstyle=\ttfamily\small,
     numbers=none,
     breaklines=true,
     breakatwhitespace=true,
@@ -22,18 +23,10 @@
     showspaces = true
 }
 
-\definecolor{dkgreen}{rgb}{0,0.5,0}
-\definecolor{dkblue}{rgb}{0,0,0.5}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
 \lstdefinestyle{python}{
     language=Python,
     numbers=none,
-    numberstyle=\tiny\color{gray},
-    keywordstyle=\color{dkblue},
-    commentstyle=\color{mauve},
-    stringstyle=\color{dkgreen},
+    basicstyle=\ttfamily\small
 }
 % End text global definitions
 
@@ -76,7 +69,7 @@ Una vez preparado el {\em dataset}, es necesario aprender un modelo matemático 
     
     \section{Estructura del documento}
     
-    Este documento se estructura de la siguiente forma: un análisis sobre el {\em dataset} y respectivas transformaciones para adecuar los datos; la descripción del problema, las soluciones propuestas y respectiva base teórica; la experimentación, resultados y discusión; conclusiones del trabajo realizado y posibles mejoras; y termina con las fuentes bibliográficas que han servido de base del estudio.
+    Este documento se estructura de la siguiente forma: la descripción del problema; el estado del arte; un análisis sobre el {\em dataset} y respectivas transformaciones para adecuar los datos; las soluciones propuestas y respectiva base teórica; la experimentación, resultados y discusión; conclusiones del trabajo realizado y posibles mejoras; y termina con las fuentes bibliográficas que han servido de base del estudio.
 
 % Descripción del problema
 \chapter{Descripción del problema}
@@ -84,27 +77,29 @@ El paradigma de IoT ({\em Internet of Things}) tiene mucha presencia en la indus
 
 La extracción de conocimiento de los datos se hace con técnicas estadísticas de {\em Machine Learning}. Estas técnicas están relacionadas con Big Data por la simple regla de que cuantos más datos mejor. Los modelos matemáticos que explican los datos son más robustos si hay mucho volumen de datos. Sin embargo, en las etapas iniciales de implantación de IoT no hay mucha cantidad de datos, lo que dificulta la aplicación de {\em Machine Learning}.
 
-Hay que tener en cuenta que los datos de sensores suelen tener problemas de calidad, sobre todo relacionados con ruido, redundancias o frecuencia de muestro. Por ejemplo, si un sensor mide la temperatura de una máquina, esa medición sufre interferencias del ambiente, por lo que la medición no es completamente objetiva. Ese efecto se conoce por ruido. Cuanto a las redundancias, pueden suceder en casos de pérdida de conectividad, en que el sensor vuelve a dar una métrica aunque la haya dado ya anteriormente. Esto sería un caso también de cambio de la frecuencia de muestreo. 
+Hay que tener en cuenta que los datos de sensores suelen tener problemas de calidad, sobre todo relacionados con ruido, redundancias o frecuencia de muestro. Por ejemplo, si un sensor mide la temperatura de una máquina, esa medición sufre interferencias del ambiente, por lo que la medición no es completamente objetiva. Ese efecto se conoce por ruido. Cuanto a las redundancias, pueden suceder en casos de pérdida de conectividad, en que el sensor vuelve a dar una métrica aunque la haya dado ya anteriormente. Esto sería, también, un caso de cambio de la frecuencia de muestreo, 	que se traduce en irregularidades de la serie temporal asociada a los datos. 
 
 El objetivo de este proyecto es aprender y simular datos de sensores industriales. Los nuevos datos, de mucho mayor volumen, podrán ser usados para probar y depurar los algoritmos de detección de averías y de predicción desarrollados para entornos Big Data. 
 
 % Estado del Arte
 \chapter{Estado del Arte}
-Los problemas de ruido y redundancias en los datos son comunes y están bastante estudiados. Para solucionar ese problema, las técnicas de reducción de dimensionalidad, en que los datos son reducidos a lo esencial, suelen tener buenos resultados. PCA ({\em Principal Component Analysis} es la técnica más usual. PCA se usa para descomponer un conjunto de datos multi-variante en un grupo de componentes ortogonales que mejor explican la varianza. El ajuste a los datos es de tipo lineal.
+Los problemas de ruido y redundancias en los datos son comunes y están bastante estudiados. Para solucionar ese problema, las técnicas de reducción de dimensionalidad, en que los datos son reducidos a lo esencial, suelen tener buenos resultados. PCA ({\em Principal Component Analysis} es la técnica más usual. PCA se usa para descomponer un conjunto de datos multivariante en un grupo de componentes ortogonales que mejor explican la varianza. El ajuste a los datos es de tipo lineal.
 
-Las primeras componentes son las que mayor varianza explican y por eso se llaman principales. El orden de las componentes es relevante, la primera es la más explicativa, la segunda la que más explica quitando la primera, y así sucesivamente. Así que es de esperar que lo que están explicando las últimas sea, realmente, el ruido de la señal. El artículo "A Tutorial on Principal Component Analysis" deja patente esa evidencia en el objetivo de filtrar el ruido y redundancias para obtener la dinámica importante de los datos.
+Las primeras componentes son las que mayor varianza explican y por eso se llaman principales. El orden de las componentes es relevante, la primera es la más explicativa, la segunda la que más explica quitando la primera, y así sucesivamente. Así que es de esperar que lo que están explicando las últimas sea, realmente, el ruido de la señal. El artículo \textit{A Tutorial on Principal Component Analysis} \cite{shlens} deja patente esa evidencia en el objetivo de filtrar el ruido y redundancias para obtener la dinámica importante de los datos.
 
-Aunque PCA no tenga capacidades de predicción (pertenece a la categoría de {\em unsupervised learning}), se puede usar para simular nuevos datos, como se defiende en el artículo "The Truth About Principal Component and Factor Analysis". Aparte de las componentes que explican los datos, PCA obtiene también las proyecciones a lo largo de las componentes. Se pueden aprender las series de los {\em scores} de las proyecciones, reemplazar por nuevos valores y luego transformar de vuelta a un vector de características originales.
+Aunque PCA no tenga capacidades de predicción (pertenece a la categoría de {\em unsupervised learning}), se puede usar para simular nuevos datos, como se defiende en el artículo 'The Truth About Principal Component and Factor Analysis'. Aparte de las componentes que explican los datos, PCA obtiene también las proyecciones a lo largo de las componentes. Se pueden aprender las series de los {\em scores} de las proyecciones, reemplazar por nuevos valores y luego transformar de vuelta a un vector de características originales.
 
-TODO: time series
+Las observaciones de los sensores tienen una implícita ordenación cronológica (y así lo tendrán también las componentes principales). El estudio de esa relación se denomina análisis de series temporales. Con este análisis ahí se puede llegar a explicar mejor la serie y hacer predicciones sobre el futuro de la misma. 
+
+Los modelos {\em Exponential smoothing} y {\em AutoRegressive Integrated Moving Average} (ARIMA) son los más usados para predicción de series temporales. {\em Exponential smoothing} se basan en la descripción de tendencia y de variación estacional. Pero, en general, observaciones sucesivas suelen tener dependencia entre si, como se describe en el libro \textit{Introduction to Time Series Analysis and Forecasting} \cite{montgomery}. Para incorporar esta dependencia se usan los modelos ARIMA. Los modelos ARIMA son un flexible y poderoso método para análisis de series temporales y predicción. A lo largo de los años, se vienen usando con éxito en varios problemas de investigación y en la práctica.
 
 % Solución propuesta
 \chapter{Solución propuesta}
-La solución propuesta para la simulación de datos empieza con la proyección de los datos del espacio multi-variante original a un espacio ortogonal más reducido. Esta técnica de Machine Learning se conoce por PCA ({\em Principal Component Analysis}). El nuevo espacio (con menos dimensiones) contiene las componentes que mejor explican los datos, por lo que se eliminan ruido y redundancias. 
+La solución propuesta para la simulación de datos empieza con la proyección de los datos del espacio multivariante original a un espacio ortogonal más reducido. Esta técnica de {\em Machine Learning} se conoce por PCA ({\em Principal Component Analysis}). El nuevo espacio (con menos dimensiones) contiene las componentes que mejor explican los datos, por lo que se eliminan ruido y redundancias. 
 
 Para cada componente, se efectúa la generación de nuevos valores con distribución Gaussiana. Esta simulación puede ser de miles o millones de nuevos puntos - no es una tarea computacional exigente y además tendrá utilidad más adelante. La simulación Gaussiana servirá como base del estudio, una vez que, al ser invertida, genera una población que es idéntica a la original. La comprobación de dicha similitud de poblaciones se hace a través del estadístico T-cuadrado de Hotelling. Y esta será nuestra hipótesis nula.
 
-Los datos originales tienen un sentido temporal. Las componentes lo tendrán también, así que se procede al análisis de la serie temporal de esas componentes. El modelo propuesto es ARIMA ({\em Autoregressive Integrated Moving Average}). Los modelos de series temporales se ajustan a los datos para mejor comprensión de estos o para predicción de nuevos puntos en la serie. El objetivo es dotar la simulación de un patrón temporal aprendido previamente.
+Los datos originales tienen un determinado sentido temporal. Las componentes lo tendrán también, así que se procede al análisis de la serie temporal de esas componentes. El modelo propuesto es ARIMA ({\em Autoregressive Integrated Moving Average}). Los modelos de series temporales se ajustan a los datos para mejor comprensión de estos o para predicción de nuevos puntos en la serie. El objetivo es dotar la simulación de un patrón temporal aprendido previamente.
 
 Teniendo en cuenta que el estudio se sustenta en la hipótesis nula de la simulación Gaussiana, para cada predicción de las varias componentes con marca temporal, se buscará el punto multi-dimensional más cercano en la simulación Gaussiana. El punto elegido se usará para re-alimentar el modelo ARIMA aprendido. Llegados aquí, tenemos nuevos valores simulados de las componentes y además con carácter temporal. Al re-proyectar este espacio al espacio original obtenemos nuevos valores (simulados) para las características originales.
 
@@ -112,24 +107,278 @@ La simulación Gaussiana debe tener gran volumen para que la simulación final s
 
 
     \section{Reducción de dimensionalidad - PCA}
-    PCA pertenece a la familia de aprendizaje no supervisado ({\em unsupervised learning}), donde no existen etiquetas o clases a predecir. Los datos de entrenamiento son simplemente observaciones, sin estar clasificados. Las técnicas de unsupervised learning se usan para descubrir grupos de similitud (clusters) en los datos; o para determinar la distribución de los datos en el espacio original; o también, que interesa a este estudio, para proyectar los datos en espacios de menos dimensiones.
+    PCA ({\em Principal Components Analysis}) pertenece a la familia de aprendizaje no supervisado ({\em unsupervised learning}), de {\em Machine Learning}, donde no existen etiquetas o clases a predecir. Los datos de entrenamiento son simplemente observaciones, sin estar clasificados. Las técnicas de {\em unsupervised learning} se usan para descubrir grupos de similitud (clusters) en los datos; o para determinar la distribución de los datos en el espacio original; o también, que interesa a este estudio, para proyectar los datos en espacios de menos dimensiones.
 
-    Pocas dimensiones suelen ofrecer mejor insight sobre los datos. Como primera ventaja, permiten la aplicación de técnicas de visualización - resulta muy difícil visualizar datos en más de 3 dimensiones (incluso en 3 dimensiones puede ser difícil). Además, las componentes que no son principales (menos explicativas) suelen ser ruido o redundancia - con esta técnica se pueden atenuar los efectos de estos. La simulación de datos puede usar la ventaja de la eliminación de ruido y redundancia, generando así datos más relevantes.
+    Pocas dimensiones suelen ofrecer mejor {\em insight} sobre los datos. Como primera ventaja, permiten la aplicación de técnicas de visualización - resulta muy difícil visualizar datos en más de 3 dimensiones (incluso en 3 dimensiones puede ser difícil). Además, las componentes que no son principales (menos explicativas) suelen ser ruido o redundancia - con esta técnica se pueden atenuar los efectos de estos. La simulación de datos puede usar la ventaja de la eliminación de ruido y redundancia, generando así datos con mayor entidad.
     
-    PCA decompone el dataset en una série de componentes ortogonales que explican la variabilidad. Por ejemplo, si dos variables son directamente proporcionales, no hace falta tener en cuenta las dos para visualizar, porque conllevaría una complejidad inecesaria. PCA está muy relacionado con una técnica matemática llamada Singular Value Decomposition (SVD), tanto que muchas veces los nombres se usan intercambiados. De hecho, el algoritmo de PCA de scikit-learn usa la decomposición SVD de numpy. Sin embargo, el cálculo de SVD es muy intensivo para matrices grandes, porque calcula la matriz de varianzas-covarianzas para todos los componentes. Esto implica un gran consumo de memoria y CPU. Como alternativa, se propone usar una técnica iterativa llamada NIPALS (Nonlinear Iterative Partial Least Squares), que usa el numero de componentes reducido.
+    PCA descompone un {\em dataset} multivariante en un determinado número de componentes ortogonales que son los que más explican la varianza de ese {\em dataset}. El número de componentes es menor o igual al número de características originales. Por ejemplo, si dos variables son directamente proporcionales, basta con una sola componente para explicar el comportamiento de las dos - esa correlación quedará representada en la matriz calculada por PCA. Si se convierte esa componente al espacio original de dos características, se obtienen los valores originales.
     
-    El nuevo espacio está constituido por variables independientes y ortogonales. Para cada variable (componente), se calculan valores aleatorios con distribución normal. Estos son los scores de las componentes de los nuevos datos. Al proyectar la nueva matriz de componentes de vuelta al espacio original, se obtienen datos simulados para todas las características. Si la validación de esta técnica demuestra que es correcta, se puede usar para la simulación de nuevos datos. La validación de los datos generados pasa por la aplicación de estadísticos de comparación de las muestras originales y las nuevas. Las técnicas utilizadas son los tests de Hotelling T-squared y Box's M. En el caso de Hotelling T-squared (o T2) se prueba la igualdad en las médias de las poblaciones. Box's M test tiene como suposición la igualdad de matrices de varianzas-covarianzas de las poblaciones. Los resultados demuestran que es viable usar esta técnica de simulación de datos.
+    La dirección de la primera componente principal es aquella a lo largo de la cual las observaciones varían más.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\textwidth]{GaussianScatterPCA.png}
+        \caption{Datos con distribución Gaussiana y las dos primeras componentes PCA.}
+        \label{fig:pca1}
+    \end{figure}    
+   
+    Por ejemplo, la Figura~\ref{fig:pca1} representa un conjunto de datos de dos dimensiones con distribución Gaussiana. La flecha más grande representa la dirección de la primera componente principal de los datos. Se puede verificar a simple vista que esta es la dirección con mayor variabilidad en los datos. Si trazamos una línea imaginaria a lo largo de esa flecha (como la línea verde) y proyectamos en ella los datos, tendremos la proyección con mayor variabilidad. 
+    
+    La dirección de segunda componente está representada por la otra flecha. Al proyectar los datos en la línea imaginaria azul, podemos imaginar que el espectro de variabilidad es inferior al la primera.
+   
+    La proyección de un punto a una línea es muy sencilla: basta con buscar el punto más cercano en esa línea. Los puntos azules en la Figura~\ref{fig:pca_projection} representan la proyección de los puntos originales en la línea.
 
-    \section{Séries temporales - ARIMA}
-    TODO
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\textwidth]{ProjectionPCA.jpg}
+        \caption{Proyección de puntos a una línea.}
+        \label{fig:pca_projection}
+    \end{figure}    
+    
+   En términos matemáticos, PCA es una transformación lineal ortogonal. Consideremos la matriz \(X\), constituida por \(n\) líneas de observaciones y \(m\) características. El objetivo es proyectar los datos a un espacio con dimensionalidad \(d < m\), de forma que se maximice la varianza de los datos proyectados. La transformación de PCA se define por la ecuación:
+   \begin{equation}
+   Y = X \cdot w
+   \end{equation}
+   
+   Que se interpreta de la siguiente forma: una matriz \(m \times k\) de pesos ({\em loadings}) \(w\) transforma la matriz \(n \times m\) \(X\) en la matriz \(n \times k\) de componentes principales ({\em scores}) \(Y\).
+
+   Para obtener la primera componente, el primer vector de {\em loadings} \(w\) debe maximizar la varianza. Siguiendo el razonamiento del libro \textit{Pattern Recognition and Machine Learning} \cite{bishop}, consideremos el vector \(w_{1}\), que, por conveniencia (y sin pérdida de generalización) debe ser un vector unitario de modo que \(w_{1}^{T}w_{1}=1\). Cada punto de X, \(x_{i}\), es proyectado para el escalar \(w_{1}^{T}x_{i}\). La media de los datos proyectados es \(w_{1}^{T} \overline{x}\), donde \(\overline{x}\) es la media dada por:
+   \begin{equation}
+   \overline{x} = \frac{1}{n}\sum_{i=1}^{n}x_{i}
+   \end{equation}
+   
+   Y la varianza de los datos proyectados:
+   \begin{equation}
+   \frac{1}{n}\sum_{i=1}^{n}x_{i}\big\{w_{1}^{T}\cdot x_{i}-w_{1}^{T}\cdot \overline{x}\big\} = w_{1}^{T}\cdot S\cdot w_{1}
+   \end{equation}
+   
+   Donde \(S\) es la matriz de varianzas-covarianzas definida por:
+   \begin{equation}
+   S=\frac{1}{n}\sum_{i=1}^{n}(x_{i}-\overline{x})\cdot (x_{i}-\overline{x})^{T}
+   \end{equation}
+   
+   Ahora maximizamos la varianza de los datos proyectados \(w_{1}^{T}\cdot S\cdot w_{1}\) con respecto a \(w_{1}\). Hay que restringir la maximización para prevenir que tienda para infinito. La restricción viene de la normalización \(w_{1}^{T}w_{1}=1\). Para forzar la restricción introducimos un multiplicador de Lagrange \(\lambda_{1}\):
+   \begin{equation}
+   w_{1}^{T}\cdot S\cdot w_{1} + \lambda_{1} (1 - w_{1}^{T}\cdot w_{1})
+   \end{equation}
+   
+   Que tiene un punto estacionario cuando:
+   \begin{equation}
+   S\cdot w_{1} = \lambda_{1} \cdot w_{1}
+   \end{equation}
+   
+   Esto define que \(w_{1}\) es un vector propio de \(S\). Si multiplicamos las parte izquierda por \(w_{1}^{T}\), teniendo en cuenta que \(w_{1}^{T}w_{1}=1\), vemos que la varianza es dada por:
+   \begin{equation}
+   w_{1}^{T}\cdot S\cdot w_{1} = \lambda_{1} 
+   \end{equation}
+   
+   Así que la varianza será máxima cuando se defina \(w_{1}\) igual al vector propio con el máximo valor propio \(\lambda_{1}\).
+   
+    \subsection{Singular Value Decomposition}
+    PCA está muy relacionado con una técnica matemática llamada {\em Singular Value Decomposition} (SVD), tanto que muchas veces los nombres se usan intercambiados. De hecho, el algoritmo de PCA de {\tt scikit-learn} usa la descomposición SVD de {\tt numpy}. SVD es un método más general de entender el cambio de base.
+    
+    La representación de la descomposición en valores singulares es:
+    \begin{equation}
+    X = U \Sigma W^{T}
+    \end{equation}
+    
+    Donde:
+    \begin{itemize}
+    \item \(U\) es una matriz \(n \times n\), en que las columnas son vectores unitarios ortogonales de tamaño \(n\).
+    \item \(\Sigma\) es una matriz diagonal \(n \times m\) de números positivos \(\sigma_{i}\), llamados valores singulares de \(X\).
+    \item \(W\) es una matriz \(m \times m\), cuyas columnas son vectores unitarios ortogonales de tamaño \(p\).
+    \end{itemize}
+    
+    La ecuación 4.2 indica que una matriz \(X\) puede ser convertida en una matriz ortogonal, una matriz diagonal y otra matriz ortogonal. O, dicho de otra forma, corresponde a una rotación, un estiramiento y otra rotación.
+    
+    \subsection{El método NIPALS}
+    SVD es el método general para cálculo de PCA. Pero si lo aplicamos a un {\em dataset} multidimensional muy grande puede tener problemas, porque calcula todas las componentes de una vez (calcula toda la matriz de varianzas-covarianzas de \(X\)). Esto implica un gran consumo de memoria y CPU. NIPALS significa {\em Non-linear Iterative Partial Least Squares} y es un algoritmo iterativo que solo calcula las primeras componentes principales.
+    
+    Para cada componente, el algoritmo NIPALS itera hasta que el {\em score} \(y_{1}\) tenga convergencia. Antes de la iteración, se atribuye un valor aleatorio al {\em score} \(y_{1}\). La convergencia se detecta cuando la variación del {\em score} \(y_{1}\) respecto a la iteración anterior es muy pequeña. 
+    
+     En cada iteración, para encontrar el {\em loading} \(w_{1}\) se proyecta \(X\) hacía \(y_{1}\) - regresión del {\em score} respecto a cada columna de \(X\) - y se guarda el coeficiente de regresión en el {\em loading}. Luego se proyecta \(X\) hacía \(w_{1}\) para encontrar el {\em score} \(y_{1}\) - regresión del {\em loading} respecto a cada línea de \(X\) - y se guarda el coeficiente de regresión en el {\em score}. 
+    
+    Una vez convergido, para calcular la siguiente componente se resta el producto \(y_{1} \cdot w_{1}\) a \(X\). Esto corresponde a restar a \(X\) la parte de los datos explicada por \(y_{1}\) y \(w_{1}\).
+    
+    TODO: Hotelling T2?
+    
+%    El nuevo espacio está constituido por variables independientes y ortogonales. Para cada componente, se calculan valores aleatorios con distribución normal. Estos son los scores de las componentes de los nuevos datos. Al proyectar la nueva matriz de componentes de vuelta al espacio original, se obtienen datos simulados para todas las características. Si la validación de esta técnica demuestra que es correcta, se puede usar para la simulación de nuevos datos. La validación de los datos generados pasa por la aplicación de estadísticos de comparación de las muestras originales y las nuevas. La técnica utilizada es el test de Hotelling T-squared, que prueba la similitud de las poblaciones. Los resultados demuestran que es viable usar esta técnica de simulación de datos.
+
+    \section{Series temporales - ARIMA}
+    Las series temporales surgen frecuentemente en la monitorización de procesos industriales. Cada observación de un sensor tiene una marca temporal asociada. El conjunto de las observaciones ordenadas de forma cronológica se denomina serie temporal. En este capítulo se demostrará el importante valor que tiene esa marca temporal en el análisis de las señales. 
+    
+    El análisis de series temporales asienta en la suposición de que los datos tomados en determinados puntos en el tiempo tienen una estructura interna (correlación, tendencia o variación estacional) que hay que tener en cuenta. El objetivo del análisis de series temporales es extrapolar datos futuros a través de los datos pasados. 
+    
+    ARIMA significa ({\em Autoregressive Integrated Moving Average}) y, junto con ({\em Exponential Smoothing}), es uno de los métodos más populares de análisis de series temporales. ARIMA incorpora formalmente la dependencia entre observaciones sucesivas en el modelo, mientras {\em Exponential Smoothing}) no lo hace de forma tan eficiente.
+    
+    La componente AR ({\em Autoregressive} - auto-regresiva) del modelo ARIMA se refiere al uso de observaciones anteriores en una ecuación regresiva para predecir valores futuros. A esta componente se asocia un parámetro \(p\), que corresponde al numero de puntos anteriores a incluir en el modelo. La componente MA ({\em Moving Average} - media móvil) representa el error del modelo como combinación de términos de error anteriores. El parámetro asociado es \(q\) y corresponde al numero de términos de error anteriores a usar. La componente I ({\em Integrated}) indica la diferenciación de los datos, que corresponde a calcular la diferencia entre los valores y sus antecesores. El parámetro \(d\) es el numero de diferenciaciones a aplicar en el modelo. De esta forma, los modelos ARIMA son generalmente definidos por \(ARIMA(p, d, q)\).
+    
+    Es importante resaltar que el modelo \(ARIMA(p, d, q)\) asume que la serie no tiene variación estacional y tendencia. Potencialmente es necesario eliminar esas características antes de crear el modelo. Esto nos lleva al concepto de {\em stationarity} (estacionaridad).
+    
+    \subsection{Estacionaridad}
+    Las series temporales son diferentes de un problema de regresión normal porque son dependientes del tiempo. Así que el supuesto básico de la regresión lineal de que las observaciones son independientes no se verifica en este caso. Para poder aplicar el modelo ARIMA es necesario que la serie sea estacionaria. Una serie es estacionaria cuando la media y varianza, si existen, no cambian en función del tiempo. Como ARIMA usa los periodos anteriores para modelar el comportamiento de la serie, es importante que esta sea estable para tener más acierto. Muchas veces la estacionaridad se puede detectar visualmente, como se presenta en los ejemplos siguientes.
+    
+    La Figura~\ref{fig:stationary} es un ejemplo de una serie estacionaria, donde los valores oscilan con una varianza constante alrededor de una media de aproximadamente \(69.0\). 
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{APVs_inverse_gaussian.png}
+        \caption{Ejemplo de serie estacionaria.}
+        \label{fig:stationary}
+    \end{figure}
+
+    La Figura~\ref{fig:non_stationary}, sin embargo, no presenta señales de media y varianza constantes. De hecho se detecta una ligera tendencia decreciente, lo que la hace no estacionaria. 
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{APVs_original.png}
+        \caption{Ejemplo de serie no estacionaria.}
+        \label{fig:non_stationary}
+    \end{figure}
+    
+    Otra propiedad importante para que ARIMA sea efectivo es que la serie tenga periodos fijos. Cada observación debe ser dada a una frecuencia constante. Una vez los puntos sean equidistantes entre si, la variable tiempo, o índice, ya no necesita existir explicitamente. Muchas veces se usa el tiempo para la representación gráfica, sin embargo esa variable no se usa en el modelo en si. En los gráficos anteriores no se usa la marca de tiempo en el eje \(x\), simplemente un índice numerico. 
+    
+    Hay casos donde la estacionaridad es más difícil de determinar a simple vista. Además el análisis necesita una prueba formal de la estacionaridad. Para eso se usa el test estadístico de Dickey-Fuller, conocido por {\em augmented Dickey-Fuller test} (ADF). La hipótesis nula asume que la serie es no estacionaria. Valores altos del p-valor indican que el test no rechaza la hipótesis nula y, por lo tanto, la serie es no estacionaria. Por otro lado, valores bajos de p-valor indican que la serie es estacionaria. En general, tomando el 5\% de confianza, si el p-valor es mayor que 0.05 la serie es no estacionaria. Se demuestra en el ejemplo siguiente.
+    
+    %ADF procedure tests whether the change in Y can be explained by lagged value and a linear trend. If contribution of the lagged value to the change in Y is non-significant and there is a presence of a trend component, the series is non-stationary and null hypothesis will not be rejected.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{time_serie_1.png}
+        \caption{Ejemplo de serie para aplicar el test de Dickey-Fuller.}
+        \label{fig:time_serie_1}
+    \end{figure}
+    
+    La serie de la Figura~\ref{fig:time_serie_1} tiene una tendencia creciente, por lo que no debería ser estacionaria. Apliquemos el test de Dickey-Fuller, presente en módulo {\tt statsmodels} de Python:
+    
+    \lstset{style=python}
+    \begin{lstlisting}[caption=Test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_test_1}]
+from statsmodels.tsa.stattools import adfuller
+dftest = adfuller(ts)
+print('Test Statistic', dftest[0])
+print('p-value', dftest[1])
+print('Confidence levels', dftest[4])  
+    \end{lstlisting}
+    
+    \lstset{style=python}
+    \begin{lstlisting}[caption=Resultados del test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_res_1}]
+Test Statistic 0.815368879206
+p-value 0.991880243438
+Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': -2.5787700591715979}
+    \end{lstlisting}
+    
+    Los resultados del Listing~\ref{lst:adf_test_1} demuestran que la hipótesis nula no puede ser descartada, una vez que {\em p-value} es cercano a 1. El resultado del estadístico lo confirma también: para que se descarte la hipótesis nula, el valor del estadístico debe ser inferior a alguno de los valores de los intervalos de confianza.
+    
+    La serie tendrá que ser transformada hasta ser estacionaria. Una de las técnicas más comunes para conseguirlo es la diferenciación, que consiste en calcular las diferencias entre observaciones consecutivas. La diferenciación ayuda a estabilizar la media de la serie, eliminando la tendencia y la estacionalidad. El primer nivel de diferenciación de la serie \(y\) se define por:
+    
+    \begin{equation}
+    y_{t}-y_{t-1}
+    \end{equation}
+    
+    Siendo \(t\) un determinado punto en el tiempo. Se pueden aplicar más niveles de diferenciación, pero con un solo nivel suele ser suficiente.
+    
+    Aplicando diferenciación a la serie anterior obtenemos la serie transformada representada en la Figura~\ref{fig:ts_diff} y respectivos resultados en Listing~\ref{lst:adf_test_2}.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{ts_diff.png}
+        \caption{Ejemplo de serie con diferenciación.}
+        \label{fig:ts_diff}
+    \end{figure}
+    
+    \begin{lstlisting}[caption=Resultados del test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_test_2}]
+Test Statistic -2.82926682417
+p-value 0.0542132902838
+Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': -2.5787700591715979}
+    \end{lstlisting}
+    
+    El test de Dickey-Fuller demuestra que el p-valor ha bajado considerablemente, para valores casi inferiores a \(0.05\), por lo que podemos decir con un 95\% de confianza que la serie es estacionaria ahora. El análisis visual también permite verificar que la tendencia se ha eliminado.
+    
+    \subsection{Parámetros del modelo y predicción}
+    
+    Como mencionado anteriormente, el modelo ARIMA es una ecuación lineal que depende de los parámetros \(p, d, q\), correspondientes a las partes autoregresiva (AR), integración (I) y de medias móviles (MA) del modelo, respectivamente. 
+    
+    El paso de diferenciación es aplicado internamente por el modelo, a través del parámetro \(d\), que corresponde a la parte I ({\em Integrated}) de ARIMA. No hace falta pasar los datos diferenciados al modelo. Para la determinación de los parámetros \(p\) y \(q\) óptimos se usan formalmente los gráficos de correlación ACF ({\em Auto-Correlation Function}) y PACF ({\em Partial Auto-Correlation Function}). Estos gráficos se han usado en fases iniciales de este estudio, pero salen del ámbito de investigación. 
+    
+    Otra solución es la minimización del error, o valor residual, de la predición. La diferencia entre la observación \(y_{t}\) y el valor obtenido a través del ajuste del modelo a los datos (o valor ajustado \(y'_{t}\)) se llama valor residual, y es definido por:
+    
+    \begin{equation}
+    e_{t} = y_{t} - y'_{t}
+    \end{equation}
+    
+    A través de los residuales se puede calcular el {\em root mean squared error} (RMSE). El modelo con menor RMSE es el mejor. Así que la solución consiste en iterar, probando todas las combinaciones de los parámetros \((p,d,q)\) de ARIMA, para obtener el modelo con menor RMSE. Se ejemplifica el proceso a continuación.
+    
+    Se ha comprobado antes que la serie necesita un nivel de diferenciación para ser estacionaria: \(d=1\). La componente I de ARIMA será tendrá, así, valor \(1\). 
+    
+    Empezamos la iteración con un nivel para la componente auto-regresiva: \(p=1\), que corresponde a \(AR(1)\). El resultado del ajuste del modelo se puede ver en la Figura~\ref{fig:iterative_arima_ar_1}. La línea azul representa los datos de la serie diferenciada y la línea roja es el ajuste del modelo a esos datos. El RMSE es de \(\approx32.04\). 
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_110.png}
+        \caption{ARIMA iterativo: AR(1).}
+        \label{fig:iterative_arima_ar_1}
+    \end{figure}
+    
+    Pasamos a probar la componente de média móvil: \(q=1\), o \(MA(1)\). El RMSE ha bajado un poco, ahora es \(\approx31.52\) (Figura~\ref{fig:iterative_arima_ma_1}).
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_011.png}
+        \caption{ARIMA iterativo: MA(1).}
+        \label{fig:iterative_arima_ma_1}
+    \end{figure}
+    
+    Combinando los dos modelos anteriores es cuando tenemos realmente un modelo ARIMA completo, con las tres componentes: \(ARIMA(p, d, q)=ARIMA(1, 1, 1)\). Se puede verificar que el RMSE ha bajado mínimamente respecto al modelo anterior (Figura~\ref{fig:iterative_arima_arma_1}).
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_111.png}
+        \caption{ARIMA iterativo: AR(1) y MA(1).}
+        \label{fig:iterative_arima_arma_1}
+    \end{figure}
+        
+    Obviando algunas iteraciones intermedias, pasamos al modelo con dos niveles de \(AR\) y de \(MA\): \(ARIMA(p, d, q)=ARIMA(2, 1, 2)\). El RMSE obtenido es de \(\approx25.06\), que corresponde al menor valor. Si paramos la iteración, este sería el modelo con mejor ajuste. En la Figura~\ref{fig:iterative_arima_arma_2} podemos verificar ese ajuste visualmente: la línea roja se ajusta mejor a los datos que en los gráficos anteriores.
+  
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_212.png}
+        \caption{ARIMA iterativo: AR(2) y MA(2).}
+        \label{fig:iterative_arima_arma_2}
+    \end{figure}
+    
+    estadísticas, incluyendo modelos de series temporales. Particularmente útil es la funcionalidad de generar gráficas de predicción automáticamente, sin necesidad de volver los datos a la escala original (sin diferenciación), usando {\tt plot\_predict}. 
+
+    Una vez ajustado el modelo a los datos, se pueden hacer predicciones futuras. Se define el periodo de predicción y el modelo aprendido generará esos pronósticos. La Figura~\ref{fig:forecast} da un ejemplo de los resultados que se pueden obtener. 
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{forecast.png}
+        \caption{Predicciones del modelo ARIMA(2, 1, 2).}
+        \label{fig:forecast}
+    \end{figure}
+
+    La línea azul de la Figura~\ref{fig:forecast} representa los datos, ahora sin diferenciación. La línea verde representa la predicción después del final de la serie (llamada predicción {\em out-of-sample}). El área sombreada representa el intervalo de confianza de 5\% de la predicción. Se puede comprobar visualmente que la predicción sigue aproximadamente la tendencia de la serie. Predicciones con mayor horizonte futuro tendrán mayor incertidumbre, una vez que el modelo hará regresión de los valores futuros con los valores predichos.
+
+    El modulo {\tt statsmodels} de Python tiene un conjunto de herramientas estadísticas, incluyendo modelos de series temporales. Particularmente útil es la funcionalidad de generar gráficas de predicción automáticamente, sin necesidad de volver los datos a la escala original (sin diferenciación en este caso), usando {\tt plot\_predict}. El Listing~\ref{lst:forecast} es el código que genera el gráfico de la Figura~\ref{fig:forecast}. El periodo de predicción está aquí definido en los parámetros {\tt start} y {\tt end}, en un total de 20 nuevos puntos desde el final de la serie ({\tt len(ts)}).
+
+    \lstset{style=python}
+    \begin{lstlisting}[float, caption={\tt plot\_predict} de {\tt statsmodels} de Python., label={lst:forecast}]
+from statsmodels.tsa.arima_model import ARIMA
+model = ARIMA(ts, order=(2, 1, 2))
+results = model.fit(disp=-1)
+fig, ax = plt.subplots()
+plt.plot(ts)
+fig = results.plot_predict(start=len(ts)-1, end=len(ts)+20, dynamic=True, ax=ax, plot_insample=False)
+    \end{lstlisting}
+
 
 % Experimentación y resultados
 \chapter{Experimentación y resultados}
 TODO
 
-% Dataset
+    % Dataset
     \section{Dataset}
-    El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado {\em Transformación}.
+    El dataset proporcionado es de reducida dimensión, tiene tan solo 5MB, por lo que la tarea de ingestión no es intensiva. Sin embargo, hay que tratar los datos en bruto antes de empezar a usarlos. El fichero de datos es de texto, así que hay que hacer determinadas conversiones para poder usar tipos más específicos, como sean fechas y números. El primer problema tiene que ver con los formatos de fecha, que no son correctos para el {\em locale} España en {\em Windows}, lo que exige una adaptación de los algoritmos de {\em parsing}, como se describe en el apartado 'Transformación'.
     
         \subsection{Estructura}
         Un breve análisis del {\em dataset} en un editor de texto muestra que tiene un formato de campos separados por espacios y tabulaciones. La cantidad de espacios es variable:
@@ -160,9 +409,9 @@ TODO
         \subsection{Transformación}
         Para la ingestión y transformación de los datos se han usado librerías muy útiles y con muchas funcionalidades que facilitan bastante esas tareas: en los scripts Python se ha usado el paquete {\em Pandas} y en R la función {\em read.csv2} del paquete {\em utils}.
         
-        Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto (`.'). Con eso es suficiente para un {em parsing} correcto.
+        Las 14 variables decimales no ofrecen problemas en la ingestión del {\em dataset}. Para asegurar el formato decimal, es conveniente definir el separador decimal como punto ('.'). Con eso es suficiente para un {em parsing} correcto.
         
-        Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en el {\em locale} de España, el {\em standard} de abreviación de mes es con punto (`.'), por ejemplo {\tt oct.}. Así que el {\em parsing} de fechas tuvo que ser ajustado. La estratégia ha sido el uso de una expresión regular para añadir el punto (`.') necesario en las abreviaciones de meses, como se puede ver en los siguientes {\em snippets} Python y R:
+        Las fechas son más complejas de procesar. El formato de mes da indicios de estar escrito en castellano: {\tt oct, dic, mar, abr, may, jun}. Sin embargo, en {\em Windows}, el {\em locale} España usa un punto ('.') como {\em standard} en la abreviación de mes, por ejemplo 'oct.'. Así que el {\em parsing} de fechas tiene que ser ajustado si el sistema operativo es {\em Windows}. La estrategia ha sido el uso de una expresión regular para añadir el punto ('.') necesario en las abreviaciones de meses, como se puede ver en los siguientes {\em snippets} Python y R:
         
         \lstset{style=python}
         \begin{lstlisting}[caption={\em Parsing} de fechas en Python.]
@@ -175,6 +424,8 @@ TODO
         data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
         data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \end{lstlisting}
+        
+        En este caso particular de las fechas, el problema no está en el {\em dataset} realmente. Los {\em standards} de fechas varian en cada sistema operativo. La idea de exponer este caso no es más que transmitir la necesidad de ajustar y normalizar los datos cuando provienen de sensores.
         
         El resultado final es un {\em dataset} estructurado con una marca temporal como índice y 14 características.
         
@@ -190,33 +441,41 @@ TODO
         \item 8, 17, 20 de junio de 2016
         \end{itemize}
         
-        En cada día las muestras son dispares y en momentos distintos del día, probablemente por corresponder a distintas pruebas. Así, también las frecuencias de muestreo son variables, en algunos días parece indicar una frecuencia de 10 segundos pero hay otros donde son de 1 minuto.
+        En cada día las muestras son dispares y en momentos distintos del día, probablemente por corresponder a distintas pruebas. Así, también las frecuencias de muestreo son variables - en algunos días parece indicar una frecuencia de 10 segundos pero hay otros donde son de 1 minuto.
     
     % PCA
     \section{PCA}
     TODO
-        \subsection{PCA iterativo - NIPALS}
-        TODO
-        \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
-        TODO
-        \subsection{Simulación con distribución Gaussiana - hipótesis nula}
-        TODO
+    
+    \subsection{PCA iterativo - NIPALS}
+    Para datasets grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
+
+    \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
+    TODO
+    
+    \subsection{Simulación con distribución Gaussiana - hipótesis nula}
+    TODO
     
     % ARIMA
     \section{ARIMA}
     TODO
+    
         \subsection{Simulación con todo el dataset}
         TODO
+        
         \subsection{Simulación con datos de 1 día}
         TODO
+        
         \subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
         TODO
     
     % Big Data
     \chapter{Big Data}
     TODO
+    
         \section{MongoDB}
         TODO
+        
         \section{Spark}
         TODO
  
@@ -229,23 +488,30 @@ TODO
 
 \begin{thebibliography}{10}
 
-\bibitem{light}
+\bibitem{shlens}
    Jon Shlens.
-   \newblock A TUTORIAL ON PRINCIPAL COMPONENT ANALYSIS. Derivation, Discussion and Singular Value Decomposition.
+   \newblock \textit{A TUTORIAL ON PRINCIPAL COMPONENT ANALYSIS. Derivation, Discussion and Singular Value Decomposition.}
    \newblock Version 1, 25 March, 2003.
 
 \bibitem{light}
    Unknown Authors.
-   \newblock The Truth about Principal Components and Factor Analysis.
+   \newblock \textit{The Truth about Principal Components and Factor Analysis.}
    \newblock 28 September, 2009.
    
-\bibitem{ifrah}
+\bibitem{bishop}
    Christopher M. Bishop.
-   \newblock Pattern Recognition and Machine Learning.
+   \newblock \textit{Pattern Recognition and Machine Learning.}
+   \newblock Springer, 2006.
+
+\bibitem{montgomery}
+   Montgomery, Douglas C.
+   Jennings, Cheryl L.
+   Kulahci, Murat
+   \newblock \textit{Introduction to Time Series Analysis and Forecasting.}
    \newblock Springer, 2006.
 
 \bibitem{WAR}
-   Principal component analysis (PCA). 
+   \textit{Principal component analysis (PCA).}
    \newblock Consultar 
    \url{http://scikit-learn.org/stable/modules/decomposition.html#principal-component-analysis-pca}.
 

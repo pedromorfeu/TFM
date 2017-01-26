@@ -1,0 +1,31 @@
+\documentclass[11pt,spanish,listoffigures,listoftables]{tfgetsinf}
+
+\usepackage[utf8]{inputenc} 
+
+\usepackage{listings}
+\usepackage{color}
+
+\title{Simulación de datos de sensores industriales}
+\author{Pedro Henrique Mano Figueiredo Fernandes}
+\tutor{Francisco Sánchez Cid}
+\curs{2015-2016}
+
+\keywords
+{Machine learning, Big Data, PCA} 
+{Machine learning, Big Data, PCA}
+{Machine learning, Big Data, PCA} 
+
+\begin{document}
+
+Hi
+
+\begin{lstlisting}[language=Python, caption=Python example]
+from statsmodels.tsa.arima_model import ARIMA
+model = ARIMA(ts, order=(2, 1, 2))
+results = model.fit(disp=-1)
+fig, ax = plt.subplots()
+plt.plot(ts)
+fig = results.plot_predict(start=len(ts)-1, end=len(ts)+20, dynamic=True, ax=ax, plot_insample=False)
+\end{lstlisting}
+
+\end{document}

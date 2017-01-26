@@ -14,3 +14,6 @@ build/
 dist/
 util.egg-info/
 .DS_Store
+tfgetsinf/tex/latex/tfgetsinf/simulation.pdf
+tfgetsinf/tex/latex/tfgetsinf/simulation.synctex.gz
+

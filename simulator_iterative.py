@@ -36,7 +36,11 @@ WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 
 start = datetime.now()
 
-data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
+# Windows requires a date parser
+#data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=[0], date_parser=parse_dates,
+#               index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
+# MacOS doesn't
+data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=True, infer_datetime_format=True,
                index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
 # data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
@@ -98,7 +102,7 @@ X.std(axis=0)  # [ 1.  1.  1.  1.  1.  1.  1.  1.  1.]
 
 # We could of course use SVD ...
 print(str(datetime.now()), "Calculating SVD...")
-u, d, v = np.linalg.svd(X[:, :])
+u, d, v = np.linalg.svd(X)
 print(str(datetime.now()), "Done")
 print(u.shape)
 print(d.shape)
@@ -450,8 +454,8 @@ for n in range(N):
 # But since PCA is such a visual tool, we should plot the SPE_X and
 # Hotelling's T2 values
 
-# pylab.plot(SPE_X, 'r.-')  # see how observation 154 is inconsistent
-# pylab.plot(Hot_T2, 'b.-')  # observations 38, 39,110, and 154 are outliers
+# plt.plot(SPE_X, 'r.-')  # see how observation 154 is inconsistent
+# plt.plot(Hot_T2, 'b.-')  # observations 38, 39,110, and 154 are outliers
 #
 # # And we should also plot the scores:
 # pylab.figure()
