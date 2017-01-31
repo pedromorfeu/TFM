@@ -228,6 +228,8 @@ np.array_equal(np.round(XXX, 2), np.round(XX, 2))
 
 
 
+save_plot_per_column(nipals_T, [str(i) for i in range(N_COMPONENTS)], "_component", "figures")
+
 
 ### Generate Gaussian data
 mus = np.mean(nipals_T, axis=0)
