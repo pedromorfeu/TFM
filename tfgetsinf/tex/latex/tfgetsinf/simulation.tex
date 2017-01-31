@@ -427,7 +427,7 @@ TODO
         
         En este caso particular de las fechas, el problema no está en el {\em dataset} realmente. Los {\em standards} de fechas varian en cada sistema operativo. La idea de exponer este caso no es más que transmitir la necesidad de ajustar y normalizar los datos cuando provienen de sensores.
         
-        El resultado final es un {\em dataset} estructurado con una marca temporal como índice y 14 características.
+        El resultado final es un {\em dataset} estructurado con una marca temporal como índice y 14 características: {\em APHu, APVs, ACPv, ZSx, ZUs, H7x, H1x, H2x, H6x, H3x, H4x, H5x, ACPx} y {\em Svo}.
         
         \subsection{Distribución de los datos}
         
@@ -450,7 +450,7 @@ TODO
     \subsection{PCA iterativo - NIPALS}
     Para {\em datasets} grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
     
-    Empezamos por analizar visualmente los datos de sensores para un día.
+    Empezamos por analizar visualmente los datos de sensores para un día determinado. Observemos el comportamiento de la variable {\em APVs} para ese día, representado en la Figura~\ref{fig:APVs_original}. 
     
     \begin{figure}[h]
         \centering
