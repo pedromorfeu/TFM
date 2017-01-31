@@ -455,20 +455,27 @@ TODO
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.7\textwidth]{APVs_original.png}
-        \caption{Datos originales para la variable APVs.}
+        \caption{Datos originales para la variable {\em APVs}.}
         \label{fig:APVs_original}
     \end{figure}
     
-    Aplicamos el algoritmo iterativo NIPALS para calcular las 5 componentes principales, proyectando de esta forma el espacio original de 14 dimensiones (características) en un espacio más reducido de solamente 5 dimensiones. Al invertir este espacio de vuelta al espacio original se obtienen los datos muy similares a los originales (Figura~\ref{fig:APVs_inverted_nipals}).
+    Aplicamos el algoritmo iterativo NIPALS para calcular las 5 componentes principales, proyectando de esta forma el espacio original de 14 dimensiones (características) en un espacio más reducido de solamente 5 dimensiones. Al invertir este espacio de vuelta al espacio original se obtienen datos muy similares a los originales, como se puede comprobar informalmente en la Figura~\ref{fig:APVs_inverted_nipals}, que representa los datos invertidos para la variable {\em APVs}.
     
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.7\textwidth]{APVs_inverted_nipals.png}
-        \caption{Datos invertidos para la variable APVs.}
+        \caption{Datos invertidos para la variable {\em APVs}, usando PCA con NIPALS.}
         \label{fig:APVs_inverted_nipals}
     \end{figure}
     
+    Obviamente se podría usar la descomposición SVD para el cálculo de las componentes principales. Usando SVD de {\tt numpy} se obtienen los mismos resultados, que se pueden analizar informalmente en la Figura~\ref{fig:APVs_inverted_svd}. 
     
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{APVs_inverted_svd.png}
+        \caption{Datos invertidos para la variable {\em APVs}, usando PCA con SVD.}
+        \label{fig:APVs_inverted_svd}
+    \end{figure}    
 
     \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
     TODO
