@@ -4,6 +4,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{subcaption}
+\usepackage{float}
 
 \graphicspath{ {images/} }
 
@@ -445,7 +446,7 @@ TODO
     
     % PCA
     \section{PCA}
-    TODO
+    A continuación se presentan las pruebas realizadas para el cálculo de las componentes principales (PCA) del {\em dataset} y respectiva inversión al espacio original. Los primeros análisis son informales, sobre todo con recurso a gráficos. Luego se formalizan estos resultados por medio de un test estadístico. El capítulo termina con una propuesta de simulación de datos, que, respaldada por el test estadístico, servirá de base para las fases siguientes.
     
     \subsection{PCA iterativo - NIPALS}
     Para {\em datasets} grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
@@ -463,7 +464,7 @@ TODO
     
     Obviamente se podría usar la descomposición SVD para el cálculo de las componentes principales. Usando SVD de {\tt numpy} se obtienen los mismos resultados, que se pueden analizar informalmente en la Figura~\ref{fig:APVs_inverted_svd}. 
     
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \begin{subfigure}[h]{0.49\textwidth}
             \centering
@@ -477,11 +478,13 @@ TODO
             \caption{Inversión de SVD.}
             \label{fig:APVs_inverted_svd}
         \end{subfigure}
-        \caption{Datos invertidos de la variable {\em H6x}.}
+        \caption{Datos invertidos de la variable {\em APVs}.}
         \label{fig:APVs_inverted}
     \end{figure}    
     
-    Para algunas de las características la eficiencia de la inversión no es tan evidente. Por ejemplo, la serie de {\em H6x} empieza con una secuencia de valores alrededor de \(39.45\) y luego baja para valores alrededor de \(39.30\), como representado en la Figura~\ref{fig:H6x_original}. La inversión, sea con NIPALS (Figura~\ref{fig:H6x_inverted_nipals}) o con SVD (Figura~\ref{fig:H6x_inverted_svd}), aunque no tan evidente, también demuestra esa tendencia. Además se puede verificar que los datos invertidos no superan el mínimo y máximo de los valores originales.
+    Para algunas de las características la eficiencia de la inversión no es tan evidente. Por ejemplo, la serie de {\em H6x} empieza con una secuencia de valores alrededor de \(39.45\) y luego baja para valores alrededor de \(39.30\), como representado en la Figura~\ref{fig:H6x_original}. La inversión, sea con NIPALS (Figura~\ref{fig:H6x_inverted_nipals}) o con SVD (Figura~\ref{fig:H6x_inverted_svd}), aunque no tan evidente, también demuestra esa tendencia. 
+    
+    Además se puede verificar que los datos invertidos se mantienen dentro del rango de los límites de los valores originales (\(39.20-39.60\)).
 
     \begin{figure}[h]
         \centering
