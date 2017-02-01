@@ -455,72 +455,58 @@ TODO
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.7\textwidth]{APVs_original.png}
-        \caption{Datos originales para la variable {\em APVs}.}
+        \caption{Datos originales de la variable {\em APVs}.}
         \label{fig:APVs_original}
     \end{figure}
     
     Aplicamos el algoritmo iterativo NIPALS para calcular las 5 componentes principales, proyectando de esta forma el espacio original de 14 dimensiones (características) en un espacio más reducido de solamente 5 dimensiones. Al invertir este espacio de vuelta al espacio original se obtienen datos muy similares a los originales, como se puede comprobar informalmente en la Figura~\ref{fig:APVs_inverted_nipals}, que representa los datos invertidos para la variable {\em APVs}.
     
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.7\textwidth]{APVs_inverted_nipals.png}
-        \caption{Datos invertidos para la variable {\em APVs}, usando PCA con NIPALS.}
-        \label{fig:APVs_inverted_nipals}
-    \end{figure}
-    
     Obviamente se podría usar la descomposición SVD para el cálculo de las componentes principales. Usando SVD de {\tt numpy} se obtienen los mismos resultados, que se pueden analizar informalmente en la Figura~\ref{fig:APVs_inverted_svd}. 
     
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.7\textwidth]{APVs_inverted_svd.png}
-        \caption{Datos invertidos para la variable {\em APVs}, usando PCA con SVD.}
-        \label{fig:APVs_inverted_svd}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{APVs_inverted_nipals.png}
+            \caption{Inversión de NIPALS.}
+            \label{fig:APVs_inverted_nipals}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{APVs_inverted_svd.png}
+            \caption{Inversión de SVD.}
+            \label{fig:APVs_inverted_svd}
+        \end{subfigure}
+        \caption{Datos invertidos de la variable {\em H6x}.}
+        \label{fig:APVs_inverted}
     \end{figure}    
-
+    
+    Para algunas de las características la eficiencia de la inversión no es tan evidente. Por ejemplo, la serie de {\em H6x} empieza con una secuencia de valores alrededor de \(39.45\) y luego baja para valores alrededor de \(39.30\), como representado en la Figura~\ref{fig:H6x_original}. La inversión, sea con NIPALS (Figura~\ref{fig:H6x_inverted_nipals}) o con SVD (Figura~\ref{fig:H6x_inverted_svd}), aunque no tan evidente, también demuestra esa tendencia. Además se puede verificar que los datos invertidos no superan el mínimo y máximo de los valores originales.
 
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.7\textwidth]{H6x_original.png}
-        \caption{Datos de la variable {\em H6x}.}
-        \label{fig:H6x_inverted_svd}
+        \caption{Datos originales de la variable {\em H6x}.}
+        \label{fig:H6x_original}
     \end{figure}
-    
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.7\textwidth]{H6x_inverted_nipals.png}
-        \caption{Datos invertidos para la variable {\em H6x}, usando PCA con NIPALS.}
-        \label{fig:H6x_inverted_nipals}
-    \end{figure}       
 
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.7\textwidth]{H6x_inverted_svd.png}
-        \caption{Datos invertidos para la variable {\em H6x}, usando PCA con SVD.}
-        \label{fig:H6x_inverted_svd}
-    \end{figure}       
-
-
-%\begin{figure}
-%    \centering
-%    \begin{subfigure}[h]{0.4\textwidth}
-%        \centering
-%        \includegraphics[width=\textwidth]{H6x_inverted_svd.png}
-%        \caption{Datos invertidos para la variable {\em H6x}, usando PCA con SVD.}
-%        \label{fig:y equals x}
-%    \end{subfigure}
-%    \begin{subfigure}[h]{0.4\textwidth}
-%        \centering
-%        \includegraphics[width=\textwidth]{H6x_inverted_nipals.png}
-%        \caption{Datos invertidos para la variable {\em H6x}, usando PCA con NIPALS}
-%        \label{fig:three sin x}
-%    \end{subfigure}
-%    \caption{Three simple graphs}
-%    \label{fig:three graphs}
-%\end{figure}
-
-
-
-
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{H6x_inverted_nipals.png}
+            \caption{Inversión de NIPALS.}
+            \label{fig:H6x_inverted_nipals}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{H6x_inverted_svd.png}
+            \caption{Inversión de SVD.}
+            \label{fig:H6x_inverted_svd}
+        \end{subfigure}
+        \caption{Datos invertidos de la variable {\em H6x}.}
+        \label{fig:H6x_inverted}
+    \end{figure}
 
     \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
     TODO

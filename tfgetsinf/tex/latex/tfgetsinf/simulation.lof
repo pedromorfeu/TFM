@@ -19,13 +19,10 @@
 \contentsline {figure}{\numberline {4.10}{\ignorespaces ARIMA iterativo: AR(2) y MA(2).\relax }}{16}{figure.caption.14}
 \contentsline {figure}{\numberline {4.11}{\ignorespaces Predicciones del modelo ARIMA(2, 1, 2).\relax }}{16}{figure.caption.15}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Datos originales para la variable {\em APVs}.\relax }}{19}{figure.caption.17}
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Datos invertidos para la variable {\em APVs}, usando PCA con NIPALS.\relax }}{20}{figure.caption.18}
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Datos invertidos para la variable {\em APVs}, usando PCA con SVD.\relax }}{20}{figure.caption.19}
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Datos de la variable {\em H6x}.\relax }}{21}{figure.caption.20}
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Datos invertidos para la variable {\em H6x}, usando PCA con NIPALS.\relax }}{21}{figure.caption.21}
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Datos invertidos para la variable {\em H6x}, usando PCA con SVD.\relax }}{21}{figure.caption.22}
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Three simple graphs\relax }}{22}{figure.caption.23}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Datos originales de la variable {\em APVs}.\relax }}{19}{figure.caption.17}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Datos invertidos de la variable {\em H6x}.\relax }}{20}{figure.caption.18}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Datos originales de la variable {\em H6x}.\relax }}{20}{figure.caption.19}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Datos invertidos de la variable {\em H6x}.\relax }}{21}{figure.caption.20}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
