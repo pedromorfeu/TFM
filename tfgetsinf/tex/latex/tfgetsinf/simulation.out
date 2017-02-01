@@ -1,0 +1,34 @@
+\BOOKMARK [0][-]{section*.1}{\315ndice general}{}% 1
+\BOOKMARK [0][-]{section*.2}{\315ndice de figuras}{}% 2
+\BOOKMARK [0][-]{section*.3}{\315ndice de tablas}{}% 3
+\BOOKMARK [0][-]{section*.4}{\315ndice general}{}% 4
+\BOOKMARK [0][-]{chapter.1}{Introducci\363n}{}% 5
+\BOOKMARK [1][-]{section.1.1}{Estructura del documento}{chapter.1}% 6
+\BOOKMARK [0][-]{chapter.2}{Descripci\363n del problema}{}% 7
+\BOOKMARK [0][-]{chapter.3}{Estado del Arte}{}% 8
+\BOOKMARK [0][-]{chapter.4}{Soluci\363n propuesta}{}% 9
+\BOOKMARK [1][-]{section.4.1}{Reducci\363n de dimensionalidad - PCA}{chapter.4}% 10
+\BOOKMARK [2][-]{subsection.4.1.1}{Singular Value Decomposition}{section.4.1}% 11
+\BOOKMARK [2][-]{subsection.4.1.2}{El m\351todo NIPALS}{section.4.1}% 12
+\BOOKMARK [1][-]{section.4.2}{Series temporales - ARIMA}{chapter.4}% 13
+\BOOKMARK [2][-]{subsection.4.2.1}{Estacionaridad}{section.4.2}% 14
+\BOOKMARK [2][-]{subsection.4.2.2}{Par\341metros del modelo y predicci\363n}{section.4.2}% 15
+\BOOKMARK [0][-]{chapter.5}{Experimentaci\363n y resultados}{}% 16
+\BOOKMARK [1][-]{section.5.1}{Dataset}{chapter.5}% 17
+\BOOKMARK [2][-]{subsection.5.1.1}{Estructura}{section.5.1}% 18
+\BOOKMARK [2][-]{subsection.5.1.2}{Transformaci\363n}{section.5.1}% 19
+\BOOKMARK [2][-]{subsection.5.1.3}{Distribuci\363n de los datos}{section.5.1}% 20
+\BOOKMARK [1][-]{section.5.2}{PCA}{chapter.5}% 21
+\BOOKMARK [2][-]{subsection.5.2.1}{PCA iterativo - NIPALS}{section.5.2}% 22
+\BOOKMARK [2][-]{subsection.5.2.2}{Test de hip\363tesis - Estad\355stico T-cuadrado de Hotelling}{section.5.2}% 23
+\BOOKMARK [2][-]{subsection.5.2.3}{Simulaci\363n con distribuci\363n Gaussiana - hip\363tesis nula}{section.5.2}% 24
+\BOOKMARK [1][-]{section.5.3}{ARIMA}{chapter.5}% 25
+\BOOKMARK [2][-]{subsection.5.3.1}{Simulaci\363n con todo el dataset}{section.5.3}% 26
+\BOOKMARK [2][-]{subsection.5.3.2}{Simulaci\363n con datos de 1 d\355a}{section.5.3}% 27
+\BOOKMARK [2][-]{subsection.5.3.3}{Simulaci\363n con b\372squeda de puntos cercanos de la Gaussiana}{section.5.3}% 28
+\BOOKMARK [0][-]{chapter.6}{Big Data}{}% 29
+\BOOKMARK [1][-]{section.6.1}{MongoDB}{chapter.6}% 30
+\BOOKMARK [1][-]{section.6.2}{Spark}{chapter.6}% 31
+\BOOKMARK [0][-]{chapter.7}{Conclusiones}{}% 32
+\BOOKMARK [0][-]{chapter.8}{Trabajos futuros}{}% 33
+\BOOKMARK [0][-]{chapter*.24}{Bibliograf\355a}{}% 34
