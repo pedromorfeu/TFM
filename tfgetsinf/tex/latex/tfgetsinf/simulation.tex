@@ -510,6 +510,47 @@ TODO
         \caption{Datos invertidos de la variable {\em H6x}.}
         \label{fig:H6x_inverted}
     \end{figure}
+    
+    Otras características son todavía menos evidentes. Con 5 componentes, los resultados de la inversión de {\em ACPx} son muy poco claros. En un análisis visual, da incluso la sensación de que no corresponde a la misma característica. Véase el gráfico de los datos originales en la Figura~\ref{fig:ACPx_original} y respectiva re-proyección al espacio original en la Figura~\ref{fig:ACPx_inverted}.
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{ACPx_original.png}
+        \caption{Datos originales de la variable {\em ACPx}.}
+        \label{fig:ACPx_original}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{ACPx_inverted_nipals.png}
+            \caption{Inversión de NIPALS.}
+            \label{fig:ACPx_inverted_nipals}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{ACPx_inverted_nipals.png}
+            \caption{Inversión de SVD.}
+            \label{fig:ACPx_inverted_svd}
+        \end{subfigure}
+        \caption{Datos invertidos de la variable {\em ACPx}.}
+        \label{fig:ACPx_inverted}
+    \end{figure}
+    
+    Aunque parecen datos diferentes, hay algunas propiedades que sí son coherentes, como los límites mínimo y máximo. Los datos originales oscilan principalmente dentro del rango \(3.25-3.40\) y los datos invertidos también. Además, los datos invertidos no contemplan los dos puntos originales que parecen {\em outliers}, con valores de \(\approx 3.14\), probablemente ruido.
+    
+    En este caso, es importante destacar la elección del numero de componentes. Esa decisión se formalizará más adelante, con el test estadístico. De momento, podemos concluir que, con 5 componentes, los datos invertidos de {\em ACPx} que vemos en la Figura~\ref{fig:ACPx_inverted_nipals} son probablemente la información relevante de la señal. Al final la variabilidad que modelan las últimas componentes es el ruido y quizás en {\em ACPx} hay más ruido que información importante.
+    
+    Si se calculan más componentes, los resultados se aproximarán más a la realidad, pues se añade a los datos el posible ruido de la señal, que en principio estará contenido en las últimas componentes de la proyección. Sin embargo, aunque el ajuste sea mejor, se pierde generalización del modelo y también la eliminación de ruido. Los resultados de la proyección con 14 componentes se pueden comprobar en la Figura~\ref{fig:ACPx_inverted_nipals_pca14}.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{ACPx_inverted_nipals_pca14.png}
+        \caption{Datos invertidos de la variable {\em ACPx} con 14 componentes.}
+        \label{fig:ACPx_inverted_nipals_pca14}
+    \end{figure}
+
 
     \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
     TODO
