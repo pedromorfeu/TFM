@@ -686,9 +686,9 @@ for i in range(N_COMPONENTS):
         \label{fig:inverse_gaussian_APHu}
     \end{figure}       
     
-    Sometiendo los nuevos datos al test \(T^2\) de Hotelling, se verifica que es igual a la población original (código~\ref{lst:gaussian_simulation}). El estadístico tiene un valor poco significativo \(0.037391\) y el p-valor es \(1\), así que la hipótesis nula (las poblaciones son diferentes) puede ser rechazada.
+    Sometiendo los nuevos datos al test \(T^2\) de Hotelling, se verifica que es igual a la población original (código~\ref{lst:gaussian_simulation}). El estadístico tiene un valor poco significativo de \(0.037391\) y el p-valor es \(1\), así que la hipótesis nula (las poblaciones son diferentes) puede ser rechazada.
     
-    \begin{lstlisting}[language=Python, caption=Test \(T^2\) de Hotelling para la simulación con distribución Gaussiana., label={lst:gaussian_simulation}]
+    \begin{lstlisting}[language=S, caption=Test \(T^2\) de Hotelling para la simulación con distribución Gaussiana., label={lst:gaussian_simulation}]
 > res <- hotelling.test(x = data, y = inverted_data_gaussian)
 > print(res)
 Test stat:  0.037391 
@@ -696,8 +696,19 @@ Numerator df:  14
 Denominator df:  100723 
 P-value:  1 
     \end{lstlisting}
+    
+    Para validar el correcto funcionamiento del test implementado en {\tt hotelling.test}, se ha generado una serie con valores aleatorios con distribución no normal. Con esto, es de esperar que el estadístico adopte valores significativos y que el p-valor se aleje de \(1\). El código~\ref{lst:non_normal_simulation} corrobora esa expectativa.
+   
+    \begin{lstlisting}[language=S, caption=Test \(T^2\) de Hotelling para la simulación con distribución no normal., label={lst:non_normal_simulation}]
+> res <- hotelling.test(x = data, y = inverted_data_non_normal)
+> print(res)
+Test stat:  719.81 
+Numerator df:  14 
+Denominator df:  100723 
+P-value:  0 
+    \end{lstlisting}
 
-    La simulación con distribución Gaussiana constituye la base de nuestro estudio para la simulación de datos. Asumimos que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta los resultados finales del estudio.
+    La simulación con distribución Gaussiana constituye la base de nuestro estudio para la simulación de datos. Asumimos a partir de ahora que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta algunas decisiones de los proximos capítulos y, por consiguiente, los resultados finales del estudio.
         
     % ARIMA
     \section{ARIMA}

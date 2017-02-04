@@ -23,7 +23,7 @@ from sys import platform
 
 
 N_COMPONENTS = 5
-GAUSSIAN_DATA_SIZE = 1000000
+GAUSSIAN_DATA_SIZE = 100000
 NEW_DATA_SIZE = 2000
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
@@ -243,9 +243,9 @@ for i in range(N_COMPONENTS):
     # alternative normal:
     # generated_gaussian[:, i] = mus[i] + sigmas[i] * np.random.randn(NEW_DATA_SIZE)
     # generate random not-normal:
-    # generated_gaussian[:, i] = mus[i] + sigmas[i] * np.random.rand(1, NEW_DATA_SIZE)
+    # generated_gaussian[:, i] = mus[i] + sigmas[i] * np.random.rand(1, GAUSSIAN_DATA_SIZE)
 print_matrix("generated_gaussian", generated_gaussian)
-# save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
+#save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
 
 
 save_plot_per_component_gaussian(N_COMPONENTS, generated_gaussian, nipals_T)
