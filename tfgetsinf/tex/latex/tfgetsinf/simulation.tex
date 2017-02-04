@@ -448,6 +448,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
     \section{PCA}
     A continuación se presentan las pruebas realizadas para el cálculo de las componentes principales (PCA) del {\em dataset} y respectiva inversión al espacio original. Los primeros análisis son informales, sobre todo con recurso a gráficos. Luego se formalizan estos resultados por medio de un test estadístico. El capítulo termina con una propuesta de simulación de datos, que, respaldada por el test estadístico, servirá de base para las fases siguientes.
     
+    % NIPALS
     \subsection{PCA iterativo - NIPALS}
     Para {\em datasets} grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
     
@@ -551,6 +552,8 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \label{fig:ACPx_inverted_nipals_pca14}
     \end{figure}
 
+
+    % Hotelling T2
     \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
     Para validar que la inversión de las matrices se está haciendo correctamente necesitamos una medida objetiva que permita comparar estadísticamente las poblaciones original y invertida. Para ello usaremos el estadístico multidimensional \(T^2\) (T-cuadrado) de Hotelling. 
     
@@ -563,7 +566,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
     \item las dos matrices de varianzas-covarianzas son iguales.
     \end{itemize}
     
-    La hipótesis nula es que las medias para todas las variable son iguales.
+    La hipótesis nula es que las medias para todas las variables son iguales. 
     
     Respecto a la implementación, se han usado los algoritmos de test Hotelling \(T^2\) R, con la librería {\tt Hotelling}. El Código~\ref{lst:t2_test} es un ejemplo de uso de la librería.
 
@@ -576,7 +579,7 @@ Denominator df:  119782
 P-value:  1
     \end{lstlisting}
     
-    La hipótesis nula de {\tt hotelling.test} es que las medias de las variables de las poblaciones son diferentes. En este caso, el resultado del estadístico es poco significativo, por lo que podemos rechazar la hipótesis nula. La interpretación es que las poblaciones {\tt data} y {\tt inverted\_data} son iguales, con un grado de confianza alta ({\tt p-value=1}). 
+    Si el valor del estadístico es significativo (valor alto) significa que ha encontrado bastantes diferencias entre las poblaciones, por lo que podemos rechazar la hipótesis nula. En el caso demostrado en el Código~\ref{lst:t2_test}, el resultado del estadístico es poco significativo (cercano a cero), así que podemos aceptar la hipótesis nula. La interpretación es que las poblaciones {\tt data} y {\tt inverted\_data} son iguales, con un grado de confianza alta ({\tt p-value=1}). 
     
     Se ha aplicado el test \(T^2\) de Hotelling exhaustivamente para los varios números de componentes posibles. Los resultados se encuentran en la tabla~\ref{table:t2_test}.
     
@@ -621,8 +624,9 @@ P-value:  1
     
     Se ha usado un pequeño factor aleatorio con distribución normal para ocupar valores vacíos en determinadas variables. Por esa razón los resultados pueden variar y ser algo incoherentes (por ejemplo, con 9 componentes tenemos mayor valor del estadístico que con 1 componente). De todas formas, el objetivo de este análisis exhaustivo es verificar que la inversión de NIPALS es correcta - podemos afirmar que sí, pues el estadístico presenta valores poco significativos y los p-valor son altos.
     
-    Aunque los p-valor sean altos, se detecta una tendencia para ser inferior a 1 a partir de un determinado numero de componentes (en la tabla ~\ref{table:t2_test} sería a partir de 9 componentes que el p-valor empieza a dar señales de bajada). Probablemente, esa variación se debe a la introducción del ruido a partir de ese numero de componentes. En base a este estudio, se ha decidido usar 5 componentes para el cálculo de PCA.
+    Aunque los p-valor sean altos (cercanos a 1), se detecta una tendencia para ser inferior a 1 a partir de un determinado numero de componentes (en la tabla ~\ref{table:t2_test} sería a partir de 9 componentes que el p-valor empieza a dar señales de bajada). Probablemente, esa variación se debe a la introducción del ruido a partir de ese numero de componentes. En base a este estudio, se ha decidido usar 5 componentes para el cálculo de PCA.
 
+    % Gaussiana
     \subsection{Simulación con distribución Gaussiana}
     El primer acercamiento de simulación de datos se hizo usando la distribución normal o Gaussiana. El algoritmo es: para cada componente, se calcula la media y variación típica y, a partir de estos, se genera una nueva serie con distribución gaussiana (ver código~\ref{lst:gaussian_simulation}).
     
@@ -708,7 +712,7 @@ Denominator df:  100723
 P-value:  0 
     \end{lstlisting}
 
-    La simulación con distribución Gaussiana constituye la base de nuestro estudio para la simulación de datos. Asumimos a partir de ahora que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta algunas decisiones de los proximos capítulos y, por consiguiente, los resultados finales del estudio.
+    La simulación con distribución Gaussiana constituye la base de nuestro estudio para la simulación de datos. Asumimos, a partir de ahora, que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta algunas decisiones de los próximos capítulos y, por consiguiente, los resultados finales del estudio.
         
     % ARIMA
     \section{ARIMA}
