@@ -245,6 +245,34 @@ def save_plot_per_column(_data, _columns, _suffix="", _folder="figures"):
     print("Plots saved")
 
 
+def save_plot_per_component_gaussian(_n_components, generated_gaussian, nipals_T, _folder="figures", _suffix="_gaussian", end=5000):
+    print("Saving plots...")
+    if not os.path.exists(_folder):
+        os.makedirs(_folder)
+    plt.ioff()
+    plt.figure(figsize=(16, 9))
+    for i in range(_n_components):
+        plt.clf()
+        mean = generated_gaussian[:, i].mean()
+        std = generated_gaussian[:, i].std()
+        plt.axhline(generated_gaussian[:, i].max(), color="gray", linewidth=1)
+        plt.axhline(generated_gaussian[:, i].min(), color="gray", linewidth=1)
+        plt.axhline(mean, color="gray", linewidth=1)
+        plt.axhline(mean + 2 * std, color="gray", linewidth=1)
+        plt.axhline(mean + 3 * std, color="gray", linewidth=1)
+        plt.axhline(mean - 2 * std, color="gray", linewidth=1)
+        plt.axhline(mean - 3 * std, color="gray", linewidth=1)
+        start = len(nipals_T)+1
+        plt.plot(range(start, end), generated_gaussian[:end-start, i], label="Gaussian")
+        plt.plot(nipals_T[:, i], label="component")
+        title = "component_" + str(i+1) + _suffix
+        plt.title(title)
+        plt.legend()
+        plt.savefig(os.path.join(_folder, title))
+    plt.ion()
+    print("Plots saved")
+
+
 def save_mixed_plots_per_column(_data, _inverse, _inverse_gaussian, _columns, _suffix="", _folder="figures"):
     print("Saving plots...")
     if not os.path.exists(_folder):

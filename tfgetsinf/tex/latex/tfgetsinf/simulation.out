@@ -21,7 +21,7 @@
 \BOOKMARK [1][-]{section.5.2}{PCA}{chapter.5}% 21
 \BOOKMARK [2][-]{subsection.5.2.1}{PCA iterativo - NIPALS}{section.5.2}% 22
 \BOOKMARK [2][-]{subsection.5.2.2}{Test de hip\363tesis - Estad\355stico T-cuadrado de Hotelling}{section.5.2}% 23
-\BOOKMARK [2][-]{subsection.5.2.3}{Simulaci\363n con distribuci\363n Gaussiana - hip\363tesis nula}{section.5.2}% 24
+\BOOKMARK [2][-]{subsection.5.2.3}{Simulaci\363n con distribuci\363n Gaussiana}{section.5.2}% 24
 \BOOKMARK [1][-]{section.5.3}{ARIMA}{chapter.5}% 25
 \BOOKMARK [2][-]{subsection.5.3.1}{Simulaci\363n con todo el dataset}{section.5.3}% 26
 \BOOKMARK [2][-]{subsection.5.3.2}{Simulaci\363n con datos de 1 d\355a}{section.5.3}% 27
@@ -31,4 +31,4 @@
 \BOOKMARK [1][-]{section.6.2}{Spark}{chapter.6}% 31
 \BOOKMARK [0][-]{chapter.7}{Conclusiones}{}% 32
 \BOOKMARK [0][-]{chapter.8}{Trabajos futuros}{}% 33
-\BOOKMARK [0][-]{chapter*.26}{Bibliograf\355a}{}% 34
+\BOOKMARK [0][-]{chapter*.28}{Bibliograf\355a}{}% 34

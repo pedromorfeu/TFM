@@ -23,7 +23,7 @@ from sys import platform
 
 
 N_COMPONENTS = 5
-GAUSSIAN_DATA_SIZE = 100000
+GAUSSIAN_DATA_SIZE = 1000000
 NEW_DATA_SIZE = 2000
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
@@ -247,6 +247,11 @@ for i in range(N_COMPONENTS):
 print_matrix("generated_gaussian", generated_gaussian)
 # save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
 
+
+save_plot_per_component_gaussian(N_COMPONENTS, generated_gaussian, nipals_T)
+
+
+
 # invert matrix: dot product between random data and the loadings, nipals_P
 inverse_gaussian = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
 #XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
@@ -254,7 +259,6 @@ print_matrix("inverse_gaussian", inverse_gaussian)
 save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
 
 
-ds
 exit()
 
 

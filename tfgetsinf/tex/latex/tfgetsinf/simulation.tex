@@ -623,8 +623,8 @@ P-value:  1
     
     Aunque los p-valor sean altos, se detecta una tendencia para ser inferior a 1 a partir de un determinado numero de componentes (en la tabla ~\ref{table:t2_test} sería a partir de 9 componentes que el p-valor empieza a dar señales de bajada). Probablemente, esa variación se debe a la introducción del ruido a partir de ese numero de componentes. En base a este estudio, se ha decidido usar 5 componentes para el cálculo de PCA.
 
-    \subsection{Simulación con distribución Gaussiana - hipótesis nula}
-    Las primeras pruebas de simulación de datos se han hecho usando la distribución normal o Gaussiana. El algoritmo es: para cada componente, se calcula la media y variación típica y, a partir de estos, se genera una serie con distribución gaussiana (ver código~\ref{lst:gaussian_simulation}).
+    \subsection{Simulación con distribución Gaussiana}
+    El primer acercamiento de simulación de datos se hizo usando la distribución normal o Gaussiana. El algoritmo es: para cada componente, se calcula la media y variación típica y, a partir de estos, se genera una nueva serie con distribución gaussiana (ver código~\ref{lst:gaussian_simulation}).
     
     \begin{lstlisting}[language=Python, caption=Simulación con distribución Gaussiana., label={lst:gaussian_simulation}]
 mus = np.mean(nipals_T, axis=0)
@@ -636,9 +636,59 @@ for i in range(N_COMPONENTS):
     generated_gaussian[:, i] = np.random.normal(mus[i], sigmas[i], GAUSSIAN_SIZE)
     \end{lstlisting}
     
-    Luego se re-proyectan las componentes al espacio original y se obtiene la nueva población, simulada. Sometiendo los nuevos datos al test \(T^2\) de Hotelling, se verifica que es igual a la población original (código~\ref{lst:gaussian_simulation}).
+    La Figura~\ref{fig:component_0_gaussian} da una idea gráfica de la simulación con distribución Gaussiana para la componente 1. En verde vemos los datos de la componente y en azul los datos generados. Las líneas gris representan la media, mínimo, máximo y algunas desviaciones típicas. Los datos generados se mantienen dentro de los límites de la serie de la componente.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{component_1_gaussian.png}
+        \caption{Datos originales y simulados de la componente 1.}
+        \label{fig:component_0_gaussian}
+    \end{figure}   
     
-    \begin{lstlisting}[language=Python, caption=Simulación con distribución Gaussiana., label={lst:gaussian_simulation}]
+    Las simulaciones para las demás componentes se representan en la secuencia de gráficos de la Figura~\ref{fig:component_gaussian}.
+    
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{component_2_gaussian.png}
+            \caption{Componente 2.}
+            \label{fig:component_2_gaussian}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{component_3_gaussian.png}
+            \caption{Componente 3.}
+            \label{fig:component_3_gaussian}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{component_4_gaussian.png}
+            \caption{Componente 4.}
+            \label{fig:component_4_gaussian}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{component_5_gaussian.png}
+            \caption{Componente 5.}
+            \label{fig:component_5_gaussian}
+        \end{subfigure}
+        \caption{Datos originales y simulados de las componentes.}
+        \label{fig:component_gaussian}
+    \end{figure}
+ 
+    Una vez generados los nuevos datos de las componentes, se re-proyectan al espacio original y se obtiene la nueva población multivariante, simulada. La Figura~\ref{fig:inverse_gaussian_APHu} da un ejemplo de la re-proyección usando la simulación Gaussiana, para la variable {\em APHu}.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{inverse_gaussian_APHu.png}
+        \caption{Datos originales y simulados de la variable {\em APHu}.}
+        \label{fig:inverse_gaussian_APHu}
+    \end{figure}       
+    
+    Sometiendo los nuevos datos al test \(T^2\) de Hotelling, se verifica que es igual a la población original (código~\ref{lst:gaussian_simulation}). El estadístico tiene un valor poco significativo \(0.037391\) y el p-valor es \(1\), así que la hipótesis nula (las poblaciones son diferentes) puede ser rechazada.
+    
+    \begin{lstlisting}[language=Python, caption=Test \(T^2\) de Hotelling para la simulación con distribución Gaussiana., label={lst:gaussian_simulation}]
 > res <- hotelling.test(x = data, y = inverted_data_gaussian)
 > print(res)
 Test stat:  0.037391 
@@ -646,20 +696,9 @@ Numerator df:  14
 Denominator df:  100723 
 P-value:  1 
     \end{lstlisting}
-    
-    La Figura~\ref{fig:APHu_simulated} da una idea gráfica de la simulación con distribución Gaussiana. En verde vemos los datos originales y en azul los datos generados. 
-    
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.7\textwidth]{gaussian.png}
-        \caption{Datos simulados de la variable {\em APHu}.}
-        \label{fig:APHu_simulated}
-    \end{figure}    
-    
-    La simulación con distribución Gaussiana constituye la hipótesis nula de nuestro estudio para la simulación de datos.
-    
-    
-    
+
+    La simulación con distribución Gaussiana constituye la base de nuestro estudio para la simulación de datos. Asumimos que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta los resultados finales del estudio.
+        
     % ARIMA
     \section{ARIMA}
     TODO
