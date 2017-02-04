@@ -4,6 +4,8 @@ import locale
 import seaborn as sns
 import os
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg')
 from matplotlib import pyplot as plt
 from datetime import datetime
 from statsmodels.tsa.stattools import adfuller, acf, pacf

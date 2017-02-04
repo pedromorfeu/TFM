@@ -1,0 +1,97 @@
+[1] "generated/inverted_nipals_1.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.020809 
+Numerator df:  14 
+Denominator df:  1461 
+P-value:  1
+
+[1] "generated/inverted_nipals_2.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.063641
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_3.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.01215
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_4.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.013919
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_5.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.0013848
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_6.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.077881
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_7.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.031675
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_8.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.00012993
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_9.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.20037
+Numerator df:  14
+Denominator df:  1461
+P-value:  0.9994
+
+[1] "generated/inverted_nipals_10.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.029146
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_11.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.16149
+Numerator df:  14
+Denominator df:  1461
+P-value:  0.9998
+
+[1] "generated/inverted_nipals_12.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.08343
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_13.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.0024538
+Numerator df:  14
+Denominator df:  1461
+P-value:  1
+
+[1] "generated/inverted_nipals_14.csv"
+> print(hotelling.test(x = data, y = inverted_data))
+Test stat:  0.13956
+Numerator df:  14
+Denominator df:  1461
+P-value:  0.9999

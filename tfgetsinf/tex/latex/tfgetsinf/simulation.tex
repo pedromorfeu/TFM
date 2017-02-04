@@ -416,14 +416,14 @@ TODO
         
         \lstset{style=python}
         \begin{lstlisting}[caption={\em Parsing} de fechas en Python.]
-        def parse_date(date_string):
-            locale_date_string = re.sub("(.+-)(.+)(-.+)", "\\1\\2.\\3", date_string)
-            return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
+def parse_date(date_string):
+    locale_date_string = re.sub("(.+-)(.+)(-.+)", "\\1\\2.\\3", date_string)
+    return datetime.strptime(locale_date_string, "%d-%b-%Y %H:%M:%S")
         \end{lstlisting}
         
         \begin{lstlisting}[caption={\em Parsing} de fechas en R.]
-        data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
-        data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
+data$Tiempoinicio <- sub("(\\d+-)(\\w+)(-\\d+\\s\\d+:\\d+:\\d+)", "\\1\\2.\\3", data$Tiempoinicio)
+data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \end{lstlisting}
         
         En este caso particular de las fechas, el problema no está en el {\em dataset} realmente. Los {\em standards} de fechas varian en cada sistema operativo. La idea de exponer este caso no es más que transmitir la necesidad de ajustar y normalizar los datos cuando provienen de sensores.
@@ -544,19 +544,121 @@ TODO
     
     Si se calculan más componentes, los resultados se aproximarán más a la realidad, pues se añade a los datos el posible ruido de la señal, que en principio estará contenido en las últimas componentes de la proyección. Sin embargo, aunque el ajuste sea mejor, se pierde generalización del modelo y también la eliminación de ruido. Los resultados de la proyección con 14 componentes se pueden comprobar en la Figura~\ref{fig:ACPx_inverted_nipals_pca14}.
     
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \includegraphics[width=0.7\textwidth]{ACPx_inverted_nipals_pca14.png}
         \caption{Datos invertidos de la variable {\em ACPx} con 14 componentes.}
         \label{fig:ACPx_inverted_nipals_pca14}
     \end{figure}
 
-
     \subsection{Test de hipótesis - Estadístico T-cuadrado de Hotelling}
-    TODO
+    Para validar que la inversión de las matrices se está haciendo correctamente necesitamos una medida objetiva que permita comparar estadísticamente las poblaciones original y invertida. Para ello usaremos el estadístico multidimensional \(T^2\) (T-cuadrado) de Hotelling. 
     
+    El test \(T^2\) de Hotelling es una generalización del test \(t\) de Student. Para dos muestras (poblaciones), el test \(t\) evalúa las diferencias en las medias de esas poblaciones. El test \(T^2\) se usa cuando las variables son dos o más.
+
+    Las suposiciones del test \(T^2\) de Hotelling para dos poblaciones son:
+    \begin{itemize}
+    \item cada población sigue una distribución multivariante normal.
+    \item las dos poblaciones son independientes.
+    \item las dos matrices de varianzas-covarianzas son iguales.
+    \end{itemize}
+    
+    La hipótesis nula es que las medias para todas las variable son iguales.
+    
+    Respecto a la implementación, se han usado los algoritmos de test Hotelling \(T^2\) R, con la librería {\tt Hotelling}. El Código~\ref{lst:t2_test} es un ejemplo de uso de la librería.
+
+    \begin{lstlisting}[language=S, caption=Test \(T^2\) de Hotelling en R., label={lst:t2_test}]
+> res = hotelling.test(x = data, y = inverted_data)
+> print(res)
+Test stat:  0.072321 
+Numerator df:  14 
+Denominator df:  119782 
+P-value:  1
+    \end{lstlisting}
+    
+    La hipótesis nula de {\tt hotelling.test} es que las medias de las variables de las poblaciones son diferentes. En este caso, el resultado del estadístico es poco significativo, por lo que podemos rechazar la hipótesis nula. La interpretación es que las poblaciones {\tt data} y {\tt inverted\_data} son iguales, con un grado de confianza alta ({\tt p-value=1}). 
+    
+    Se ha aplicado el test \(T^2\) de Hotelling exhaustivamente para los varios números de componentes posibles. Los resultados se encuentran en la tabla~\ref{table:t2_test}.
+    
+    \begin{table}
+         \centering
+         \begin{tabular}{|c|c|c|} 
+             \hline
+             Componentes & Hotelling \(T^2\) & p-valor \\ [0.5ex] 
+             \hline\hline
+             1 & 0.020809 & 1 \\ 
+             \hline
+             2 & 0.063641 & 1 \\ 
+             \hline
+             3 & 0.01215 & 1 \\ 
+             \hline
+             4 & 0.013919 & 1 \\ 
+             \hline
+             5 & 0.020096 & 1 \\ 
+             \hline
+             6 & 0.077881 & 1 \\ 
+             \hline
+             7 & 0.031675 & 1 \\ 
+             \hline
+             8 & 0.00012993 & 1 \\ 
+             \hline
+             9 & 0.20037 & 0.9994 \\ 
+             \hline
+             10 & 0.029146 & 1 \\ 
+             \hline
+             11 & 0.16149 & 0.9998 \\ 
+             \hline
+             12 & 0.08343 & 1 \\ 
+             \hline
+             13 & 0.0024538 & 1 \\ 
+             \hline
+             14 & 0.13956 & 0.9999 \\ 
+             \hline
+        \end{tabular}
+        \caption{Test \(T^2\) de Hotelling para los varios números de componentes.}
+        \label{table:t2_test}
+    \end{table}
+    
+    Se ha usado un pequeño factor aleatorio con distribución normal para ocupar valores vacíos en determinadas variables. Por esa razón los resultados pueden variar y ser algo incoherentes (por ejemplo, con 9 componentes tenemos mayor valor del estadístico que con 1 componente). De todas formas, el objetivo de este análisis exhaustivo es verificar que la inversión de NIPALS es correcta - podemos afirmar que sí, pues el estadístico presenta valores poco significativos y los p-valor son altos.
+    
+    Aunque los p-valor sean altos, se detecta una tendencia para ser inferior a 1 a partir de un determinado numero de componentes (en la tabla ~\ref{table:t2_test} sería a partir de 9 componentes que el p-valor empieza a dar señales de bajada). Probablemente, esa variación se debe a la introducción del ruido a partir de ese numero de componentes. En base a este estudio, se ha decidido usar 5 componentes para el cálculo de PCA.
+
     \subsection{Simulación con distribución Gaussiana - hipótesis nula}
-    TODO
+    Las primeras pruebas de simulación de datos se han hecho usando la distribución normal o Gaussiana. El algoritmo es: para cada componente, se calcula la media y variación típica y, a partir de estos, se genera una serie con distribución gaussiana (ver código~\ref{lst:gaussian_simulation}).
+    
+    \begin{lstlisting}[language=Python, caption=Simulación con distribución Gaussiana., label={lst:gaussian_simulation}]
+mus = np.mean(nipals_T, axis=0)
+sigmas = np.std(nipals_T, axis=0)
+
+generated_gaussian = np.zeros((GAUSSIAN_SIZE, N_COMPONENTS))
+for i in range(N_COMPONENTS):
+    # calculate normal distribution by component and store it in column i
+    generated_gaussian[:, i] = np.random.normal(mus[i], sigmas[i], GAUSSIAN_SIZE)
+    \end{lstlisting}
+    
+    Luego se re-proyectan las componentes al espacio original y se obtiene la nueva población, simulada. Sometiendo los nuevos datos al test \(T^2\) de Hotelling, se verifica que es igual a la población original (código~\ref{lst:gaussian_simulation}).
+    
+    \begin{lstlisting}[language=Python, caption=Simulación con distribución Gaussiana., label={lst:gaussian_simulation}]
+> res <- hotelling.test(x = data, y = inverted_data_gaussian)
+> print(res)
+Test stat:  0.037391 
+Numerator df:  14 
+Denominator df:  100723 
+P-value:  1 
+    \end{lstlisting}
+    
+    La Figura~\ref{fig:APHu_simulated} da una idea gráfica de la simulación con distribución Gaussiana. En verde vemos los datos originales y en azul los datos generados. 
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{gaussian.png}
+        \caption{Datos simulados de la variable {\em APHu}.}
+        \label{fig:APHu_simulated}
+    \end{figure}    
+    
+    La simulación con distribución Gaussiana constituye la hipótesis nula de nuestro estudio para la simulación de datos.
+    
+    
     
     % ARIMA
     \section{ARIMA}

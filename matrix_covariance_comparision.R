@@ -54,7 +54,8 @@ head(data)
 
 
 ### INVERTED DATA
-inverted_data <- read.csv2("generated/inverted_nipals.csv", sep = "\t", header=T, stringsAsFactors = F, dec = ".")
+file <- "generated/inverse_X_gaussian.csv"
+inverted_data <- read.csv2(file, sep = "\t", header=T, stringsAsFactors = F, dec = ".")
 nrow(inverted_data)
 ncol(inverted_data)
 
@@ -63,7 +64,9 @@ inverted_data$ZSx <- mean(inverted_data$ZSx) + 0.001 * rnorm(nrow(inverted_data)
 inverted_data$H7x <- mean(inverted_data$H7x) + 0.001 * rnorm(nrow(inverted_data))
 cov(inverted_data)
 
-print(hotelling.test(x = data, y = inverted_data))
+print(file)
+res <- hotelling.test(x = data, y = inverted_data)
+print(res)
 
 
 ### GAUSSIAN

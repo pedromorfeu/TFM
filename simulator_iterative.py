@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 from util.generic import *
 from warnings import warn
+import matplotlib
+matplotlib.use('TkAgg')
 from matplotlib import pyplot
 from datetime import datetime
 from statsmodels.tsa.stattools import arma_order_select_ic
@@ -21,7 +23,7 @@ from sys import platform
 
 
 N_COMPONENTS = 5
-GAUSSIAN_DATA_SIZE = 1000000
+GAUSSIAN_DATA_SIZE = 100000
 NEW_DATA_SIZE = 2000
 TS_FREQUENCY = "10s"
 N_INDEXES = 1
@@ -78,8 +80,8 @@ save_plot_per_column(data.values, data.columns, "_raw", "figures")
 data = data.resample(TS_FREQUENCY).mean().interpolate()
 save_matrix("data.csv", data.values, data.columns)
 
-save_data_plot(_data=data, _filename="original")
-save_plot_per_column(data.values, data.columns, "_original", "figures")
+#save_data_plot(_data=data, _filename="original")
+#save_plot_per_column(data.values, data.columns, "_original", "figures")
 
 
 raw = data.values
@@ -109,7 +111,7 @@ new_X = pca.fit_transform(X)
 IX = pca.inverse_transform(new_X) + np.mean(raw, axis=0)
 print_matrix("IX", IX)
 save_matrix("inverted_pca.csv", IX, data.columns)
-save_plot_per_column(IX, data.columns, "_inverted_pca", "figures")
+#save_plot_per_column(IX, data.columns, "_inverted_pca", "figures")
 
 
 # We could of course use SVD ...
@@ -144,7 +146,7 @@ XX = np.dot(svd_T, svd_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 save_matrix("inverted_svd.csv", XX, data.columns)
 
-save_plot_per_column(XX, data.columns, "_inverted_svd", "figures")
+#save_plot_per_column(XX, data.columns, "_inverted_svd", "figures")
 
 
 # But what if we really only wanted calculate A=2 components (imagine SVD on
@@ -213,9 +215,9 @@ save_matrix("nipals_T_ts.csv", nipals_T, columns_names=(["time"] + list(range(N_
 # invert NIPALS
 XXX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XXX", XXX)
-save_matrix("inverted_nipals.csv", XXX, data.columns)
+save_matrix("inverted_nipals_" + str(N_COMPONENTS) + ".csv", XXX, data.columns)
 
-save_plot_per_column(XXX, data.columns, "_inverted_nipals", "figures")
+#save_plot_per_column(XXX, data.columns, "_inverted_nipals", "figures")
 
 
 # confirm inverted values
@@ -227,8 +229,7 @@ save_matrix("xxx_xx.csv", XXX/XX, data.columns)
 np.array_equal(np.round(XXX, 2), np.round(XX, 2))
 
 
-
-save_plot_per_column(nipals_T, list(range(N_COMPONENTS)), "_component", "figures")
+#save_plot_per_column(nipals_T, [str(i) for i in range(N_COMPONENTS)], "_component", "figures")
 
 
 ### Generate Gaussian data
@@ -250,7 +251,11 @@ print_matrix("generated_gaussian", generated_gaussian)
 inverse_gaussian = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
 #XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("inverse_gaussian", inverse_gaussian)
-# save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
+save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
+
+
+ds
+exit()
 
 
 save_plot_per_column(inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_inverse_gaussian", "figures")
