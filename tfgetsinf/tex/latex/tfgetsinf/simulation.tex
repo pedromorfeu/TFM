@@ -792,10 +792,10 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         El pseudo-código siguiente explica más secuencialmente la predicción y búsqueda de puntos: 
         \begin{enumerate}
-        \item Predicir un valor nuevo para cada componente con su respectivo modelo ARIMA. Digamos que tenemos 5 componentes, entonces nos quedamos con el punto \(p_{1} = (c_{1}, c_{2}, c_{3}, c_{4}, c_{5})\), donde \(c_{x}\) es el valor predicho de cada componente.
+        \item Predicir un valor nuevo para cada componente con su respectivo modelo ARIMA. Digamos que tenemos 5 componentes, entonces nos quedamos con el punto \(p_{1} = \{c_{1}, c_{2}, c_{3}, c_{4}, c_{5}\}\), donde \(c_{x}\) es el valor predicho de cada componente.
         \item (Opcional) Añadir ruido.
-        \item Calcular el punto \(p_{1}' = (c_{1}', c_{2}', c_{3}', c_{4}', c_{5}')\) más cercano en los puntos de la simulación Gaussiana.
-        \item Introducir el valor \(c_{x}'\) en el modelo ARIMA de cada componente.
+        \item Calcular el punto \(p_{1}' = \{c_{1}', c_{2}', c_{3}', c_{4}', c_{5}'\}\) más cercano en los puntos de la simulación Gaussiana.
+        \item Introducir el valor predicho \(c_{x}'\) en los datos del modelo ARIMA de cada componente.
         \item Volver al punto 1.
         \end{enumerate}
 
