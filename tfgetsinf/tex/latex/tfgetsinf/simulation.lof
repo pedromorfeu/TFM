@@ -29,8 +29,8 @@
 \contentsline {figure}{\numberline {5.8}{\ignorespaces Datos originales y simulados de la componente 1.\relax }}{24}{figure.caption.25}
 \contentsline {figure}{\numberline {5.9}{\ignorespaces Datos originales y simulados de las componentes.\relax }}{24}{figure.caption.26}
 \contentsline {figure}{\numberline {5.10}{\ignorespaces Datos originales y simulados de la variable {\em APHu}.\relax }}{25}{figure.caption.27}
-\contentsline {figure}{\numberline {5.11}{\ignorespaces ARIMA para la componente 1.\relax }}{27}{figure.caption.28}
-\contentsline {figure}{\numberline {5.12}{\ignorespaces Predicci\IeC {\'o}n {\em out-of-sample} para la componente 1.\relax }}{28}{figure.caption.29}
+\contentsline {figure}{\numberline {5.11}{\ignorespaces ARIMA para la componente 1 calculada con PCA sobre todo el {\em dataset}.\relax }}{27}{figure.caption.28}
+\contentsline {figure}{\numberline {5.12}{\ignorespaces Predicci\IeC {\'o}n {\em out-of-sample} para la componente 1 calculada con PCA de un d\IeC {\'\i }a.\relax }}{28}{figure.caption.29}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

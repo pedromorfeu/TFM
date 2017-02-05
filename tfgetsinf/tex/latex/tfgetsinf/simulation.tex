@@ -768,26 +768,48 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
                 \caption{Predicción ARIMA para la componente 1.}
                 \label{fig:arima_c1_all_dataset_pred}
             \end{subfigure}
-            \caption{ARIMA para la componente 1.}
+            \caption{ARIMA para la componente 1 calculada con PCA sobre todo el {\em dataset}.}
             \label{fig:arima_c1_all_dataset}
         \end{figure}
 
         En el gráfico de predicción {\em in-sample} (Figura~\ref{fig:arima_c1_all_dataset_fit}), podemos ver que el modelo se ajusta bastante bien a la serie de la componente. En el gráfico de predicción {\em out-of-sample} ((Figura~\ref{fig:arima_c1_all_dataset_pred})), vemos que los valores siguen una tendencia creciente, que seguirá hasta infinito. 
         
         \subsection{Predicción ARIMA con PCA de un día}
-        El cálculo de PCA debe hacerse para el mismo día de la serie. Con esta corrección, los gráficos de predicción ya no se deterioran y tienden para la media de los datos (Figura~\ref{fig:arima_c1_one_day_pred}).
+        El cálculo de PCA debe hacerse sobre los datos del día de la serie y no sobre todo el {\em dataset} como visto en la sección anterior. Con esta corrección, los gráficos de predicción ya no se deterioran y tienden para la media de los datos. La  Figura~\ref{fig:arima_c1_one_day_pred} da cuenta de ese efecto - en azul vemos los datos de la componente y en verde la predicción {\em out-of-sample}.
         
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.7\textwidth]{arima_c1_one_day_pred.png}
-        \caption{Predicción {\em out-of-sample} para la componente 1.}
-        \label{fig:arima_c1_one_day_pred}
-    \end{figure}     
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\textwidth]{arima_c1_one_day_pred.png}
+            \caption{Predicción {\em out-of-sample} para la componente 1 calculada con PCA de un día.}
+            \label{fig:arima_c1_one_day_pred}
+        \end{figure}
         
-        el modelo ARIMA, y cualquier modelo de series temporales, toma como variables explicativas los datos pasados de la misma variable a predecir. Así, estos modelos se activarán cada periodo de tiempo, cogerán los datos pasados y ofrecerán la predicción de un instante más en el futuro de la variable a predecir en cuestión, y esto lo hará tomando como entrada las variables explicativas representadas por los valores de esa variable en el pasado.
+        Los resultados del test \(T^2\) de Hotelling han mejorado con la corrección, asumiendo ahora el estadístico valores más bajos que anteriormente, pero todavía no se puede aceptar la hipótesis de similitud de poblaciones. En la sección siguiente se prueba un nuevo acercamiento al problema.
+%        el modelo ARIMA, y cualquier modelo de series temporales, toma como variables explicativas los datos pasados de la misma variable a predecir. Así, estos modelos se activarán cada periodo de tiempo, cogerán los datos pasados y ofrecerán la predicción de un instante más en el futuro de la variable a predecir en cuestión, y esto lo hará tomando como entrada las variables explicativas representadas por los valores de esa variable en el pasado.
         
         \subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
-        TODO
+        Teniendo en cuenta que la población generada de la simulación ARIMA no pasa el test \(T^2\) de Hotelling, se propone una nueva solución, que se explica a continuación. La solución consiste en generar una simulación de millones de puntos con distribución Gaussiana, que se ha demostrado que es válida. Luego se obtiene un punto simulado con el modelo ARIMA, al cual se añade o no ruido residual, y se busca el punto más cercano a este en los datos Gaussianos. El punto más cercano se usará como representante y se usará para re-alimentar el modelo ARIMA. Luego se procede a generar un nuevo punto en el instante siguiente.
+        
+        El pseudo-código siguiente explica más secuencialmente la predicción y búsqueda de puntos: 
+        \begin{enumerate}
+        \item Predicir un valor nuevo para cada componente con su respectivo modelo ARIMA. Digamos que tenemos 5 componentes, entonces nos quedamos con el punto \(p_{1} = (c_{1}, c_{2}, c_{3}, c_{4}, c_{5})\), donde \(c_{x}\) es el valor predicho de cada componente.
+        \item (Opcional) Añadir ruido.
+        \item Calcular el punto \(p_{1}' = (c_{1}', c_{2}', c_{3}', c_{4}', c_{5}')\) más cercano en los puntos de la simulación Gaussiana.
+        \item Introducir el valor \(c_{x}'\) en el modelo ARIMA de cada componente.
+        \item Volver al punto 1.
+        \end{enumerate}
+
+El tema de comprobar con T2-Hotelling que la simulación gaussiana era coherente con la simulación no era otro que saber que lo que estábamos haciendo tenía sentido y parece que así se constató.
+
+Quizás el problema ahora radica en que si antes la población gaussiana incluía diferentes estados de la máquina y ahora estamos simulando únicamente el último (estacionario), evidentemente no son la misma población, pero eso si es así sería correcto. Pero antes de llegar a ninguna conclusión mejor si lo graficas y vemos que pinta tiene.        
+        
+         y proyectarlo al espacio natural. Tras esto buscar el punto más cercano (distancia de Mahalanobis) de este punto generado con series a los puntos generados con Gaussiana y quedarnos con ese punto multidimensional más cercano como representante, tras esto este punto será el nuevo punto que usarás para obtener el punto siguiente y procedes de la misma manera comentada anteriormente para el siguiente instante.
+        
+        El motivo por el que es interesante predecir punto a punto es porque en la simulación vamos a poder simular el punto real del instante una vez busquemos dicho punto en la Gaussiana y parece natural y más realista el cambiar la predicción por la del dato predicho por ARIMA, pues el test T2-Hotelling si que indicaba igualdad de poblaciones, es por ello que tu estimación debería de ser la del punto más próximo dentro de la simulación Gaussiana, con lo que es de esperar que el modelo no se suavice tanto y añada algo de ruido que le de un toque realista a la simulación.
+
+También estaría bien poder hacer esto sin tener que estimar el modelo cada vez, pues eso requiere de un tiempo considerable. Este entrenamiento rutinario te obligaría a ofrecer varias estimaciones de una vez sin poder realimentar el bloque de puntos que predices con nuevos valores. Aunque podrías ir avanzando en paralelo en la parte de la Gaussiana con lo que hay y a la vez ir viendo como solucionar esta parte.
+
+Para la parte de predicción con nuevos valores, a falta de aportar una solución definitiva, se me ocurre que cuando el modelo esté entrenando, entonces hagas una búsqueda exhaustiva de los parámetros del modelo probando con varios AR, I, MA. Pero cuando estés en modo predicción entonces montes el vector con los nuevos datos que adicionarás al final a los anteriores, y hagas la estimación del modelo sin búsqueda exhaustiva de los parámetros AR, I, MA, asignándole los que ya aprendiste durante el training. Operando así, igual podemos llegar a ofrecer una única predicción por instante, pues los tiempos de estimación se deberían de reducir considerablemente.
     
     % Big Data
     \chapter{Big Data}
@@ -805,6 +827,8 @@ TODO
 
 % Trabajos futuros
 \chapter{Trabajos futuros}
+
+ARIMA: añadirle el ruido residual a la predicción y realizar la predicción del siguiente valor con el valor de la predicción actual que incluye el ruido.
 
 \begin{thebibliography}{10}
 
