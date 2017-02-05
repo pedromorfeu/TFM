@@ -716,10 +716,31 @@ P-value:  0
         
     % ARIMA
     \section{ARIMA}
-    TODO
-    
-        \subsection{Simulación con todo el dataset}
-        TODO
+    Una vez determinado el numero de componentes a usar y realizadas las primeras simulaciones con distribución normal, el siguiente paso consiste en construir series temporales sobre cada una de las componentes para simular con cierto sentido temporal. El objetivo es que los datos generados tengan forma de serie temporal. Para poder aplicar los modelos ARIMA introducidos anteriormente hay que preparar y estudiar los datos previamente. Una vez preparada la serie, se pasa a la predicción del comportamiento futuro, la simulación propiamente dicha.
+        
+        \subsection{Preparación y estacionariedad de la serie temporal}
+        Las mediciones de los sensores son dadas a periodos temporales que no siempre son regulares. Los datos de los sensores tienen muchos huecos, es decir, períodos largos sin mediciones. Además la frecuencia de mediciones no es constante, a veces es cada 10 segundos y otras cada minuto. La primera consideración para el análisis de series temporales es que éstas deben ser un conjunto de datos observados a periodos fijos. 
+        
+        La preparación consiste en transformar la serie para que sea homogénea en los periodos de observaciones. Se verifica también que las mediciones son muy discrepantes en días diferentes, potencialmente por corresponder a diferentes pruebas en las máquinas industriales. Así que es conveniente elegir los datos de un día determinado y, sobre estos, aplicar agrupación y interpolación para un periodo determinado. 
+        
+        Nota: Esta transformación se hace antes incluso de aplicar PCA, para poder comparar las poblaciones original y simulada en la misma escala.
+        
+        La librería {\tt pandas} ofrece muchas herramientas para análisis de estructuras de datos en Python. Está construida sobre {\tt numpy}, lo que le garantiza mucha eficiencia. En particular, nos interesan las facilidades en el tratamiento de series temporales, como la indexación por fechas, ocupación de huecos vacíos, cambio de frecuencia o {\em resampling} (re-muestreo). 
+        
+        En nuestro caso procederemos a cambiar la frecuencia de muestreo a periodos fijos e respectiva interpolación de los nuevos espacios con la media. Se ha elegido el día 2015-10-06 para el análisis (cuya frecuencia de muestreo es de \(\approx 10\) segundos), al que se aplicará un periodo exacto de 10 segundos. El código\~ref{lst:resampling} demuestra la aplicación de la transformación con estructuras de datos {\tt pandas}.
+        
+    \begin{lstlisting}[language=Python, caption={\em Resampling} y interpolación con {\tt pandas}., label={lst:resampling}]
+# Specify a date to analyze the timeseries
+date = "2015-10-06"
+data = data[date]
+
+# Resampling and Interpolation
+data = data.resample(TS_FREQUENCY).mean().interpolate()
+    \end{lstlisting}
+
+        
+        Luego hay que analizar y hacer la serie estacionaria. 
+	TODO
         
         \subsection{Simulación con datos de 1 día}
         TODO
