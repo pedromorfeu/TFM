@@ -718,16 +718,17 @@ P-value:  0
     \section{ARIMA}
     Una vez determinado el numero de componentes a usar y realizadas las primeras simulaciones con distribución normal, el siguiente paso consiste en construir series temporales sobre cada una de las componentes para simular con cierto sentido temporal. El objetivo es que los datos generados tengan forma de serie temporal. Para poder aplicar los modelos ARIMA introducidos anteriormente hay que preparar y estudiar los datos previamente. Una vez preparada la serie, se pasa a la predicción del comportamiento futuro, la simulación propiamente dicha.
         
-        \subsection{Preparación y estacionariedad de la serie temporal}
+        % Preparación
+        \subsection{Preparación de la serie temporal}
         Las mediciones de los sensores son dadas a periodos temporales que no siempre son regulares. Los datos de los sensores tienen muchos huecos, es decir, períodos largos sin mediciones. Además la frecuencia de mediciones no es constante, a veces es cada 10 segundos y otras cada minuto. La primera consideración para el análisis de series temporales es que éstas deben ser un conjunto de datos observados a periodos fijos. 
         
-        La preparación consiste en transformar la serie para que sea homogénea en los periodos de observaciones. Se verifica también que las mediciones son muy discrepantes en días diferentes, potencialmente por corresponder a diferentes pruebas en las máquinas industriales. Así que es conveniente elegir los datos de un día determinado y, sobre estos, aplicar agrupación y interpolación para un periodo determinado. 
+        La preparación consiste en transformar la serie para que sea homogénea en los periodos de observaciones. Se verifica también que las mediciones son muy discrepantes en días diferentes, potencialmente por corresponder a diferentes pruebas en las máquinas industriales. Para simular un proceso productivo continuo, no tiene sentido juntar los varios días si hay demasiada discrepancia entre ellos; unirlos supondría hacer asociaciones potencialmente muy fuertes, que podrían deteriorar bastante los modelos de series. Así que es conveniente elegir los datos de un día determinado y, sobre estos, aplicar agrupación y interpolación para un periodo determinado. 
         
-        Nota: Esta transformación se hace antes incluso de aplicar PCA, para poder comparar las poblaciones original y simulada en la misma escala.
+        {\bf Nota:} Esta transformación se hace antes incluso de aplicar PCA, para poder comparar las poblaciones original y simulada en la misma escala.
         
         La librería {\tt pandas} ofrece muchas herramientas para análisis de estructuras de datos en Python. Está construida sobre {\tt numpy}, lo que le garantiza mucha eficiencia. En particular, nos interesan las facilidades en el tratamiento de series temporales, como la indexación por fechas, ocupación de huecos vacíos, cambio de frecuencia o {\em resampling} (re-muestreo). 
         
-        En nuestro caso procederemos a cambiar la frecuencia de muestreo a periodos fijos e respectiva interpolación de los nuevos espacios con la media. Se ha elegido el día 2015-10-06 para el análisis (cuya frecuencia de muestreo es de \(\approx 10\) segundos), al que se aplicará un periodo exacto de 10 segundos. El código\~ref{lst:resampling} demuestra la aplicación de la transformación con estructuras de datos {\tt pandas}.
+        En nuestro caso procederemos a cambiar la frecuencia de muestreo a periodos fijos e respectiva interpolación de los nuevos espacios con la media. Para el análisis, se ha elegido el día 2015-10-06 (cuya frecuencia de muestreo es de \(\approx 10\) segundos), al que se aplicará un periodo exacto de 10 segundos. El código~\ref{lst:resampling} demuestra la aplicación de la transformación con estructuras de datos {\tt pandas}.
         
     \begin{lstlisting}[language=Python, caption={\em Resampling} y interpolación con {\tt pandas}., label={lst:resampling}]
 # Specify a date to analyze the timeseries
@@ -738,12 +739,52 @@ data = data[date]
 data = data.resample(TS_FREQUENCY).mean().interpolate()
     \end{lstlisting}
 
+        % Estacionariedad
+        \subsection{Estacionariedad de la serie temporal}
+        El análisis de estacionariedad de la serie es un ejercicio que se hace iterativamente. En cada iteración, si la serie no es estacionaria todavía, se aplican técnicas para conseguirlo y se vuelve a analizar. La medida objetiva de estacionariedad de la serie es el test de Dickey-Fuller, que se calcula con el módulo Python {statsmodels}. Como se va a generar un modelo ARIMA para cada componente, este análisis se hará para cada componente.
         
-        Luego hay que analizar y hacer la serie estacionaria. 
-	TODO
+        No se ha podido aplicar logaritmos para estabilizar, una vez que hay valores negativos. Una de las formas más usuales para conseguir estacionariedad de una serie es aplicando diferenciación ({\em differencing}). Se aplica esa técnica para las componentes que no son estacionarias, otra vez usando facilidades de {\tt pandas} (ver código~\ref{lst:differencing}).
+                
+        \begin{lstlisting}[language=Python, caption=Diferenciación de la serie usando {\tt pandas}., label={lst:differencing}]
+timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
+        \end{lstlisting}
         
-        \subsection{Simulación con datos de 1 día}
-        TODO
+        Así se obtiene el valor de la componente \(d\) de \(ARIMA(p, d, q)\). Para el cálculo de las componentes AR (\(p\)) y MA (\(q\)) de ARIMA se usa un algoritmo que calcula exhaustivamente todas las combinaciones y respectivo {\em root mean squared error} (RMSE). El modelo con menor RMSE es el elegido para esa componente.
+        
+        \subsection{Predicción ARIMA con PCA de todo el {\em dataset}}
+        En una primera instancia, y en fases siguientes entendido como erróneo, se ha aplicado el cálculo de PCA a todo el {\em dataset} mientras que la serie temporal se construía sobre un solo día. Si la serie la vamos a aprender sobre un día es conveniente que la proyección sea también sobre ese día. Sin embargo, parece relevante enseñar las primeras predicciones ARIMA para el día 2015-10-06. La Figura~\ref{fig:arima_c1_all_dataset} representa los gráficos de ajuste y predicción para la componente 1.
+        
+        \begin{figure}[H]
+            \centering
+            \begin{subfigure}[h]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{arima_c1_all_dataset.png}
+                \caption{Ajuste ARIMA para la componente 1.}
+                \label{fig:arima_c1_all_dataset_fit}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{arima_c1_all_dataset_pred.png}
+                \caption{Predicción ARIMA para la componente 1.}
+                \label{fig:arima_c1_all_dataset_pred}
+            \end{subfigure}
+            \caption{ARIMA para la componente 1.}
+            \label{fig:arima_c1_all_dataset}
+        \end{figure}
+
+        En el gráfico de predicción {\em in-sample} (Figura~\ref{fig:arima_c1_all_dataset_fit}), podemos ver que el modelo se ajusta bastante bien a la serie de la componente. En el gráfico de predicción {\em out-of-sample} ((Figura~\ref{fig:arima_c1_all_dataset_pred})), vemos que los valores siguen una tendencia creciente, que seguirá hasta infinito. 
+        
+        \subsection{Predicción ARIMA con PCA de un día}
+        El cálculo de PCA debe hacerse para el mismo día de la serie. Con esta corrección, los gráficos de predicción ya no se deterioran y tienden para la media de los datos (Figura~\ref{fig:arima_c1_one_day_pred}).
+        
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{arima_c1_one_day_pred.png}
+        \caption{Predicción {\em out-of-sample} para la componente 1.}
+        \label{fig:arima_c1_one_day_pred}
+    \end{figure}     
+        
+        el modelo ARIMA, y cualquier modelo de series temporales, toma como variables explicativas los datos pasados de la misma variable a predecir. Así, estos modelos se activarán cada periodo de tiempo, cogerán los datos pasados y ofrecerán la predicción de un instante más en el futuro de la variable a predecir en cuestión, y esto lo hará tomando como entrada las variables explicativas representadas por los valores de esa variable en el pasado.
         
         \subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
         TODO
