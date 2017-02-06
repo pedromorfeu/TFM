@@ -792,12 +792,14 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         El pseudo-código siguiente explica más secuencialmente la predicción y búsqueda de puntos: 
         \begin{enumerate}
-        \item Predicir un valor nuevo para cada componente con su respectivo modelo ARIMA. Digamos que tenemos 5 componentes, entonces nos quedamos con el punto \(p_{1} = \{c_{1}, c_{2}, c_{3}, c_{4}, c_{5}\}\), donde \(c_{x}\) es el valor predicho de cada componente.
+        \item Predicir un valor nuevo para cada componente \(c\) con su respectivo modelo ARIMA. Con esto, para \(N\) componentes, generamos el punto N-dimensional \(p = \{c_{1}, ..., c_{N}\}\). Digamos que tenemos \(N=5\) componentes, entonces el punto sería \(p = \{c_{1}, c_{2}, c_{3}, c_{4}, c_{5}\}\), donde \(c_{x}\) es el valor predicho de cada componente.
         \item (Opcional) Añadir ruido.
-        \item Calcular el punto \(p_{1}' = \{c_{1}', c_{2}', c_{3}', c_{4}', c_{5}'\}\) más cercano en los puntos de la simulación Gaussiana.
-        \item Introducir el valor predicho \(c_{x}'\) en los datos del modelo ARIMA de cada componente.
+        \item Buscar el punto \(p' = \{c_{1}', c_{2}', c_{3}', c_{4}', c_{5}'\}\) más cercano en los puntos de la simulación Gaussiana.
+        \item Substituir el punto predicho originalmente \(p\) por \(p'\), en el modelo ARIMA. Con esto, cada \(c_{x}\) es substituído por el \(c_{x}'\) en los datos del modelo ARIMA de cada componente \(c\).
         \item Volver al punto 1.
         \end{enumerate}
+
+En cuanto a distancias puedes probar con la euclídea y la de Mahalanobis y comparar como funcionan ambas.
 
 El tema de comprobar con T2-Hotelling que la simulación gaussiana era coherente con la simulación no era otro que saber que lo que estábamos haciendo tenía sentido y parece que así se constató.
 
