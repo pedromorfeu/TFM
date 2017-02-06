@@ -799,7 +799,26 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         \item Volver al punto 1.
         \end{enumerate}
 
-En cuanto a distancias puedes probar con la euclídea y la de Mahalanobis y comparar como funcionan ambas.
+	En cuanto a distancias se puede usar la Euclídea o la de Mahalanobis. La distancia de Mahalanobis es más adecuada si se usan los valores naturales de la serie, pues considera la estructura de correlación existente en las variables implicadas. Como los de la simulación Gaussiana son sobre las componentes, la implementación actual usa la distancia Euclídea. Esta es, desde luego, la tarea más exigente del punto de vista computacional - además su exigencia es función del numero de puntos Gaussianos simulados.
+	
+	La re-alimentación de los modelos con los puntos provenientes de la simulación Gaussiana ha constituido un desafío. La primera implementación se hizo con {\tt ARIMA} del módulo {\tt statsmodels.tsa.arima\_model}, que no permitía la introducción de nuevos datos al modelo aprendido de forma sencilla. Esto obligaba a crear y entrenar un modelo nuevo por cada iteración y para cada componente, que se traducía en un coste de tiempo de ejecución. Para dar un ejemplo, en un ordenador con CPU de 4 núcleos y 4GB de memoria RAM, cada iteración tardaba \(0.9\) segundos - y esto sin la búsqueda en los puntos Gaussianos todavía.
+	
+	Siguiendo la recomendación de los desarrolladores de {\tt statsmodels}, se ha adoptado {\tt SARIMAX}, del módulo {\tt statsmodels.tsa.statespace.sarimax}. Este modelo está basado en ARIMA pero es más completo y mejor mantenido y además permite modelar la parte estacional de la serie e introducir variables exógenas. Con {\tt SARIMAX} evitamos el paso de volver a entrenar el modelo completo, que mejora bastante el rendimiento de cada iteración.
+
+        He implementado la solución de búsqueda de los puntos más cercanos de la Gaussiana. Tengo algunas consideraciones:
+        \begin{itemize}
+        \item Estoy generado 1.000.000 puntos gaussianos.
+        \item Estoy generando 1000 puntos de predicción, uno a uno para cada componente: p=(c1,c2,c3,c4,c5), donde cX es la predicción de la componente X. Para cada punto p, busco el más cercano en los puntos gaussianos. Se re-alimenta el modelo con este nuevo punto, para la siguiente iteración de predicción.
+        \item Los puntos generados transformados pertenecen todos al conjunto de puntos gaussianos. Así que el resultado de Hotelling T2 debería ser bueno.
+        \item Si no añado ruido (aleatorio con desviación del error del modelo y media 0), la predicción tiende para valores constantes. Eso hace que el punto más cercano sea siempre el mismo.
+        \item Curioso que si hay repetición de datos de la gaussiana, los resultados de Hotelling T2 empeoran.
+        \end{itemize}
+
+Con esto, la hipótesis de similitud de las poblaciones sigue siendo inválida, aunque el valor del estadístico vaya bajando.
+
+
+
+
 
 El tema de comprobar con T2-Hotelling que la simulación gaussiana era coherente con la simulación no era otro que saber que lo que estábamos haciendo tenía sentido y parece que así se constató.
 
