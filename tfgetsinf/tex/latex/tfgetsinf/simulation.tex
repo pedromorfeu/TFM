@@ -805,6 +805,8 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 	
 	Siguiendo la recomendación de los desarrolladores de {\tt statsmodels}, se ha adoptado {\tt SARIMAX}, del módulo {\tt statsmodels.tsa.statespace.sarimax}. Este modelo está basado en ARIMA pero es más completo y mejor mantenido y además permite modelar la parte estacional de la serie e introducir variables exógenas. Con {\tt SARIMAX} evitamos el paso de volver a entrenar el modelo completo, que mejora bastante el rendimiento de cada iteración.
 
+        Pasemos a los resultados de las pruebas de simulación con búsqueda en la simulación Gaussiana.
+        
         He implementado la solución de búsqueda de los puntos más cercanos de la Gaussiana. Tengo algunas consideraciones:
         \begin{itemize}
         \item Estoy generado 1.000.000 puntos gaussianos.
