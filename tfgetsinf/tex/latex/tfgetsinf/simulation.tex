@@ -739,11 +739,11 @@ data = data[date]
 data = data.resample(TS_FREQUENCY).mean().interpolate()
     \end{lstlisting}
 
-        % Estacionariedad
-        \subsection{Estacionariedad de la serie temporal}
-        El análisis de estacionariedad de la serie es un ejercicio que se hace iterativamente. En cada iteración, si la serie no es estacionaria todavía, se aplican técnicas para conseguirlo y se vuelve a analizar. La medida objetiva de estacionariedad de la serie es el test de Dickey-Fuller, que se calcula con el módulo Python {statsmodels}. Como se va a generar un modelo ARIMA para cada componente, este análisis se hará para cada componente.
+        % Estacionaridad
+        \subsection{Estacionaridad de la serie temporal}
+        El análisis de estacionaridad de la serie es un ejercicio que se hace iterativamente. En cada iteración, si la serie no es estacionaria todavía, se aplican técnicas para conseguirlo y se vuelve a analizar. La medida objetiva de estacionaridad de la serie es el test de Dickey-Fuller, que se calcula con el módulo Python {statsmodels}. Como se va a generar un modelo ARIMA para cada componente, este análisis se hará para cada componente.
         
-        No se ha podido aplicar logaritmos para estabilizar, una vez que hay valores negativos. Una de las formas más usuales para conseguir estacionariedad de una serie es aplicando diferenciación ({\em differencing}). Se aplica esa técnica para las componentes que no son estacionarias, otra vez usando facilidades de {\tt pandas} (ver código~\ref{lst:differencing}).
+        No se ha podido aplicar logaritmos para estabilizar, una vez que hay valores negativos. Una de las formas más usuales para conseguir estacionaridad de una serie es aplicando diferenciación ({\em differencing}). Se aplica esa técnica para las componentes que no son estacionarias, otra vez usando facilidades de {\tt pandas} (ver código~\ref{lst:differencing}).
                 
         \begin{lstlisting}[language=Python, caption=Diferenciación de la serie usando {\tt pandas}., label={lst:differencing}]
 timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
