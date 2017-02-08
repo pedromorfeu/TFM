@@ -795,7 +795,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         \item Predicir un valor nuevo para cada componente \(c\) con su respectivo modelo ARIMA. Con esto, para \(N\) componentes, generamos el punto N-dimensional \(p = \{c_{1}, ..., c_{N}\}\). Digamos que tenemos \(N=5\) componentes, entonces el punto sería \(p = \{c_{1}, c_{2}, c_{3}, c_{4}, c_{5}\}\), donde \(c_{x}\) es el valor predicho de cada componente.
         \item (Opcional) Añadir ruido.
         \item Buscar el punto \(p' = \{c_{1}', c_{2}', c_{3}', c_{4}', c_{5}'\}\) más cercano en los puntos de la simulación Gaussiana.
-        \item Substituir el punto predicho originalmente \(p\) por \(p'\), en el modelo ARIMA. Con esto, cada \(c_{x}\) es substituído por el \(c_{x}'\) en los datos del modelo ARIMA de cada componente \(c\).
+        \item Substituir el punto predicho originalmente \(p\) por \(p'\), en el modelo ARIMA. Con esto, cada \(c_{x}\) es substituído por el \(c_{x}'\) en los datos del modelo ARIMA de cada componente \(x\).
         \item Volver al punto 1.
         \end{enumerate}
 
@@ -805,18 +805,58 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 	
 	Siguiendo la recomendación de los desarrolladores de {\tt statsmodels}, se ha adoptado {\tt SARIMAX}, del módulo {\tt statsmodels.tsa.statespace.sarimax}. Este modelo está basado en ARIMA pero es más completo y mejor mantenido y además permite modelar la parte estacional de la serie e introducir variables exógenas. Con {\tt SARIMAX} evitamos el paso de volver a entrenar el modelo completo, que mejora bastante el rendimiento de cada iteración.
 
-        Pasemos a los resultados de las pruebas de simulación con búsqueda en la simulación Gaussiana.
-        
-        He implementado la solución de búsqueda de los puntos más cercanos de la Gaussiana. Tengo algunas consideraciones:
+        Pasemos a los resultados de las pruebas de simulación con búsqueda en los datos Gaussianos. Las pruebas que se describen a continuación tienen las siguientes consideraciones:
         \begin{itemize}
-        \item Estoy generado 1.000.000 puntos gaussianos.
-        \item Estoy generando 1000 puntos de predicción, uno a uno para cada componente: p=(c1,c2,c3,c4,c5), donde cX es la predicción de la componente X. Para cada punto p, busco el más cercano en los puntos gaussianos. Se re-alimenta el modelo con este nuevo punto, para la siguiente iteración de predicción.
-        \item Los puntos generados transformados pertenecen todos al conjunto de puntos gaussianos. Así que el resultado de Hotelling T2 debería ser bueno.
-        \item Si no añado ruido (aleatorio con desviación del error del modelo y media 0), la predicción tiende para valores constantes. Eso hace que el punto más cercano sea siempre el mismo.
-        \item Curioso que si hay repetición de datos de la gaussiana, los resultados de Hotelling T2 empeoran.
+        \item Se han generado 1.000.000 puntos con distribución normal.
+        \item Se han predicho 1000 puntos con ARIMA, uno a uno para cada componente: \(p = \{c_{1}, c_{2}, c_{3}, c_{4}, c_{5}\}\), donde \(c_{x}\) es la predicción de la componente \(x\). Para cada punto \(p\), se busca el más cercano en los puntos Gaussianos. Se re-alimenta el modelo con este nuevo punto, para la siguiente iteración de predicción.
+        \item Se han verificado los puntos simulados transformados y todos pertenecen todos al conjunto de puntos Gaussianos. Así que el resultado de Hotelling T2 debería ser bueno.
+        \item Se está introduciendo ruido (valor aleatorio con desviación del error del modelo y media 0). Si no se añade, la predicción tiende para valores constantes - eso hace que el punto más cercano sea siempre el mismo.
         \end{itemize}
 
-Con esto, la hipótesis de similitud de las poblaciones sigue siendo inválida, aunque el valor del estadístico vaya bajando.
+	Los gráficos de los resultados de simulación para la primera componente se presentan en la Figura~\ref{fig:c1_simulation_arima_gaussian} y para las demás componentes en la Figura~\ref{fig:simulation_arima_gaussian}. La leyenda es:
+	\begin{itemize}
+        \item verde -  datos reales de la componente.
+	\item azul - datos generados con SARIMAX y búsqueda de puntos en los datos Gaussianos.
+	\item puntos gris - datos Gaussianos aleatorios generados.
+	\end{itemize}
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\textwidth]{c1_simulation_arima_gaussian.png}
+            \caption{Simulación con búsqueda en los datos Gaussianos para la componente 1.}
+            \label{fig:c1_simulation_arima_gaussian}
+        \end{figure}
+        
+        \begin{figure}[H]
+            \begin{subfigure}[h]{0.49\textwidth}
+                \centering
+                \includegraphics[width=0.7\textwidth]{c2_simulation_arima_gaussian.png}
+                \caption{Componente 2.}
+                \label{fig:c1_simulation_arima_gaussian}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.49\textwidth}
+                \centering
+                \includegraphics[width=0.7\textwidth]{c3_simulation_arima_gaussian.png}
+                \caption{Componente 3.}
+                \label{fig:c1_simulation_arima_gaussian}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.49\textwidth}
+                \centering
+                \includegraphics[width=0.7\textwidth]{c4_simulation_arima_gaussian.png}
+                \caption{Componente 4.}
+                \label{fig:c1_simulation_arima_gaussian}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.49\textwidth}
+                \centering
+                \includegraphics[width=0.7\textwidth]{c5_simulation_arima_gaussian.png}
+                \caption{Componente 5.}
+                \label{fig:c1_simulation_arima_gaussian}
+            \end{subfigure}
+            \caption{Simulación con búsqueda en los datos Gaussianos.}
+            \label{fig:simulation_arima_gaussian}
+        \end{figure}
+        
+	Con esto, la hipótesis de similitud de las poblaciones sigue siendo inválida, aunque el valor del estadístico vaya bajando.
 
 
 

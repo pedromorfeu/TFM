@@ -31,6 +31,8 @@
 \contentsline {figure}{\numberline {5.10}{\ignorespaces Datos originales y simulados de la variable {\em APHu}.\relax }}{25}{figure.caption.27}
 \contentsline {figure}{\numberline {5.11}{\ignorespaces ARIMA para la componente 1 calculada con PCA sobre todo el {\em dataset}.\relax }}{27}{figure.caption.28}
 \contentsline {figure}{\numberline {5.12}{\ignorespaces Predicci\IeC {\'o}n {\em out-of-sample} para la componente 1 calculada con PCA de un d\IeC {\'\i }a.\relax }}{28}{figure.caption.29}
+\contentsline {figure}{\numberline {5.13}{\ignorespaces Simulaci\IeC {\'o}n con b\IeC {\'u}squeda en los datos Gaussianos para la componente 1.\relax }}{30}{figure.caption.30}
+\contentsline {figure}{\numberline {5.14}{\ignorespaces Simulaci\IeC {\'o}n con b\IeC {\'u}squeda en los datos Gaussianos.\relax }}{30}{figure.caption.31}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
