@@ -786,6 +786,11 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         Los resultados del test \(T^2\) de Hotelling han mejorado con la corrección, asumiendo ahora el estadístico valores más bajos que anteriormente, pero todavía no se puede aceptar la hipótesis de similitud de poblaciones. En la sección siguiente se prueba un nuevo acercamiento al problema.
 %        el modelo ARIMA, y cualquier modelo de series temporales, toma como variables explicativas los datos pasados de la misma variable a predecir. Así, estos modelos se activarán cada periodo de tiempo, cogerán los datos pasados y ofrecerán la predicción de un instante más en el futuro de la variable a predecir en cuestión, y esto lo hará tomando como entrada las variables explicativas representadas por los valores de esa variable en el pasado.
+
+
+        \subsection{Simulación con datos controlados}
+        TODO
+	
         
         \subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
         Teniendo en cuenta que la población generada de la simulación ARIMA no pasa el test \(T^2\) de Hotelling, se propone una nueva solución, que se explica a continuación. La solución consiste en generar una simulación de millones de puntos con distribución Gaussiana, que se ha demostrado que es válida. Luego se obtiene un punto simulado con el modelo ARIMA, al cual se añade o no ruido residual, y se busca el punto más cercano a este en los datos Gaussianos. El punto más cercano se usará como representante y se usará para re-alimentar el modelo ARIMA. Luego se procede a generar un nuevo punto en el instante siguiente.
@@ -810,7 +815,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         \item Se han generado 1.000.000 puntos con distribución normal.
         \item Se han predicho 1000 puntos con ARIMA, uno a uno para cada componente: \(p = \{c_{1}, c_{2}, c_{3}, c_{4}, c_{5}\}\), donde \(c_{x}\) es la predicción de la componente \(x\). Para cada punto \(p\), se busca el más cercano en los puntos Gaussianos. Se re-alimenta el modelo con este nuevo punto, para la siguiente iteración de predicción.
         \item Se han verificado los puntos simulados transformados y todos pertenecen todos al conjunto de puntos Gaussianos. Así que el resultado de Hotelling T2 debería ser bueno.
-        \item Se está introduciendo ruido (valor aleatorio con desviación del error del modelo y media 0). Si no se añade, la predicción tiende para valores constantes - eso hace que el punto más cercano sea siempre el mismo.
+        \item Se está introduciendo ruido (valor aleatorio con desviación del error del modelo y media 0), que da un toque realista a la simulación. Si no se añade, la predicción tiende para valores constantes - eso hace que el punto más cercano sea siempre el mismo.
         \end{itemize}
 
 	Los gráficos de los resultados de simulación para la primera componente se presentan en la Figura~\ref{fig:c1_simulation_arima_gaussian} y para las demás componentes en la Figura~\ref{fig:simulation_arima_gaussian}. La leyenda es:
@@ -856,23 +861,12 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
             \label{fig:simulation_arima_gaussian}
         \end{figure}
         
-	Con esto, la hipótesis de similitud de las poblaciones sigue siendo inválida, aunque el valor del estadístico vaya bajando.
-
-
-
-
-
-El tema de comprobar con T2-Hotelling que la simulación gaussiana era coherente con la simulación no era otro que saber que lo que estábamos haciendo tenía sentido y parece que así se constató.
-
-Quizás el problema ahora radica en que si antes la población gaussiana incluía diferentes estados de la máquina y ahora estamos simulando únicamente el último (estacionario), evidentemente no son la misma población, pero eso si es así sería correcto. Pero antes de llegar a ninguna conclusión mejor si lo graficas y vemos que pinta tiene.        
+        Las componentes 2 y 3 parece que han captado bien la serie. La componente 1, que es la más relevante de todas, parece que tiene algún problema. También las componentes 4 y 5 presentan algunos problemas, aunque la última en menor medida. Probablemente no se ha conseguido completa estacionaridad del proceso.
         
-         y proyectarlo al espacio natural. Tras esto buscar el punto más cercano (distancia de Mahalanobis) de este punto generado con series a los puntos generados con Gaussiana y quedarnos con ese punto multidimensional más cercano como representante, tras esto este punto será el nuevo punto que usarás para obtener el punto siguiente y procedes de la misma manera comentada anteriormente para el siguiente instante.
-        
-        El motivo por el que es interesante predecir punto a punto es porque en la simulación vamos a poder simular el punto real del instante una vez busquemos dicho punto en la Gaussiana y parece natural y más realista el cambiar la predicción por la del dato predicho por ARIMA, pues el test T2-Hotelling si que indicaba igualdad de poblaciones, es por ello que tu estimación debería de ser la del punto más próximo dentro de la simulación Gaussiana, con lo que es de esperar que el modelo no se suavice tanto y añada algo de ruido que le de un toque realista a la simulación.
+        Respecto a la componente 1, puede tener sentido la simulación. Lo que se pretendía era evitar que la serie bajara o subiera hasta el infinito y que se mantuviera dentro de los límites de los datos Gaussianos, que se ha mostrado que eran válidos. Eventualmente se podría mejorar generando muchos más puntos Gaussianos, pues parece que al seleccionar los puntos más cercanos, estos están muy distantes. Esto se debe quizás a que nuestro espacio es N-dimensional y cuando el número de dimensiones crece es necesario una mayor cantidad (no lineal) de puntos para rellenar ese espacio.
 
-También estaría bien poder hacer esto sin tener que estimar el modelo cada vez, pues eso requiere de un tiempo considerable. Este entrenamiento rutinario te obligaría a ofrecer varias estimaciones de una vez sin poder realimentar el bloque de puntos que predices con nuevos valores. Aunque podrías ir avanzando en paralelo en la parte de la Gaussiana con lo que hay y a la vez ir viendo como solucionar esta parte.
+        Con esta solución, la hipótesis de similitud de las poblaciones sigue siendo inválida, aunque el valor del estadístico vaya bajando. Es posible que cuando introduzcamos la serie el valor Hotelling \(T^2\) ya no nos indique que es significativo porque seguramente estará simulando únicamente el último de los estados con lo que la población generada ya no será la inicial. Lo importante es que que entre los dos procesos la simulación tenga forma de serie pero que no decrezca o crezca hasta el infinito y que su comportamiento temporal sea coherente con el proceso. El uso del test Hotelling \(T^2\), que se hizo al principio, era para constatar que efectivamente el método propuesto de las proyecciones funcionaba cuando simulaba valores aleatorios multidimensionales. 
 
-Para la parte de predicción con nuevos valores, a falta de aportar una solución definitiva, se me ocurre que cuando el modelo esté entrenando, entonces hagas una búsqueda exhaustiva de los parámetros del modelo probando con varios AR, I, MA. Pero cuando estés en modo predicción entonces montes el vector con los nuevos datos que adicionarás al final a los anteriores, y hagas la estimación del modelo sin búsqueda exhaustiva de los parámetros AR, I, MA, asignándole los que ya aprendiste durante el training. Operando así, igual podemos llegar a ofrecer una única predicción por instante, pues los tiempos de estimación se deberían de reducir considerablemente.
     
     % Big Data
     \chapter{Big Data}
