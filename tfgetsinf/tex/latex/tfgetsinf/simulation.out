@@ -27,10 +27,11 @@
 \BOOKMARK [2][-]{subsection.5.3.2}{Estacionaridad de la serie temporal}{section.5.3}% 27
 \BOOKMARK [2][-]{subsection.5.3.3}{Predicci\363n ARIMA con PCA de todo el dataset}{section.5.3}% 28
 \BOOKMARK [2][-]{subsection.5.3.4}{Predicci\363n ARIMA con PCA de un d\355a}{section.5.3}% 29
-\BOOKMARK [2][-]{subsection.5.3.5}{Simulaci\363n con b\372squeda de puntos cercanos de la Gaussiana}{section.5.3}% 30
-\BOOKMARK [0][-]{chapter.6}{Big Data}{}% 31
-\BOOKMARK [1][-]{section.6.1}{MongoDB}{chapter.6}% 32
-\BOOKMARK [1][-]{section.6.2}{Spark}{chapter.6}% 33
-\BOOKMARK [0][-]{chapter.7}{Conclusiones}{}% 34
-\BOOKMARK [0][-]{chapter.8}{Trabajos futuros}{}% 35
-\BOOKMARK [0][-]{chapter*.32}{Bibliograf\355a}{}% 36
+\BOOKMARK [2][-]{subsection.5.3.5}{Simulaci\363n con datos controlados}{section.5.3}% 30
+\BOOKMARK [2][-]{subsection.5.3.6}{Simulaci\363n con b\372squeda de puntos cercanos de la Gaussiana}{section.5.3}% 31
+\BOOKMARK [0][-]{chapter.6}{Big Data}{}% 32
+\BOOKMARK [1][-]{section.6.1}{MongoDB}{chapter.6}% 33
+\BOOKMARK [1][-]{section.6.2}{Spark}{chapter.6}% 34
+\BOOKMARK [0][-]{chapter.7}{Conclusiones}{}% 35
+\BOOKMARK [0][-]{chapter.8}{Trabajos futuros}{}% 36
+\BOOKMARK [0][-]{chapter*.32}{Bibliograf\355a}{}% 37
