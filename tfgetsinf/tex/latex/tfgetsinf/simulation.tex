@@ -59,7 +59,7 @@ The industrial environments make use of sensors for acquiring metrics on several
 
 % Introducción
 \chapter{Introducción}
-Este proyecto tiene como fuente de datos uno o varios sensores de un mecanizado industrial de inyección de plástico. Los sensores efectúan mediciones de varios factores con una regularidad temporal, generando así muestras de datos en determinados intervalos de tiempo. Cuando se trata de sensores, es normal que los datos no tengan la calidad necesaria para aplicar técnicas matemáticas. Hay que tener en cuenta que la frecuencia de las mediciones no es necesariamente constante, que pueden existir interrupciones, ruido y redundancias. Además, en el ámbito de IoT ({\em Internet of Things}), se añade la inherente conectividad de los aparatos como factor de complejidad.
+Este proyecto tiene como fuente de datos uno o varios sensores de un mecanizado industrial de inyección de plástico. Los sensores efectúan mediciones de varios factores con una regularidad temporal, generando así muestras de datos en determinados intervalos de tiempo. Cuando se trata de sensores, es normal que los datos no tengan la calidad necesaria para aplicar técnicas matemáticas. Hay que tener en cuenta que la frecuencia de las mediciones no es necesariamente constante, que pueden existir interrupciones con ruido y redundancias. Además, en el ámbito de IoT ({\em Internet of Things}), se añade la inherente conectividad de los aparatos como factor de complejidad.
 
 Las técnicas de Big Data, en particular {\em Machine Learning}, necesitan gran cantidad de datos para poder inducir modelos matemáticos que expliquen esos datos. Cuanto más datos mejor, para un aprendizaje más robusto y fiable. Sin embargo, al principio de los proyectos, la cantidad de datos recolectados suele ser pequeña y insuficiente para poder extraer conocimiento significativo de los mismos. El objetivo de este proyecto es aprender y simular el comportamiento de uno o varios sensores a través de una cantidad reducida de datos recolectados en los mismos. 
 
@@ -715,10 +715,6 @@ P-value:  0
     La simulación con distribución Gaussiana constituye la fundación de nuestro estudio para la simulación de datos. Asumimos, a partir de ahora, que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta algunas decisiones de los próximos capítulos y, por consiguiente, los resultados finales del estudio.
     
     
-    % PCA con datos controlados
-    \subsection{PCA con datos controlados}
-    
-    
     % ARIMA
     \section{ARIMA}
     Una vez determinado el numero de componentes a usar y realizadas las primeras simulaciones con distribución normal, el siguiente paso consiste en construir series temporales sobre cada una de las componentes para simular con cierto sentido temporal. El objetivo es que los datos generados tengan forma de serie temporal. Para poder aplicar los modelos ARIMA introducidos anteriormente hay que preparar y estudiar los datos previamente. Una vez preparada la serie, se pasa a la predicción del comportamiento futuro, la simulación propiamente dicha.
@@ -888,28 +884,37 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 
 	% Simulación con datos controlados
 	\subsection{Simulación con datos controlados}
-	Con la intención de validar la solución propuesta en su totalidad, se ha creado un {\em dataset} fictício, con datos controlados de senos y cosenos. El {\em dataset} está constituido por series de las funciones sinusoidales:
+	Con la intención de validar la solución propuesta en su totalidad, se ha creado un {\em dataset} fictício y controlado, con datos de senos y cosenos. El {\em dataset} está constituido por las series de las funciones sinusoidales:
 	\begin{itemize}
-            \item \(sin\), ruido 0.05
-            \item \(2\cdot sin + 3\), ruido 0.01
-            \item \(cos\), ruido 0.02
-            \item \(4\cdot cos-1\), ruido 0.09
-            \item \(sin - 1\), ruido 0.05
-            \item \(5\cdot cos\), ruido 0.01
-            \item \(cos\), ruido 0.02
-            \item \(cos - 1\), ruido 0.09
+            \item \(sin\) con ruido \(0.05\)
+            \item \(2\cdot sin + 3\) con ruido \(0.01\)
+            \item \(cos\) con ruido \(0.02\)
+            \item \(4\cdot cos-1\) con ruido \(0.09\)
+            \item \(sin - 1\) con ruido \(0.05\)
+            \item \(5\cdot cos\) con ruido \(0.01\)
+            \item \(cos\) con ruido \(0.02\)
+            \item \(cos - 1\) con ruido \(0.09\)
 	\end{itemize}
 	
-	Las observaciones de, por ejemplo, \(4\cdot cos-1\) con ruido 0.09 serían las representadas en el gráfico de la Figura~\ref{fig:col4_original}.
+	Las observaciones de, por ejemplo, \(sin - 1\) con ruido \(0.05\) serían las representadas en el gráfico de la Figura~\ref{fig:col5_original}. Se nota el ruido introducido en la función sinusoidal.
 	
         \begin{figure}[H]
             \centering
-            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col4_original.png}
-            \caption{\(4\cdot cos-1\) con ruido 0.09.}
-            \label{fig:col4_original}
+            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col5_original.png}
+            \caption{\(sin - 1\) con ruido 0.05.}
+            \label{fig:col5_original}
+        \end{figure}
+
+	Para comprobar la viabilidad de PCA, se procede al cálculo de 5 componentes y a la inmediata inversión al espacio original. Usando el mismo ejemplo de \(sin - 1\) con ruido \(0.05\), el gráfico~\ref{fig:col5_inverted_nipals} demuestra que no solo la inversión se hace correctamente como también se reduce el ruido de la señal.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\textwidth]{col5_inverted_nipals.png}
+            \caption{Inversión de \(sin - 1\) con ruido 0.05.}
+            \label{fig:col5_inverted_nipals}
         \end{figure}
         
-        La idea es aplicar a este {\em dataset} el proceso completo: cálculo de componentes principales, simulación de datos con distribución Gaussiana y predicción con ARIMA. Para la primera componente, se obtienen los resultados representados en la Figura~\ref{fig:component_1}. En el gráfico se pueden ver todas las partes del proceso, con superposición para comparar más facilmente:
+        Estando sustentada la viabilidad de PCA, la idea es ahora aplicar a este {\em dataset} ficticio el proceso completo: cálculo de componentes principales, simulación de datos con distribución Gaussiana y predicción con ARIMA. Para la primera componente, se obtienen los resultados representados en la Figura~\ref{fig:component_1}. En el gráfico se pueden ver todas las partes del proceso, con superposición para comparar más facilmente:
 	\begin{itemize}
             \item rojo - datos de la componente.
             \item azul - simulación con distribución normal.
@@ -925,13 +930,13 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         Con datos controlados, el modelo ARIMA capta mejor la serie y eso se traduce en una predicción más estable y coherente. Además, siempre dentro de los límites de la simulación Gaussiana, como se pretendía. Las restantes componentes tienen un comportamiento idéntico.
         
-        Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(4\cdot cos-1\) con ruido 0.09 sería el representado en la Figura~\ref{fig:col4_inverse}. Los datos originales van hasta el instante 1000 y a partir de ahí los datos son simulados.
+        Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(sin - 1\) con ruido 0.05 sería el representado en la Figura~\ref{fig:col5_inverse}. Los datos originales van hasta el instante 1000 y a partir de ahí los datos son simulados.
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col4_inverse.png}
-            \caption{Inversión de \(4\cdot cos-1\) con ruido 0.09.}
-            \label{fig:col4_inverse}
+            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col5_inverse.png}
+            \caption{Inversión de \(sin - 1\) con ruido 0.05.}
+            \label{fig:col5_inverse}
         \end{figure}
         
         Se verifica que, con datos controlados, el proceso completo con PCA y ARIMA tiene resultados coherentes. La calidad de los datos es un factor muy importante para el estudio de los mismos. Las señales originales de los sensores contienen muchas veces datos anómalos, como {\em outliers}, que afectan en gran medida el resultado de la aplicación de técnicas de {\em Machine Learning}. Lo interesante en este estudio es que aporta algunos ajustes que permiten minimizar esos efectos, por ejemplo, cambiar el numero de componentes, aumentar el numero de puntos de la simulación Gaussiana o introducir factores de atenuación de la predicción.

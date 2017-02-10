@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.4)  10 FEB 2017 20:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.4)  10 FEB 2017 20:47
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1187,9 +1187,6 @@ LaTeX Info: Redefining \% on input line 5.
 \tf@lot=\write6
 \openout6 = `simulation.lot'.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
 Package babel Info: Redefining spanish shorthand <<
 (babel)             in language  on input line 56.
 Package babel Info: Redefining spanish shorthand >>
@@ -1227,8 +1224,7 @@ Package babel Info: Redefining spanish shorthand "!
 (babel)             in language  on input line 56.
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 56.
-
-(./simulation.toc)
+ (./simulation.toc)
 \tf@toc=\write7
 \openout7 = `simulation.toc'.
 
@@ -1518,7 +1514,7 @@ Package babel Info: Redefining spanish shorthand "!
 (babel)             in language  on input line 112.
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 112.
-[7] <images/GaussianScatterPCA.png, id=344, 481.8pt x 481.8pt>
+[7] <images/GaussianScatterPCA.png, id=346, 481.8pt x 481.8pt>
 File: images/GaussianScatterPCA.png Graphic file (type png)
 
 <use images/GaussianScatterPCA.png>
@@ -1527,7 +1523,7 @@ Package pdftex.def Info: images/GaussianScatterPCA.png used on input line 121.
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 122.
 
-<images/ProjectionPCA.jpg, id=347, 602.0091pt x 602.0091pt>
+<images/ProjectionPCA.jpg, id=349, 602.0091pt x 602.0091pt>
 File: images/ProjectionPCA.jpg Graphic file (type jpg)
 
 <use images/ProjectionPCA.jpg>
@@ -1666,7 +1662,7 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 219.
 
-<images/APVs_inverse_gaussian.png, id=377, 1156.32pt x 650.43pt>
+<images/APVs_inverse_gaussian.png, id=379, 1156.32pt x 650.43pt>
 File: images/APVs_inverse_gaussian.png Graphic file (type png)
 
 <use images/APVs_inverse_gaussian.png>
@@ -1703,14 +1699,14 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 229.
  [11]
-<images/APVs_original.png, id=384, 1156.32pt x 650.43pt>
+<images/APVs_original.png, id=386, 1156.32pt x 650.43pt>
 File: images/APVs_original.png Graphic file (type png)
 
 <use images/APVs_original.png>
 Package pdftex.def Info: images/APVs_original.png used on input line 235.
 (pdftex.def)             Requested size: 298.75264pt x 168.04585pt.
 
-<images/time_serie_1.png, id=385, 877.2775pt x 369.38pt>
+<images/time_serie_1.png, id=387, 877.2775pt x 369.38pt>
 File: images/time_serie_1.png Graphic file (type png)
 
 <use images/time_serie_1.png>
@@ -1752,7 +1748,7 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 256.
  [12 <./images/APVs_inverse_gaussian.png> <./images/APVs_original.png>]
-<images/ts_diff.png, id=396, 886.0302pt x 369.2997pt>
+<images/ts_diff.png, id=398, 886.0302pt x 369.2997pt>
 File: images/ts_diff.png Graphic file (type png)
  <use images/ts_diff.png>
 Package pdftex.def Info: images/ts_diff.png used on input line 285.
@@ -1801,7 +1797,7 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 298.
 
-<images/arima_110.png, id=419, 886.0302pt x 379.4175pt>
+<images/arima_110.png, id=421, 886.0302pt x 379.4175pt>
 File: images/arima_110.png Graphic file (type png)
 
 <use images/arima_110.png>
@@ -1811,7 +1807,7 @@ Package pdftex.def Info: images/arima_110.png used on input line 318.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<images/arima_011.png, id=421, 886.0302pt x 379.4175pt>
+<images/arima_011.png, id=423, 886.0302pt x 379.4175pt>
 File: images/arima_011.png Graphic file (type png)
 
 <use images/arima_011.png>
@@ -1821,7 +1817,7 @@ Package pdftex.def Info: images/arima_011.png used on input line 327.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<images/arima_111.png, id=423, 886.0302pt x 379.4175pt>
+<images/arima_111.png, id=425, 886.0302pt x 379.4175pt>
 File: images/arima_111.png Graphic file (type png)
 
 <use images/arima_111.png>
@@ -1854,7 +1850,7 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 339.
  [14 <./images/ts_diff.png>]
-<images/arima_212.png, id=431, 886.0302pt x 379.4175pt>
+<images/arima_212.png, id=433, 886.0302pt x 379.4175pt>
 File: images/arima_212.png Graphic file (type png)
 
 <use images/arima_212.png>
@@ -1864,7 +1860,7 @@ Package pdftex.def Info: images/arima_212.png used on input line 345.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<images/forecast.png, id=433, 881.694pt x 358.4592pt>
+<images/forecast.png, id=435, 881.694pt x 358.4592pt>
 File: images/forecast.png Graphic file (type png)
 
 <use images/forecast.png>
@@ -2080,7 +2076,7 @@ File: images/APVs_original.png Graphic file (type png)
 Package pdftex.def Info: images/APVs_original.png used on input line 459.
 (pdftex.def)             Requested size: 298.75264pt x 168.04585pt.
 
-<images/APVs_inverted_nipals.png, id=488, 1156.32pt x 650.43pt>
+<images/APVs_inverted_nipals.png, id=490, 1156.32pt x 650.43pt>
 File: images/APVs_inverted_nipals.png Graphic file (type png)
 
 <use images/APVs_inverted_nipals.png>
@@ -2088,7 +2084,7 @@ Package pdftex.def Info: images/APVs_inverted_nipals.png used on input line 472
 .
 (pdftex.def)             Requested size: 209.1301pt x 117.62813pt.
 
-<images/APVs_inverted_svd.png, id=489, 1156.32pt x 650.43pt>
+<images/APVs_inverted_svd.png, id=491, 1156.32pt x 650.43pt>
 File: images/APVs_inverted_svd.png Graphic file (type png)
 
 <use images/APVs_inverted_svd.png>
@@ -2124,14 +2120,14 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 485.
  [19]
-<images/H6x_original.png, id=495, 1156.32pt x 650.43pt>
+<images/H6x_original.png, id=497, 1156.32pt x 650.43pt>
 File: images/H6x_original.png Graphic file (type png)
 
 <use images/H6x_original.png>
 Package pdftex.def Info: images/H6x_original.png used on input line 490.
 (pdftex.def)             Requested size: 298.75264pt x 168.04585pt.
 
-<images/H6x_inverted_nipals.png, id=498, 1156.32pt x 650.43pt>
+<images/H6x_inverted_nipals.png, id=500, 1156.32pt x 650.43pt>
 File: images/H6x_inverted_nipals.png Graphic file (type png)
 
 <use images/H6x_inverted_nipals.png>
@@ -2139,14 +2135,14 @@ Package pdftex.def Info: images/H6x_inverted_nipals.png used on input line 501.
 
 (pdftex.def)             Requested size: 209.1301pt x 117.62813pt.
 
-<images/H6x_inverted_svd.png, id=499, 1156.32pt x 650.43pt>
+<images/H6x_inverted_svd.png, id=501, 1156.32pt x 650.43pt>
 File: images/H6x_inverted_svd.png Graphic file (type png)
 
 <use images/H6x_inverted_svd.png>
 Package pdftex.def Info: images/H6x_inverted_svd.png used on input line 507.
 (pdftex.def)             Requested size: 209.1301pt x 117.62813pt.
 
-<images/ACPx_original.png, id=502, 1156.32pt x 650.43pt>
+<images/ACPx_original.png, id=504, 1156.32pt x 650.43pt>
 File: images/ACPx_original.png Graphic file (type png)
 
 <use images/ACPx_original.png>
@@ -2156,7 +2152,7 @@ Package pdftex.def Info: images/ACPx_original.png used on input line 519.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<images/ACPx_inverted_nipals.png, id=503, 1156.32pt x 650.43pt>
+<images/ACPx_inverted_nipals.png, id=505, 1156.32pt x 650.43pt>
 File: images/ACPx_inverted_nipals.png Graphic file (type png)
 
 <use images/ACPx_inverted_nipals.png>
@@ -2201,7 +2197,7 @@ Package babel Info: Redefining spanish shorthand "?
 [20 <./images/APVs_inverted_nipals.png> <./images/APVs_inverted_svd.png> <./ima
 ges/H6x_original.png> <./images/H6x_inverted_nipals.png> <./images/H6x_inverted
 _svd.png>]
-<images/ACPx_inverted_nipals_pca14.png, id=515, 1156.32pt x 650.43pt>
+<images/ACPx_inverted_nipals_pca14.png, id=517, 1156.32pt x 650.43pt>
 File: images/ACPx_inverted_nipals_pca14.png Graphic file (type png)
 
 <use images/ACPx_inverted_nipals_pca14.png>
@@ -2215,4 +2211,5 @@ LaTeX Info: Redefining \. on input line 554.
 LaTeX Info: Redefining \% on input line 554.
 Package babel Info: Redefining spanish shorthand <<
 (babel)             in language  on input line 554.
-Package babel Info: Redefining
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 554.
