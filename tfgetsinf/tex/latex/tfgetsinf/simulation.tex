@@ -712,7 +712,7 @@ Denominator df:  100723
 P-value:  0 
     \end{lstlisting}
 
-    La simulación con distribución Gaussiana constituye la base de nuestro estudio para la simulación de datos. Asumimos, a partir de ahora, que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta algunas decisiones de los próximos capítulos y, por consiguiente, los resultados finales del estudio.
+    La simulación con distribución Gaussiana constituye la fundación de nuestro estudio para la simulación de datos. Asumimos, a partir de ahora, que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta algunas decisiones de los próximos capítulos y, por consiguiente, los resultados finales del estudio.
         
     % ARIMA
     \section{ARIMA}
@@ -787,10 +787,6 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         Los resultados del test \(T^2\) de Hotelling han mejorado con la corrección, asumiendo ahora el estadístico valores más bajos que anteriormente, pero todavía no se puede aceptar la hipótesis de similitud de poblaciones. En la sección siguiente se prueba un nuevo acercamiento al problema.
 %        el modelo ARIMA, y cualquier modelo de series temporales, toma como variables explicativas los datos pasados de la misma variable a predecir. Así, estos modelos se activarán cada periodo de tiempo, cogerán los datos pasados y ofrecerán la predicción de un instante más en el futuro de la variable a predecir en cuestión, y esto lo hará tomando como entrada las variables explicativas representadas por los valores de esa variable en el pasado.
 
-
-        \subsection{Simulación con datos controlados}
-        TODO
-	
         
         \subsection{Simulación con búsqueda de puntos cercanos de la Gaussiana}
         Teniendo en cuenta que la población generada de la simulación ARIMA no pasa el test \(T^2\) de Hotelling, se propone una nueva solución, que se explica a continuación. La solución consiste en generar una simulación de millones de puntos con distribución Gaussiana, que se ha demostrado que es válida. Luego se obtiene un punto simulado con el modelo ARIMA, al cual se añade o no ruido residual, y se busca el punto más cercano a este en los datos Gaussianos. El punto más cercano se usará como representante y se usará para re-alimentar el modelo ARIMA. Luego se procede a generar un nuevo punto en el instante siguiente.
@@ -867,6 +863,10 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 
         Con esta solución, la hipótesis de similitud de las poblaciones sigue siendo inválida, aunque el valor del estadístico vaya bajando. Es posible que cuando introduzcamos la serie el valor Hotelling \(T^2\) ya no nos indique que es significativo porque seguramente estará simulando únicamente el último de los estados con lo que la población generada ya no será la inicial. Lo importante es que que entre los dos procesos la simulación tenga forma de serie pero que no decrezca o crezca hasta el infinito y que su comportamiento temporal sea coherente con el proceso. El uso del test Hotelling \(T^2\), que se hizo al principio, era para constatar que efectivamente el método propuesto de las proyecciones funcionaba cuando simulaba valores aleatorios multidimensionales. 
 
+
+	\subsection{Simulación con datos controlados}
+	TODO
+	
     
     % Big Data
     \chapter{Big Data}
