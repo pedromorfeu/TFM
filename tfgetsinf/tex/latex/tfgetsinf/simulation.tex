@@ -713,7 +713,12 @@ P-value:  0
     \end{lstlisting}
 
     La simulación con distribución Gaussiana constituye la fundación de nuestro estudio para la simulación de datos. Asumimos, a partir de ahora, que las componentes simuladas con distribución Gaussiana, al ser re-proyectados al espacio original, producen una nueva población que es similar a la original. Esta base sustenta algunas decisiones de los próximos capítulos y, por consiguiente, los resultados finales del estudio.
-        
+    
+    
+    % PCA con datos controlados
+    \subsection{PCA con datos controlados}
+    
+    
     % ARIMA
     \section{ARIMA}
     Una vez determinado el numero de componentes a usar y realizadas las primeras simulaciones con distribución normal, el siguiente paso consiste en construir series temporales sobre cada una de las componentes para simular con cierto sentido temporal. El objetivo es que los datos generados tengan forma de serie temporal. Para poder aplicar los modelos ARIMA introducidos anteriormente hay que preparar y estudiar los datos previamente. Una vez preparada la serie, se pasa a la predicción del comportamiento futuro, la simulación propiamente dicha.
@@ -805,13 +810,31 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 	La re-alimentación de los modelos con los puntos provenientes de la simulación Gaussiana ha constituido un desafío. La primera implementación se hizo con {\tt ARIMA} del módulo {\tt statsmodels.tsa.arima\_model}, que no permitía la introducción de nuevos datos al modelo aprendido de forma sencilla. Esto obligaba a crear y entrenar un modelo nuevo por cada iteración y para cada componente, que se traducía en un coste de tiempo de ejecución. Para dar un ejemplo, en un ordenador con CPU de 4 núcleos y 4GB de memoria RAM, cada iteración tardaba \(0.9\) segundos - y esto sin la búsqueda en los puntos Gaussianos todavía.
 	
 	Siguiendo la recomendación de los desarrolladores de {\tt statsmodels}, se ha adoptado {\tt SARIMAX}, del módulo {\tt statsmodels.tsa.statespace.sarimax}. Este modelo está basado en ARIMA pero es más completo y mejor mantenido y además permite modelar la parte estacional de la serie e introducir variables exógenas. Con {\tt SARIMAX} evitamos el paso de volver a entrenar el modelo completo, que mejora bastante el rendimiento de cada iteración.
-
+	
+	Antes de pasar a la implementación con búsqueda en los puntos Gaussianos, se presentan las pruebas de predicción con la estrategia de re-alimentación del modelo {\tt SARIMAX}. La predicción sin ruido tiende rápidamente para valores constantes como se puede verificar en la Figura~\ref{fig:c1_pred_refeed_no_gaussian_no_noise}. El gráfico de la predicción con ruido (~\ref{fig:c1_no_gaussian_distance}) muestra una tendencia positiva para la primera componente, al contrario de las tendencias que se han visto hasta ahora para esa misma componente. No hay nada de errado, simplemente son pruebas distintas donde el cálculo de PCA tiene valores inversos, que no afecta los resultados. Se verifica que, con ruido, la simulación es más realista y parece que tiene una estabilidad creciente con una ligera curvatura. Lo que no parece correcto son los picos y cambios de tendencia.
+	
+        \begin{figure}[H]
+            \centering
+            \begin{subfigure}{0.49\textwidth}
+                \includegraphics[width=\textwidth]{c1_pred_refeed_no_gaussian_no_noise.png}
+                \caption{Sin ruido.}
+                \label{fig:c1_pred_refeed_no_gaussian_no_noise}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.49\textwidth}
+                \includegraphics[width=\textwidth]{c1_no_gaussian_distance.png}
+                \caption{Con ruido.}
+                \label{fig:c1_no_gaussian_distance}
+            \end{subfigure}
+            \caption{Simulación para la componente 1, usando {\tt SARIMAX} con re-alimentación.}
+            \label{fig:simulation_arima_gaussian}
+        \end{figure}
+        
         Pasemos a los resultados de las pruebas de simulación con búsqueda en los datos Gaussianos. Las pruebas que se describen a continuación tienen las siguientes consideraciones:
         \begin{itemize}
         \item Se han generado 1.000.000 puntos con distribución normal.
         \item Se han predicho 1000 puntos con ARIMA, uno a uno para cada componente: \(p = \{c_{1}, c_{2}, c_{3}, c_{4}, c_{5}\}\), donde \(c_{x}\) es la predicción de la componente \(x\). Para cada punto \(p\), se busca el más cercano en los puntos Gaussianos. Se re-alimenta el modelo con este nuevo punto, para la siguiente iteración de predicción.
         \item Se han verificado los puntos simulados transformados y todos pertenecen todos al conjunto de puntos Gaussianos. Así que el resultado de Hotelling T2 debería ser bueno.
-        \item Se está introduciendo ruido (valor aleatorio con desviación del error del modelo y media 0), que da un toque realista a la simulación. Si no se añade, la predicción tiende para valores constantes - eso hace que el punto más cercano sea siempre el mismo.
+        \item Se está introduciendo ruido (valor aleatorio con desviación del error del modelo y media 0), que da un toque realista a la simulación. Si no se añade, la predicción tiende para valores constantes - eso hace que el punto más cercano sea siempre el mismo, como sucede en la Figura~\ref{fig:c1_no_gaussian_distance}.
         \end{itemize}
 
 	Los gráficos de los resultados de simulación para la primera componente se presentan en la Figura~\ref{fig:c1_simulation_arima_gaussian} y para las demás componentes en la Figura~\ref{fig:simulation_arima_gaussian}. La leyenda es:
@@ -831,27 +854,27 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         \begin{figure}[H]
             \begin{subfigure}[h]{0.49\textwidth}
                 \centering
-                \includegraphics[width=0.7\textwidth]{c2_simulation_arima_gaussian.png}
+                \includegraphics[width=\textwidth]{c2_simulation_arima_gaussian.png}
                 \caption{Componente 2.}
-                \label{fig:c1_simulation_arima_gaussian}
+                \label{fig:c2_simulation_arima_gaussian}
             \end{subfigure}
             \begin{subfigure}[h]{0.49\textwidth}
                 \centering
-                \includegraphics[width=0.7\textwidth]{c3_simulation_arima_gaussian.png}
+                \includegraphics[width=\textwidth]{c3_simulation_arima_gaussian.png}
                 \caption{Componente 3.}
-                \label{fig:c1_simulation_arima_gaussian}
+                \label{fig:c3_simulation_arima_gaussian}
             \end{subfigure}
             \begin{subfigure}[h]{0.49\textwidth}
                 \centering
-                \includegraphics[width=0.7\textwidth]{c4_simulation_arima_gaussian.png}
+                \includegraphics[width=\textwidth]{c4_simulation_arima_gaussian.png}
                 \caption{Componente 4.}
-                \label{fig:c1_simulation_arima_gaussian}
+                \label{fig:c4_simulation_arima_gaussian}
             \end{subfigure}
             \begin{subfigure}[h]{0.49\textwidth}
                 \centering
-                \includegraphics[width=0.7\textwidth]{c5_simulation_arima_gaussian.png}
+                \includegraphics[width=\textwidth]{c5_simulation_arima_gaussian.png}
                 \caption{Componente 5.}
-                \label{fig:c1_simulation_arima_gaussian}
+                \label{fig:c5_simulation_arima_gaussian}
             \end{subfigure}
             \caption{Simulación con búsqueda en los datos Gaussianos.}
             \label{fig:simulation_arima_gaussian}
@@ -863,11 +886,56 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 
         Con esta solución, la hipótesis de similitud de las poblaciones sigue siendo inválida, aunque el valor del estadístico vaya bajando. Es posible que cuando introduzcamos la serie el valor Hotelling \(T^2\) ya no nos indique que es significativo porque seguramente estará simulando únicamente el último de los estados con lo que la población generada ya no será la inicial. Lo importante es que que entre los dos procesos la simulación tenga forma de serie pero que no decrezca o crezca hasta el infinito y que su comportamiento temporal sea coherente con el proceso. El uso del test Hotelling \(T^2\), que se hizo al principio, era para constatar que efectivamente el método propuesto de las proyecciones funcionaba cuando simulaba valores aleatorios multidimensionales. 
 
-
+	% Simulación con datos controlados
 	\subsection{Simulación con datos controlados}
-	TODO
+	Con la intención de validar la solución propuesta en su totalidad, se ha creado un {\em dataset} fictício, con datos controlados de senos y cosenos. El {\em dataset} está constituido por series de las funciones sinusoidales:
+	\begin{itemize}
+            \item \(sin\), ruido 0.05
+            \item \(2\cdot sin + 3\), ruido 0.01
+            \item \(cos\), ruido 0.02
+            \item \(4\cdot cos-1\), ruido 0.09
+            \item \(sin - 1\), ruido 0.05
+            \item \(5\cdot cos\), ruido 0.01
+            \item \(cos\), ruido 0.02
+            \item \(cos - 1\), ruido 0.09
+	\end{itemize}
 	
-    
+	Las observaciones de, por ejemplo, \(4\cdot cos-1\) con ruido 0.09 serían las representadas en el gráfico de la Figura~\ref{fig:col4_original}.
+	
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col4_original.png}
+            \caption{\(4\cdot cos-1\) con ruido 0.09.}
+            \label{fig:col4_original}
+        \end{figure}
+        
+        La idea es aplicar a este {\em dataset} el proceso completo: cálculo de componentes principales, simulación de datos con distribución Gaussiana y predicción con ARIMA. Para la primera componente, se obtienen los resultados representados en la Figura~\ref{fig:component_1}. En el gráfico se pueden ver todas las partes del proceso, con superposición para comparar más facilmente:
+	\begin{itemize}
+            \item rojo - datos de la componente.
+            \item azul - simulación con distribución normal.
+            \item verde - predicción.
+	\end{itemize}
+	
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/component_1.png}
+            \caption{Simulación de la componente 1 con datos controlados.}
+            \label{fig:component_1}
+        \end{figure}
+        
+        Con datos controlados, el modelo ARIMA capta mejor la serie y eso se traduce en una predicción más estable y coherente. Además, siempre dentro de los límites de la simulación Gaussiana, como se pretendía. Las restantes componentes tienen un comportamiento idéntico.
+        
+        Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(4\cdot cos-1\) con ruido 0.09 sería el representado en la Figura~\ref{fig:col4_inverse}. Los datos originales van hasta el instante 1000 y a partir de ahí los datos son simulados.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col4_inverse.png}
+            \caption{Inversión de \(4\cdot cos-1\) con ruido 0.09.}
+            \label{fig:col4_inverse}
+        \end{figure}
+        
+        Se verifica que, con datos controlados, el proceso completo con PCA y ARIMA tiene resultados coherentes. La calidad de los datos es un factor muy importante para el estudio de los mismos. Las señales originales de los sensores contienen muchas veces datos anómalos, como {\em outliers}, que afectan en gran medida el resultado de la aplicación de técnicas de {\em Machine Learning}. Lo interesante en este estudio es que aporta algunos ajustes que permiten minimizar esos efectos, por ejemplo, cambiar el numero de componentes, aumentar el numero de puntos de la simulación Gaussiana o introducir factores de atenuación de la predicción.
+	
     % Big Data
     \chapter{Big Data}
     TODO
