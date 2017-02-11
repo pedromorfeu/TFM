@@ -67,10 +67,10 @@ exit()
 # - mongodb $near
 # - map reduce
 
-# 10.000.000 points = 240MB = <1 min
-# 100.000.000 points = 2400MB = 2.4GB =
+# 5 columns, 10.000.000 points = 400MB = <1 min
+# 5 columns, 100.000.000 points = 4000MB = 4GB =
 np.random.seed(1000)
-points = 2 * np.random.randn(100000000, 3) + 3
+points = 2 * np.random.randn(1*1000*1000, 5) + 3
 print(points)
 print(getsizeof(points)/1000/1000, "MB")
 
