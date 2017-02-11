@@ -986,7 +986,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         Todas las colecciones (excepto {\tt data}) almacenan datos de la proyección al espacio reducido y la respectiva inversión al espacio original. La distinción se hace a través del campo {\tt type}, que puede tener valores {\tt component} o {\tt inverse}. Con esto hacemos uso de las facilidades de MongoDB en lo que respecta a esquema de datos flexible y verbosidad de los documentos con redundancia. 
         
-        Veamos ejemplos de documentos de tipo {\tt component} y de tipo {\tt inverse} en la colección {\tt generated}:
+        En los códigos ~\ref{lst:generated_component} y ~\ref{lst:generated_inverse} podemos ver ejemplos de documentos de tipo {\tt component} y de tipo {\tt inverse} de la colección {\tt generated}:
         \begin{lstlisting}[language=Python, caption=Documento de tipo {\tt component}., label={lst:generated_component}]
     {
         "_id" : ObjectId("586fd350efb6f73b6808aa85"),
