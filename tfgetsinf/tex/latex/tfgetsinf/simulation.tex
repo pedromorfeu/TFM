@@ -970,7 +970,58 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         Cuando el volumen de datos es exageradamente grande, se necesitan herramientas adecuadas para procesarlos. Las herramientas Big Data tienen esa capacidad. En este caso de estudio, se necesita guardar los de la simulación Gaussiana de forma rápida en una base de datos y tener también rápido acceso a los mismos. Y, por otro lado, se necesita gran capacidad de procesado para calcular la distancia Euclídea a todos los puntos de esa simulación, de forma a encontrar el más cercano. Para solucionar estos dos problemas se han elegido las herramientas MongoDB y Spark, respectivamente.
         
         \subsection{MongoDB}
-        TODO
+        MongoDB es una base de datos NoSQL. El concepto de NoSQL está relacionado con la abdicación de las reglas básicas de las bases de datos relacionales. Por ejemplo, en NoSQL, se suprime el uso de {\em joins} y {\em foreign keys}, en virtude de la rapidez de escritura y acceso a los datos. Justamente los {\em joins} y {\em foreign keys} son dos de los pilares de las bases de datos relacionales, que sustentan la integridad relacional. 
+        
+        Como referido en su documentación, MongoDB es una base de datos {\em open-source} que ofrece alto rendimiento, alta disponibilidad y escalado automático. En nuestro caso, la más importante característica es el alto rendimiento de persistencia y lectura. 
+        
+        Los registros en MongoDB se llaman documentos y tienen formato JSON, con inmediata correspondencia con los diccionarios de Python. Así que el uso de Python ha facilitado bastante la introducción de MongoDB en el proyecto. Cada documento en MongoDB debe contener todos los datos necesarios por la aplicación, aunque para eso se cree información redundante. Con esto se obtienen lecturas muy rápidas, porque no hay necesidad de cruzar información. La verbosidad de los documentos debe ser bien pensada antes de crearlos - aunque la estructura de los datos es flexible en NoSQL. La aplicación se ha de encargar de la integridad de los datos, quitando también esa carga al motor de base de datos.
+        
+        Los documentos se organizan en un nivel superior, las colecciones. En esta implementación se usan las colecciones:
+        \begin{itemize}
+        \item {\tt data} - datos originales
+        \item {\tt component} - datos de componentes PCA
+        \item {\tt gaussian} - simulación Gaussiana
+        \item {\tt generated} - simulación con ARIMA
+        \end{itemize}
+        
+        Todas las colecciones (excepto {\tt data}) almacenan datos de la proyección al espacio reducido y la respectiva inversión al espacio original. La distinción se hace a través del campo {\tt type}, que puede tener valores {\tt component} o {\tt inverse}. Con esto hacemos uso de las facilidades de MongoDB en lo que respecta a esquema de datos flexible y verbosidad de los documentos con redundancia. 
+        
+        Veamos ejemplos de documentos de tipo {\tt component} y de tipo {\tt inverse} en la colección {\tt generated}:
+        \begin{lstlisting}[language=Python, caption=Documento de tipo {\tt component}., label={lst:generated_component}]
+    {
+        "_id" : ObjectId("586fd350efb6f73b6808aa85"),
+        "c1" : -0.32059308526859437,
+        "c2" : -0.5151666968655716,
+        "type" : "component",
+        "c0" : 1.621652281551609
+        "c3" : 0.223232443434345
+        "c4" : 0.948984965659865
+    }
+        \end{lstlisting}
+
+        \begin{lstlisting}[language=Python, caption=Documento de tipo {\tt inverse}., label={lst:generated_inverse}]
+    {
+        "_id" : ObjectId("586fd37cefb6f73b6808b23d"),
+        "H5x" : 37.97450920399996,
+        "H2x" : 31.76233049441768,
+        "ACPv" : 3.8062855363245203,
+        "APHu" : 44.52178748294144,
+        "APVs" : 68.84145878414336,
+        "ACPx" : 3.3028060969846424,
+        "H6x" : 39.41787367081148,
+        "Svo" : 36.00581790038601,
+        "type" : "inverse",
+        "H3x" : 35.41299167251737,
+        "H1x" : 44.85859802098669,
+        "H7x" : 3276.7000000000003,
+        "H4x" : 36.5817454605649,
+        "ZUs" : 8.82171955708649,
+        "ZSx" : 0.5999999999999999
+    }
+        \end{lstlisting}
+        
+        En la misma colección conviven dos estructuras de datos muy diferentes. Al leer estos datos, en cada documento, tenemos acceso a toda la información necesaria por la aplicación. Para acelerar el acceso a los documentos de un determinado tipo, se ha creado un índice en el campo {\tt type}.
+        
             
         \subsection{Spark}
         Map reduce.
