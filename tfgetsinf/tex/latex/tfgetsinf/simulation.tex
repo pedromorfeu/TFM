@@ -989,13 +989,13 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         En los códigos ~\ref{lst:generated_component} y ~\ref{lst:generated_inverse} podemos ver ejemplos de documentos de tipo {\tt component} y de tipo {\tt inverse} de la colección {\tt generated}:
         \begin{lstlisting}[language=Python, caption=Documento de tipo {\tt component}., label={lst:generated_component}]
     {
-        "_id" : ObjectId("586fd350efb6f73b6808aa85"),
-        "c1" : -0.32059308526859437,
-        "c2" : -0.5151666968655716,
+        "_id" : ObjectId("58a0442befb6f73ad7c8efb2"),
+        "c2" : -0.03986047103177716,
         "type" : "component",
-        "c0" : 1.621652281551609
-        "c3" : 0.223232443434345
-        "c4" : 0.948984965659865
+        "c4" : 0.059014880723704685,
+        "c1" : -0.18597384414099433,
+        "c0" : 1.6352153422327225,
+        "c3" : 0.15650074726631932
     }
         \end{lstlisting}
 
@@ -1021,6 +1021,30 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         \end{lstlisting}
         
         En la misma colección conviven dos estructuras de datos muy diferentes. Al leer estos datos, en cada documento, tenemos acceso a toda la información necesaria por la aplicación. Para acelerar el acceso a los documentos de un determinado tipo, se ha creado un índice en el campo {\tt type}.
+        
+        Aparte de cumplir con la función de repositorio de datos de todas las partes del proceso, MongoDB se está usando como {\em buffer} para la generación de gráficos en tiempo real. Los nuevos puntos simulados (con ARIMA y posterior búsqueda en los datos Gaussianos) se van guardando en MongoDB progresivamente. De esta forma, se consigue una arquitectura {\em decoupled}, que permite que otro programa vaya leyendo esos datos y representando en gráficos con {\tt matplotlib}. 
+        
+        En la Figura~\ref{fig:matplotlib} se pueden ejemplos de la herramienta creada para generación de gráficos en tiempo real, para la segunda componente (gráfico~\ref{fig:c1_matplotlib}) y para los datos invertidos de \(ACPx\) (gráfico~\ref{fig:ACPx_matplotlib}). 
+        
+        \begin{figure}[H]
+            \centering
+            \begin{subfigure}[h]{0.7\textwidth}
+                \includegraphics[width=\textwidth]{matplotlib/c1_matplotlib_1.png}
+                \caption{Componente 2.}
+                \label{fig:c1_matplotlib}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.7\textwidth}
+                \includegraphics[width=\textwidth]{matplotlib/ACPx_matplotlib_1.png}
+                \caption{ACPx.}
+                \label{fig:ACPx_matplotlib}
+            \end{subfigure}
+            \caption{Gráficos de simulación en tiempo real.}
+            \label{fig:matplotlib}
+        \end{figure}
+        
+        Con esta herramienta podemos ver el progreso del algoritmo de simulación representado gráficamente en tiempo real. Se incluye solamente una parte de los datos Gaussianos (azul), una vez que la representación de todos los millones de puntos tendría una escala exagerada y no permitiría ver la evolución de la señal simulada con ARIMA. A los datos Gaussianos se superponen los datos reales (verde) y simulados con ARIMA y búsqueda en los puntos Gaussianos (rojo). El punto rojo indica el ultimo punto simulado. Las líneas gris de los gráficos representan algunas estadísticas de la totalidad de la distribución Gaussiana: media, mínimo, máximo y intervalos de confianza de 95\% (\(\mu \pm 2\sigma\)) y 99\% (\(\mu \pm 3\sigma\)).
+        
+        La representación gráfica permite observar determinados comportamientos de la simulación. Por ejemplo, la señal de \(ACPx\) tiene una tendencia creciente. Se verifica que la simulación mantiene esa tendencia, pero se contiene por los límites de los datos Gaussianos, como se pretende.
         
             
         \subsection{Spark}

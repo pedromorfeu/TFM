@@ -12,11 +12,11 @@ from pymongo import MongoClient
 SORT_ID_ASCENDING = ("_id", pymongo.ASCENDING)
 MAX_GAUSSIAN = 2000
 # Possible values: "component", "inverse"
-POINT_TYPE = "component"
+POINT_TYPE = "inverse"
 # Possible values:
 # - for type "component": cX, where X is the component index (zero-based)
 # - for type "inverse": APHu APVs ACPv ZSx  ZUs  H7x  H1x  H2x  H6x  H3x  H4x  H5x  ACPx Svo
-FIELD = "c1"
+FIELD = "APHu"
 
 
 client = MongoClient("mongodb://localhost:27017")
