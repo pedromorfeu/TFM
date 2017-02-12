@@ -1048,10 +1048,28 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
             
         \subsection{Spark}
-        Map reduce.
-        Escala bien.
-        El uso de Python ha contribuido bastante para la migración a Big Data.
-        TODO
+        La búsqueda del punto más cercano en los millones de datos Gaussianos es un claro ejemplo para la aplicación del paradigma de {\em MapReduce}. En el modelo de programación {\em MapReduce} los datos son divididos en partes más pequeñas y procesados en paralelo, en un algoritmo distribuido en un {\em cluster}. La fase {\em Map} se encarga de transformar los datos y emitir resultados, que serán agrupados en la fase de síntesis {\em Reduce}. En esta aplicación, la fase {\em Map} calcula la distancia de un punto simulado por ARIMA a cada punto de la simulación Gaussiana y emite cada resultado. Luego los {\em Reducers} se encargarán de ir comparando esos resultados, quedandose con un único punto (el de menor distancia) de cada comparación.
+        
+        En el caso de que las instancias del {\em cluster} no sean suficientes, este paradigma permite escalar la capacidad de cómputo añadiendo más maquinas, de forma transparente para la aplicación. La programación del paradigma {\em MapReduce}, llamada programación funcional, es diferente de la programación imperativa convencional. Aquí hay que tener en cuenta que cada bloque de código tiene que ser independiente, para poder ser ejecutado en paralelo, lo que se convierte en una abstracción más difícil.
+        
+        Una de las implementaciones más populares del paradigma {\em MapReduce} fue desarrollada por {\em Google} y se llama {\em Apache Hadoop}. Este {\em framework} es {\em open-source} y usa el almacenamiento HDFS ({\em Hadoop Distributed File System}) como núcleo de la implementación. La siguiente generación de herramientas {\em MapReduce} está encabezada por otro {\em framework} también {\em open-source} llamado {\em Apache Spark}. Aunque mantiene las fundaciones de Hadoop, {\em Spark} usa la memoria como principal recurso de trabajo, al contrario de Hadoop, que usa el disco (HDFS). Por ese hecho, las prestaciones de {\em Spark} son, evidentemente, mejores, llegando a valores de 100 veces más rápido que {\em Hadoop}.
+        
+        Una vez más, Python ha contribuido para la interacción con herramientas Big Data, en este caso {\em Spark}. La programación del proyecto se hizo en Python desde el primer momento, imaginando la necesidad de posterior migración a paradigmas Big Data. Además la síntesis de escrita en Python es a la vez intuitiva y poderosa, como podemos ver en las fases de {\em Map} (código~\ref{lst:map}) y de {\em Reduce} (código~\ref{lst:reduce}).
+        
+        \begin{lstlisting}[language=Python, caption=Map en Python., label={lst:map}]
+    # calculate Euclidean distances
+    distances = _points.map(lambda x: (x, np.sqrt((x - _point) ** 2).sum()))
+	\end{lstlisting}
+	        
+        \begin{lstlisting}[language=Python, caption=Reduce en Python., label={lst:reduce}]
+    # take the minimum distance point
+    min_distance = distances.takeOrdered(1, key=lambda x: x[1])
+	\end{lstlisting}
+	
+	{\em Spark} tiene varias librerías construidas sobre el motor principal. Un ejemplo es {\tt MLlib}, una librería para {\em Machine Learning}, que se ha usado para la generación de los puntos de simulación Gaussiana, a través de {\tt RandomRDDs} del módulo {\tt pyspark.mllib.random}. 
+	
+	Otra librería es {\tt Spark SQL}, que ha sido de utilidad para crear {\tt DataFrames} y así interactuar fácilmente con MongoDB. En este caso, a través de un conector, se habilita la combinación de las dos herramientas para que la persistencia pueda se haga de forma distribuida.
+        
  
 % Conclusiones
 \chapter{Conclusiones}
