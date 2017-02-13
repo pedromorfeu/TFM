@@ -22,7 +22,7 @@ from sys import platform
 # raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
 
 
-N_COMPONENTS = 5
+N_COMPONENTS = 2
 GAUSSIAN_DATA_SIZE = 100000
 NEW_DATA_SIZE = 2000
 TS_FREQUENCY = "10s"
@@ -32,6 +32,7 @@ ERROR_FACTOR = np.ones(N_COMPONENTS)
 WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 # WEIGHT_FACTOR = [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,    7.15911735e-03,   7.56237144e-04  ]
 
+FIGURES_FOLDER = "afigures"+str(N_COMPONENTS)
 
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
@@ -48,7 +49,8 @@ else:
     data = pd.read_csv("ip.txt", sep="\s+\t", engine="python", parse_dates=True, infer_datetime_format=True,
                    index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
-# data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
+
+data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
 
 print(type(data))
 print(data.columns)
@@ -58,9 +60,7 @@ print(data.index)
 print(data.shape)
 print(data.index)
 
-
-save_plot_per_column(data.values, data.columns, "_allday", "figures")
-
+#save_plot_per_column(data.values, data.columns, "_allday", FIGURES_FOLDER)
 
 # observations per day
 dates_count = data.groupby(lambda x: x.date()).count()
@@ -72,7 +72,7 @@ date = "2015-10-06"
 data = data[date]
 
 
-save_plot_per_column(data.values, data.columns, "_raw", "figures")
+#save_plot_per_column(data.values, data.columns, "_raw", FIGURES_FOLDER)
 
 
 
@@ -81,7 +81,7 @@ data = data.resample(TS_FREQUENCY).mean().interpolate()
 save_matrix("data.csv", data.values, data.columns)
 
 #save_data_plot(_data=data, _filename="original")
-#save_plot_per_column(data.values, data.columns, "_original", "figures")
+save_plot_per_column(data.values, data.columns, "_original", FIGURES_FOLDER)
 
 
 raw = data.values
@@ -111,7 +111,7 @@ new_X = pca.fit_transform(X)
 IX = pca.inverse_transform(new_X) + np.mean(raw, axis=0)
 print_matrix("IX", IX)
 save_matrix("inverted_pca.csv", IX, data.columns)
-#save_plot_per_column(IX, data.columns, "_inverted_pca", "figures")
+#save_plot_per_column(IX, data.columns, "_inverted_pca", FIGURES_FOLDER)
 
 
 # We could of course use SVD ...
@@ -146,7 +146,7 @@ XX = np.dot(svd_T, svd_P.T) + np.mean(raw, axis=0)
 print_matrix("XX", XX)
 save_matrix("inverted_svd.csv", XX, data.columns)
 
-#save_plot_per_column(XX, data.columns, "_inverted_svd", "figures")
+#save_plot_per_column(XX, data.columns, "_inverted_svd", FIGURES_FOLDER)
 
 
 # But what if we really only wanted calculate A=2 components (imagine SVD on
@@ -217,8 +217,10 @@ XXX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XXX", XXX)
 save_matrix("inverted_nipals_" + str(N_COMPONENTS) + ".csv", XXX, data.columns)
 
-#save_plot_per_column(XXX, data.columns, "_inverted_nipals", "figures")
+save_plot_per_column(XXX, data.columns, "_inverted_nipals", FIGURES_FOLDER)
 
+
+exit()
 
 # confirm inverted values
 XXX / raw
@@ -229,7 +231,7 @@ save_matrix("xxx_xx.csv", XXX/XX, data.columns)
 np.array_equal(np.round(XXX, 2), np.round(XX, 2))
 
 
-#save_plot_per_column(nipals_T, [str(i) for i in range(N_COMPONENTS)], "_component", "figures")
+#save_plot_per_column(nipals_T, [str(i) for i in range(N_COMPONENTS)], "_component", FIGURES_FOLDER)
 
 
 ### Generate Gaussian data
@@ -262,7 +264,7 @@ save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
 exit()
 
 
-save_plot_per_column(inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_inverse_gaussian", "figures")
+save_plot_per_column(inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_inverse_gaussian", FIGURES_FOLDER)
 
 
 ### Time series
@@ -472,8 +474,8 @@ print_matrix("XX", inverse)
 save_matrix("inverse_X.csv", inverse, data.columns)
 
 
-save_plot_per_column(inverse, data.columns, "_inverse", "figures")
-save_mixed_plots_per_column(data.values, inverse, inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_mixed", "figures")
+save_plot_per_column(inverse, data.columns, "_inverse", FIGURES_FOLDER)
+save_mixed_plots_per_column(data.values, inverse, inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_mixed", FIGURES_FOLDER)
 
 
 # PCA also has two very important outputs we should calculate:

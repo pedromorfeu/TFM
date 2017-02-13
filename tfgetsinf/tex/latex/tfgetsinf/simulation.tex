@@ -914,6 +914,63 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
             \label{fig:col5_inverted_nipals}
         \end{figure}
         
+        Veamos ahora como cambia la señal invertida conforme se van introduciendo las componentes de forma ordenada, para el mismo ejemplo de función sinusoidal. La Figura~\ref{fig:col5_inverted_nipals_n_components} representa el cambio secuencialmente. 
+        
+        \begin{figure}[H]
+            \begin{subfigure}[h]{0.33\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_1.png}
+                \caption{Una componente.}
+                \label{fig:col5_inverted_nipals1}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.33\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_2.png}
+                \caption{2 componentes.}
+                \label{fig:col5_inverted_nipals2}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.33\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_3.png}
+                \caption{3 componentes.}
+                \label{fig:col5_inverted_nipals3}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.33\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_4.png}
+                \caption{4 componentes.}
+                \label{fig:col5_inverted_nipals4}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.33\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_5.png}
+                \caption{5 componentes.}
+                \label{fig:col5_inverted_nipals5}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.33\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_6.png}
+                \caption{6 componentes.}
+                \label{fig:col5_inverted_nipals6}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.33\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_7.png}
+                \caption{7 componentes.}
+                \label{fig:col5_inverted_nipals7}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.33\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_8.png}
+                \caption{8 componentes.}
+                \label{fig:col5_inverted_nipals8}
+            \end{subfigure}
+            \caption{Inversión de \(sin - 1\) con ruido \(0.05\) según el numero de componentes.}
+            \label{fig:col5_inverted_nipals_n_components}
+        \end{figure}
+        
+        En la secuencia podemos verificar que, según se van añadiendo componentes, la señal va ganando forma y ruido más parecidos a la señal real. Con pocas componentes, la señal es menos parecida a la real, pero mantiene la forma, media y los límites aceptablemente. Cuando el numero de componentes es más cercano al máximo de componentes (gráficos~\ref{fig:col5_inverted_nipals7} y ~\ref{fig:col5_inverted_nipals8}), el modelo PCA es capaz de explicar incluso el ruido, siendo la inversión muy similar a la señal original. 
+        
         Estando sustentada la viabilidad de PCA, la idea es ahora aplicar a este {\em dataset} ficticio el proceso completo: cálculo de componentes principales, simulación de datos con distribución Gaussiana y predicción con ARIMA. Para la primera componente, se obtienen los resultados representados en la Figura~\ref{fig:component_1}. En el gráfico se pueden ver todas las partes del proceso, con superposición para comparar más facilmente:
 	\begin{itemize}
             \item rojo - datos de la componente.
