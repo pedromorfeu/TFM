@@ -987,15 +987,26 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         Con datos controlados, el modelo ARIMA capta mejor la serie y eso se traduce en una predicción más estable y coherente. Además, siempre dentro de los límites de la simulación Gaussiana, como se pretendía. Las restantes componentes tienen un comportamiento idéntico.
         
-        Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(sin - 1\) con ruido \(0.05\) sería el representado en la Figura~\ref{fig:col5_inverse}. Los datos originales van hasta el instante 1000 y a partir de ahí los datos son simulados.
+        Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(sin - 1\) con ruido \(0.05\) sería el representado en la Figura~\ref{fig:col5_inverse}. La señal invertida conserva aceptablemente la forma de la función sinusoidal original a lo largo del tiempo. Además se mantenie dentro de los límites de la inversión de la respectiva simulación Gaussiana para la misma característica (Figura~\ref{fig:col5_inverse_gaussian}).
 
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col5_inverse.png}
-            \caption{Inversión de \(sin - 1\) con ruido \(0.05\).}
-            \label{fig:col5_inverse}
+	\begin{figure}[H]
+	    \centering
+            \begin{subfigure}[h]{0.7\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverse.png}
+                \caption{Inversión de \(sin - 1\) con ruido \(0.05\).}
+                \label{fig:col5_inverse}
+            \end{subfigure}
+            \begin{subfigure}[h]{0.7\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverse_gaussian.png}
+                \caption{Inversión de la simulación Gaussiana de \(sin - 1\) con ruido \(0.05\).}
+                \label{fig:col5_inverse_gaussian}
+            \end{subfigure}
+            \caption{Inversión de \(sin - 1\) con ruido \(0.05\) según el numero de componentes.}
+            \label{fig:col5_inverted_nipals_n_components}
         \end{figure}
-        
+                        
         Se verifica que, con datos controlados, el proceso completo con PCA y ARIMA tiene resultados coherentes. La calidad de los datos es un factor muy importante para el análisis. Las señales originales de los sensores contienen muchas veces datos anómalos, como {\em outliers}, que afectan en gran medida el resultado de la aplicación de técnicas de {\em Machine Learning}. Lo interesante en este estudio es que aporta algunos ajustes que permiten minimizar esos efectos, por ejemplo, cambiar el numero de componentes, aumentar el numero de puntos de la simulación Gaussiana o introducir factores de atenuación de la predicción.
 	
 	
