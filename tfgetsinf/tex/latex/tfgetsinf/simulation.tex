@@ -358,10 +358,9 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
 
     La línea azul de la Figura~\ref{fig:forecast} representa los datos, ahora sin diferenciación. La línea verde representa la predicción después del final de la serie (llamada predicción {\em out-of-sample}). El área sombreada representa el intervalo de confianza de 5\% de la predicción. Se puede comprobar visualmente que la predicción sigue aproximadamente la tendencia de la serie. Predicciones con mayor horizonte futuro tendrán mayor incertidumbre, una vez que el modelo hará regresión de los valores futuros con los valores predichos.
 
-    El modulo {\tt statsmodels} de Python tiene un conjunto de herramientas estadísticas, incluyendo modelos de series temporales. Particularmente útil es la funcionalidad de generar gráficas de predicción automáticamente, sin necesidad de volver los datos a la escala original (sin diferenciación en este caso), usando {\tt plot\_predict}. El Listing~\ref{lst:forecast} es el código que genera el gráfico de la Figura~\ref{fig:forecast}. El periodo de predicción está aquí definido en los parámetros {\tt start} y {\tt end}, en un total de 20 nuevos puntos desde el final de la serie ({\tt len(ts)}).
+    El modulo {\tt statsmodels} de Python tiene un conjunto de herramientas estadísticas, incluyendo modelos de series temporales. Particularmente útil es la funcionalidad de generar gráficas de predicción automáticamente, sin necesidad de volver los datos a la escala original (sin diferenciación en este caso), usando {\tt plot\_predict}. El código~\ref{lst:forecast} es el código que genera el gráfico de la Figura~\ref{fig:forecast}. El periodo de predicción está aquí definido en los parámetros {\tt start} y {\tt end}, en un total de 20 nuevos puntos desde el final de la serie ({\tt len(ts)}).
 
-    \lstset{style=python}
-    \begin{lstlisting}[float, caption={\tt plot\_predict} de {\tt statsmodels} de Python., label={lst:forecast}]
+    \begin{lstlisting}[language=Python, caption={\tt plot\_predict} de {\tt statsmodels} de Python., label={lst:forecast}]
 from statsmodels.tsa.arima_model import ARIMA
 model = ARIMA(ts, order=(2, 1, 2))
 results = model.fit(disp=-1)
@@ -373,7 +372,7 @@ fig = results.plot_predict(start=len(ts)-1, end=len(ts)+20, dynamic=True, ax=ax,
 
 % Experimentación y resultados
 \chapter{Experimentación y resultados}
-TODO
+En este capítulo se exponen los experimentos realizados y respectivos resultados.
 
     % Dataset
     \section{Dataset}
