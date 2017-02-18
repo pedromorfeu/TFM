@@ -245,7 +245,7 @@ def save_plot_per_column(_data, _columns, _suffix="", _folder="figures"):
     print("Plots saved")
 
 
-def save_plot_per_component_gaussian(_n_components, generated_gaussian, nipals_T, _folder="figures", _suffix="_gaussian", end=5000):
+def save_plot_per_component_gaussian(_n_components, generated_gaussian, nipals_T, _columns, _folder="figures", _suffix="_gaussian", end=5000):
     print("Saving plots...")
     if not os.path.exists(_folder):
         os.makedirs(_folder)
@@ -264,8 +264,8 @@ def save_plot_per_component_gaussian(_n_components, generated_gaussian, nipals_T
         plt.axhline(mean - 3 * std, color="gray", linewidth=1)
         start = len(nipals_T)+1
         plt.plot(range(start, end), generated_gaussian[:end-start, i], label="Gaussian")
-        plt.plot(nipals_T[:, i], label="component")
-        title = "component_" + str(i+1) + _suffix
+        plt.plot(nipals_T[:, i], label=_columns[i])
+        title = _columns[i] + _suffix
         plt.title(title)
         plt.legend()
         plt.savefig(os.path.join(_folder, title))

@@ -205,8 +205,6 @@ La simulación Gaussiana necesita tener una gran cantidad de puntos para que la 
     
     Una vez convergido, para calcular la siguiente componente se resta el producto \(y_{1} \cdot w_{1}\) a \(X\). Esto corresponde a restar a \(X\) la parte de los datos explicada por \(y_{1}\) y \(w_{1}\).
     
-    TODO: Hotelling T2?
-    
 %    El nuevo espacio está constituido por variables independientes y ortogonales. Para cada componente, se calculan valores aleatorios con distribución normal. Estos son los scores de las componentes de los nuevos datos. Al proyectar la nueva matriz de componentes de vuelta al espacio original, se obtienen datos simulados para todas las características. Si la validación de esta técnica demuestra que es correcta, se puede usar para la simulación de nuevos datos. La validación de los datos generados pasa por la aplicación de estadísticos de comparación de las muestras originales y las nuevas. La técnica utilizada es el test de Hotelling T-squared, que prueba la similitud de las poblaciones. Los resultados demuestran que es viable usar esta técnica de simulación de datos.
 
     \section{Series temporales - ARIMA}
@@ -378,7 +376,199 @@ fig = results.plot_predict(start=len(ts)-1, end=len(ts)+20, dynamic=True, ax=ax,
 
 % Experimentación y resultados
 \chapter{Experimentación y resultados}
-En este capítulo se exponen los experimentos realizados y respectivos resultados.
+En este capítulo se exponen las pruebas realizadas y respectivos resultados. 
+
+    % Simulación con datos controlados
+    \section{Simulación con datos controlados}
+    Para dar una visión general e ilustrar la solución propuesta en su totalidad, empezaremos con un ejemplo sencillo. Para esto, se ha creado un {\em dataset} fictício y controlado, constituido por las siguientes funciones de senos y cosenos con ruido:
+    \begin{itemize}
+        \item \(sin\) con ruido \(0.05\)
+        \item \(2\cdot sin + 3\) con ruido \(0.01\)
+        \item \(cos\) con ruido \(0.02\)
+        \item \(4\cdot cos-1\) con ruido \(0.09\)
+        \item \(sin - 1\) con ruido \(0.05\)
+        \item \(5\cdot cos\) con ruido \(0.01\)
+        \item \(cos\) con ruido \(0.02\)
+        \item \(cos - 1\) con ruido \(0.09\)
+    \end{itemize}
+    
+    El ruido proporciona un toque realista a los datos sintéticos (que podrían ser provenientes de sensores) y nos servirá para comprobar la técnica de PCA. Las observaciones de, por ejemplo, \(sin - 1\) con ruido \(0.05\) serían las representadas en el gráfico de la Figura~\ref{fig:col5_original}. Se puede ver que la curva sinusoidal no es perfecta por el ruido introducido.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col5_original.png}
+        \caption{\(sin - 1\) con ruido \(0.05\).}
+        \label{fig:col5_original}
+    \end{figure}
+
+    Para comprobar la viabilidad de PCA, se procede al cálculo de un determinado numero de componentes - en el ejemplo empezamos con 5 componentes. Posteriormente se procede a la inmediata inversión (sin generar datos nuevos) al espacio original. Usando el mismo ejemplo de \(sin - 1\) con ruido \(0.05\), el gráfico~\ref{fig:col5_inverted_nipals} muestra la re-proyección de la misma función sinusoidal al espacio original, después de haber sido proyectada en el espacio reducido de 5 componentes. Se demuestra que no solo la inversión se hace correctamente como también se reduce el ruido de la señal.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{col5_inverted_nipals.png}
+        \caption{Inversión de \(sin - 1\) con ruido \(0.05\), usando 5 componentes.}
+        \label{fig:col5_inverted_nipals}
+    \end{figure}
+    
+    Veamos ahora como cambia la señal invertida conforme se van introduciendo las componentes de forma ordenada, para el mismo ejemplo de función sinusoidal. La Figura~\ref{fig:col5_inverted_nipals_n_components} representa el cambio secuencialmente. 
+    
+    \begin{figure}[H]
+        \begin{subfigure}[h]{0.33\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_1.png}
+            \caption{Una componente.}
+            \label{fig:col5_inverted_nipals1}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.33\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_2.png}
+            \caption{2 componentes.}
+            \label{fig:col5_inverted_nipals2}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.33\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_3.png}
+            \caption{3 componentes.}
+            \label{fig:col5_inverted_nipals3}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.33\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_4.png}
+            \caption{4 componentes.}
+            \label{fig:col5_inverted_nipals4}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.33\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_5.png}
+            \caption{5 componentes.}
+            \label{fig:col5_inverted_nipals5}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.33\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_6.png}
+            \caption{6 componentes.}
+            \label{fig:col5_inverted_nipals6}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.33\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_7.png}
+            \caption{7 componentes.}
+            \label{fig:col5_inverted_nipals7}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.33\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_8.png}
+            \caption{8 componentes.}
+            \label{fig:col5_inverted_nipals8}
+        \end{subfigure}
+        \caption{Inversión de \(sin - 1\) con ruido \(0.05\) según el numero de componentes.}
+        \label{fig:col5_inverted_nipals_n_components}
+    \end{figure}
+    
+    En la secuencia podemos verificar que, según se van añadiendo componentes, la señal va ganando forma y ruido más parecidos a la señal real. Con pocas componentes, la señal es menos parecida a la real, pero mantiene la forma, media y los límites aceptablemente. Cuando el numero de componentes es más cercano al máximo (gráficos~\ref{fig:col5_inverted_nipals7} y ~\ref{fig:col5_inverted_nipals8}), el modelo PCA es capaz de explicar incluso el ruido, siendo la inversión muy similar a la señal original. 
+    
+    Estando sustentada la viabilidad de PCA sobre los datos controlados, la idea es ahora producir datos simulados con distribución Gaussiana sobre las proyecciones y comprobar que la población invertida sigue manteniendo la similitud con la población original. A través de la media y desviación típica de las proyecciones de cada componente, se producen datos aleatorios con distribución Gaussiana. En el gráfico~\ref{{fig:component_1_gaussian}} podemos ver, en verde, los valores de proyección de la primera componente; y, en azul, datos simulados con distribución normal para esa componente. Además, en gris se representan los límites minimo y maximo, media y algunas desviaciones típicas de los valores de la Gaussiana.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{component0_gaussian.png}
+        \caption{Simulación de la primera componente, usando distribución Gaussiana.}
+        \label{fig:component_1_gaussian}
+    \end{figure}
+    
+    Al re-proyectar los datos sintéticos generados con distribución normal al espacio original, obtenemos la simulación representada en el gráfico~\ref{fig:col5_inverted_gaussian}. La línea verde representa los datos originales de \(sin - 1\) con ruido \(0.05\) y la línea azul es la simulación en si. 
+     
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{col5_inverted_gaussian}
+        \caption{Inversión de \(sin - 1\) con ruido \(0.05\), usando distribución Gaussiana.}
+        \label{fig:col5_inverted_gaussian}
+    \end{figure}
+    
+    El test \(T^2\) de Hotelling corrobora que la población generada es similar a la original, como indica el código R~\ref{lst:t2_test_gaussian}. El estadístico asume que las poblaciones son similares (hipótesis nula) - en este caso su valor es poco significativo, así que podemos rechazar su hipótesis nula y afirmar que las poblaciones son similares. Además, el p-valor ({\tt P-value}) indica un grado de confianza alto en esa evaluación.
+    
+    \begin{lstlisting}[language=S, caption=Test \(T^2\) de Hotelling en R., label={lst:t2_test_gaussian}]
+> res <- hotelling.test(x = data, y = inverted_data)
+> print(res)
+Test stat:  0.0024086 
+Numerator df:  8 
+Denominator df:  100991 
+P-value:  1
+    \end{lstlisting}
+    
+    De esta forma, queda demostrada la validez de la simulación con distribución Gaussiana sobre las proyecciones en las componentes principales.
+        
+    Llegados a este punto, pasamos a dar un sentido temporal a la predicción. Para esto, se usarán modelos ARIMA, que aprenderán la evolución de los datos de las proyecciones a lo largo del tiempo. Una vez hecho el aprendizaje, el modelo ARIMA puede hacer predicciones futuras sobre los datos, basándose en los datos pasados. Esta predicción se hará de forma iterativa, punto por punto: en cada iteración, teniendo la predicción ARIMA de un punto nuevo para cada componente, se añade ruido residual y se busca el punto multi-dimensional más cercano en los datos simulados con distribución Gaussiana. El punto más cercano se usará para substituir los puntos predichos por ARIMA y así re-alimentar el modelo con nuevos datos. Los datos simulados serán un sub-conjunto de los datos simulados Gaussianos, que demostramos que eran válidos, por lo que la población generada por inversión al espacio original debe ser válida también.
+    
+    La idea es ahora ilustrar el proceso completo: cálculo de componentes principales, simulación de datos con distribución Gaussiana y predicción con ARIMA. Para la primera componente, se obtienen los resultados representados en la Figura~\ref{fig:component_1}. En el gráfico se pueden ver todas las partes del proceso, con superposición para comparar más facilmente:
+    \begin{itemize}
+        \item rojo - datos de la componente.
+        \item azul - simulación con distribución normal.
+        \item verde - predicción.
+    \end{itemize}
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/component_1.png}
+        \caption{Simulación de la componente 1 con datos controlados.}
+        \label{fig:component_1}
+    \end{figure}
+    
+    Los gráficos de simulación de las demás componentes se representan en la Figura~\ref{fig:component_x}. Con datos controlados, el modelo ARIMA capta bien la serie y eso se traduce en una predicción estable y coherente. Además, siempre dentro de los límites de la simulación Gaussiana, como se pretendía. Las restantes componentes tienen un comportamiento idéntico.
+    
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/component_2.png}
+            \caption{Componente 2.}
+            \label{fig:component_2}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/component_3.png}
+            \caption{Componente 3.}
+            \label{fig:component_3}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/component_4.png}
+            \caption{Componente 4.}
+            \label{fig:component_4}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/component_5.png}
+            \caption{Componente 5.}
+            \label{fig:component_5}
+        \end{subfigure}
+        \caption{Simulación de las componentes 2, 3, 4 y 5 con datos controlados.}
+        \label{fig:component_x}
+    \end{figure}
+    
+    
+    Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(sin - 1\) con ruido \(0.05\) sería el representado en la Figura~\ref{fig:col5_inverse_all}. La señal invertida conserva aceptablemente la forma de la función sinusoidal original a lo largo del tiempo. Además se mantiene dentro de los límites de la inversión de la respectiva inversión de simulación Gaussiana para la misma característica (Figura~\ref{fig:col5_inverse_gaussian}). De todas formas, la calidad de la simulación es configurable, a través del ajuste de numero de componentes, como quedó claro en el estudio de la Figura~\ref{fig:col5_inverted_nipals_n_components}.
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverse.png}
+            \caption{Inversión de \(sin - 1\) con ruido \(0.05\).}
+            \label{fig:col5_inverse}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverse_gaussian.png}
+            \caption{Inversión de la simulación Gaussiana de \(sin - 1\) con ruido \(0.05\).}
+            \label{fig:col5_inverse_gaussian}
+        \end{subfigure}
+        \caption{Inversión de \(sin - 1\) con ruido \(0.05\) con búsqueda en la simulación Gaussiana.}
+        \label{fig:col5_inverse_all}
+    \end{figure}
+
+    Se verifica que, con datos controlados, el proceso completo con PCA y ARIMA tiene resultados coherentes. La calidad de los datos es un factor muy importante para el análisis. Las señales originales de los sensores contienen muchas veces datos anómalos, como {\em outliers}, que afectan en gran medida el resultado de la aplicación de técnicas de {\em Machine Learning}. Lo interesante en este estudio es que aporta algunos ajustes que permiten minimizar esos efectos, por ejemplo, cambiar el numero de componentes, aumentar el numero de puntos de la simulación Gaussiana o introducir factores de atenuación de la predicción.
+    
 
     % Dataset
     \section{Dataset}
@@ -571,7 +761,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
     
     La hipótesis nula es que las medias para todas las variables son iguales. 
     
-    Respecto a la implementación, se han usado los algoritmos de test Hotelling \(T^2\) R, con la librería {\tt Hotelling}. El Código~\ref{lst:t2_test} es un ejemplo de uso de la librería.
+    Respecto a la implementación, se han usado los algoritmos de test Hotelling \(T^2\) R, con la librería {\tt Hotelling}. El código~\ref{lst:t2_test} es un ejemplo de uso de la librería.
 
     \begin{lstlisting}[language=S, caption=Test \(T^2\) de Hotelling en R., label={lst:t2_test}]
 > res = hotelling.test(x = data, y = inverted_data)
@@ -885,133 +1075,6 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 
         Con esta solución, la hipótesis de similitud de las poblaciones sigue siendo inválida, aunque el valor del estadístico vaya bajando. Es posible que cuando introduzcamos la serie el valor Hotelling \(T^2\) ya no nos indique que es significativo porque seguramente estará simulando únicamente el último de los estados con lo que la población generada ya no será la inicial. Lo importante es que que entre los dos procesos la simulación tenga forma de serie pero que no decrezca o crezca hasta el infinito y que su comportamiento temporal sea coherente con el proceso. El uso del test Hotelling \(T^2\), que se hizo al principio, era para constatar que efectivamente el método propuesto de las proyecciones funcionaba cuando simulaba valores aleatorios multidimensionales. 
 
-	% Simulación con datos controlados
-	\subsection{Simulación con datos controlados}
-	Con la intención de validar la solución propuesta en su totalidad, se ha creado un {\em dataset} fictício y controlado, con datos de senos y cosenos. El {\em dataset} está constituido por las series de las funciones sinusoidales:
-	\begin{itemize}
-            \item \(sin\) con ruido \(0.05\)
-            \item \(2\cdot sin + 3\) con ruido \(0.01\)
-            \item \(cos\) con ruido \(0.02\)
-            \item \(4\cdot cos-1\) con ruido \(0.09\)
-            \item \(sin - 1\) con ruido \(0.05\)
-            \item \(5\cdot cos\) con ruido \(0.01\)
-            \item \(cos\) con ruido \(0.02\)
-            \item \(cos - 1\) con ruido \(0.09\)
-	\end{itemize}
-	
-	Las observaciones de, por ejemplo, \(sin - 1\) con ruido \(0.05\) serían las representadas en el gráfico de la Figura~\ref{fig:col5_original}. Se nota el ruido introducido en la función sinusoidal.
-	
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/col5_original.png}
-            \caption{\(sin - 1\) con ruido \(0.05\).}
-            \label{fig:col5_original}
-        \end{figure}
-
-	Para comprobar la viabilidad de PCA, se procede al cálculo de 5 componentes y a la inmediata inversión al espacio original. Usando el mismo ejemplo de \(sin - 1\) con ruido \(0.05\), el gráfico~\ref{fig:col5_inverted_nipals} demuestra que no solo la inversión se hace correctamente como también se reduce el ruido de la señal.
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.7\textwidth]{col5_inverted_nipals.png}
-            \caption{Inversión de \(sin - 1\) con ruido \(0.05\).}
-            \label{fig:col5_inverted_nipals}
-        \end{figure}
-        
-        Veamos ahora como cambia la señal invertida conforme se van introduciendo las componentes de forma ordenada, para el mismo ejemplo de función sinusoidal. La Figura~\ref{fig:col5_inverted_nipals_n_components} representa el cambio secuencialmente. 
-        
-        \begin{figure}[H]
-            \begin{subfigure}[h]{0.33\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_1.png}
-                \caption{Una componente.}
-                \label{fig:col5_inverted_nipals1}
-            \end{subfigure}
-            \begin{subfigure}[h]{0.33\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_2.png}
-                \caption{2 componentes.}
-                \label{fig:col5_inverted_nipals2}
-            \end{subfigure}
-            \begin{subfigure}[h]{0.33\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_3.png}
-                \caption{3 componentes.}
-                \label{fig:col5_inverted_nipals3}
-            \end{subfigure}
-            \begin{subfigure}[h]{0.33\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_4.png}
-                \caption{4 componentes.}
-                \label{fig:col5_inverted_nipals4}
-            \end{subfigure}
-            \begin{subfigure}[h]{0.33\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_5.png}
-                \caption{5 componentes.}
-                \label{fig:col5_inverted_nipals5}
-            \end{subfigure}
-            \begin{subfigure}[h]{0.33\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_6.png}
-                \caption{6 componentes.}
-                \label{fig:col5_inverted_nipals6}
-            \end{subfigure}
-            \begin{subfigure}[h]{0.33\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_7.png}
-                \caption{7 componentes.}
-                \label{fig:col5_inverted_nipals7}
-            \end{subfigure}
-            \begin{subfigure}[h]{0.33\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverted_nipals_8.png}
-                \caption{8 componentes.}
-                \label{fig:col5_inverted_nipals8}
-            \end{subfigure}
-            \caption{Inversión de \(sin - 1\) con ruido \(0.05\) según el numero de componentes.}
-            \label{fig:col5_inverted_nipals_n_components}
-        \end{figure}
-        
-        En la secuencia podemos verificar que, según se van añadiendo componentes, la señal va ganando forma y ruido más parecidos a la señal real. Con pocas componentes, la señal es menos parecida a la real, pero mantiene la forma, media y los límites aceptablemente. Cuando el numero de componentes es más cercano al máximo de componentes (gráficos~\ref{fig:col5_inverted_nipals7} y ~\ref{fig:col5_inverted_nipals8}), el modelo PCA es capaz de explicar incluso el ruido, siendo la inversión muy similar a la señal original. 
-        
-        Estando sustentada la viabilidad de PCA, la idea es ahora aplicar a este {\em dataset} ficticio el proceso completo: cálculo de componentes principales, simulación de datos con distribución Gaussiana y predicción con ARIMA. Para la primera componente, se obtienen los resultados representados en la Figura~\ref{fig:component_1}. En el gráfico se pueden ver todas las partes del proceso, con superposición para comparar más facilmente:
-	\begin{itemize}
-            \item rojo - datos de la componente.
-            \item azul - simulación con distribución normal.
-            \item verde - predicción.
-	\end{itemize}
-	
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.7\textwidth]{simulated_data_8_columns/component_1.png}
-            \caption{Simulación de la componente 1 con datos controlados.}
-            \label{fig:component_1}
-        \end{figure}
-        
-        Con datos controlados, el modelo ARIMA capta mejor la serie y eso se traduce en una predicción más estable y coherente. Además, siempre dentro de los límites de la simulación Gaussiana, como se pretendía. Las restantes componentes tienen un comportamiento idéntico.
-        
-        Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(sin - 1\) con ruido \(0.05\) sería el representado en la Figura~\ref{fig:col5_inverse}. La señal invertida conserva aceptablemente la forma de la función sinusoidal original a lo largo del tiempo. Además se mantenie dentro de los límites de la inversión de la respectiva simulación Gaussiana para la misma característica (Figura~\ref{fig:col5_inverse_gaussian}).
-
-	\begin{figure}[H]
-	    \centering
-            \begin{subfigure}[h]{0.7\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverse.png}
-                \caption{Inversión de \(sin - 1\) con ruido \(0.05\).}
-                \label{fig:col5_inverse}
-            \end{subfigure}
-            \begin{subfigure}[h]{0.7\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{simulated_data_8_columns/col5_inverse_gaussian.png}
-                \caption{Inversión de la simulación Gaussiana de \(sin - 1\) con ruido \(0.05\).}
-                \label{fig:col5_inverse_gaussian}
-            \end{subfigure}
-            \caption{Inversión de \(sin - 1\) con ruido \(0.05\) según el numero de componentes.}
-            \label{fig:col5_inverted_nipals_n_components}
-        \end{figure}
-                        
-        Se verifica que, con datos controlados, el proceso completo con PCA y ARIMA tiene resultados coherentes. La calidad de los datos es un factor muy importante para el análisis. Las señales originales de los sensores contienen muchas veces datos anómalos, como {\em outliers}, que afectan en gran medida el resultado de la aplicación de técnicas de {\em Machine Learning}. Lo interesante en este estudio es que aporta algunos ajustes que permiten minimizar esos efectos, por ejemplo, cambiar el numero de componentes, aumentar el numero de puntos de la simulación Gaussiana o introducir factores de atenuación de la predicción.
-	
 	
         % Big Data
         \section{Big Data}

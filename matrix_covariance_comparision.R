@@ -36,6 +36,10 @@ head(ip_data)
 ############################################
 # Original data resampled and interpolated #
 ############################################
+
+data <- read.csv2("ip_gen.txt", sep = ",", header=T, stringsAsFactors = F, dec = ".")
+data <- data[, seq(2,9)]
+
 data <- read.csv2("generated/data.csv", sep = "\t", header=T, stringsAsFactors = F, dec = ".")
 # filter by date
 nrow(data)

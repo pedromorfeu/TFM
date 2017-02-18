@@ -22,7 +22,7 @@ from sys import platform
 # raw = np.genfromtxt('silicon-wafer-thickness.csv', delimiter=',', skip_header=1)
 
 
-N_COMPONENTS = 2
+N_COMPONENTS = 5
 GAUSSIAN_DATA_SIZE = 100000
 NEW_DATA_SIZE = 2000
 TS_FREQUENCY = "10s"
@@ -32,7 +32,7 @@ ERROR_FACTOR = np.ones(N_COMPONENTS)
 WEIGHT_FACTOR = np.ones(N_COMPONENTS)
 # WEIGHT_FACTOR = [  9.36023523e-01,   3.62926651e-02,   1.83666150e-02,    7.15911735e-03,   7.56237144e-04  ]
 
-FIGURES_FOLDER = "afigures"+str(N_COMPONENTS)
+FIGURES_FOLDER = "figures"
 
 # If the frequency is higher than the sample steps, then we have more real data
 # If we interpolate, then we are introducing new data, which is induced
@@ -111,7 +111,7 @@ new_X = pca.fit_transform(X)
 IX = pca.inverse_transform(new_X) + np.mean(raw, axis=0)
 print_matrix("IX", IX)
 save_matrix("inverted_pca.csv", IX, data.columns)
-#save_plot_per_column(IX, data.columns, "_inverted_pca", FIGURES_FOLDER)
+save_plot_per_column(IX, data.columns, "_inverted_pca", FIGURES_FOLDER)
 
 
 # We could of course use SVD ...
@@ -220,8 +220,6 @@ save_matrix("inverted_nipals_" + str(N_COMPONENTS) + ".csv", XXX, data.columns)
 save_plot_per_column(XXX, data.columns, "_inverted_nipals", FIGURES_FOLDER)
 
 
-exit()
-
 # confirm inverted values
 XXX / raw
 XX / raw
@@ -231,7 +229,7 @@ save_matrix("xxx_xx.csv", XXX/XX, data.columns)
 np.array_equal(np.round(XXX, 2), np.round(XX, 2))
 
 
-#save_plot_per_column(nipals_T, [str(i) for i in range(N_COMPONENTS)], "_component", FIGURES_FOLDER)
+save_plot_per_column(nipals_T, [str(i) for i in range(N_COMPONENTS)], "_component", FIGURES_FOLDER)
 
 
 ### Generate Gaussian data
@@ -250,7 +248,7 @@ print_matrix("generated_gaussian", generated_gaussian)
 #save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
 
 
-save_plot_per_component_gaussian(N_COMPONENTS, generated_gaussian, nipals_T)
+save_plot_per_component_gaussian(N_COMPONENTS, generated_gaussian, nipals_T, ["component" + str(i) for i in range(N_COMPONENTS)])
 
 
 
@@ -259,6 +257,10 @@ inverse_gaussian = np.dot(generated_gaussian, nipals_P.T) + np.mean(raw, axis=0)
 #XX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("inverse_gaussian", inverse_gaussian)
 save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
+
+
+
+save_plot_per_component_gaussian(len(data.columns), inverse_gaussian, data.values, data.columns, _suffix="_inverted_gaussian")
 
 
 exit()
