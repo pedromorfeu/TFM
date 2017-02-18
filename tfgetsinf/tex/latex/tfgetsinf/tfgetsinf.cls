@@ -93,7 +93,7 @@
 \newcommand{\tfgname}{Treball fi de grau}
 
 \newcommand{\authorname}{Autor}
-\newcommand{\tutorname}{Tutor}
+\newcommand{\tutorname}{Tutores}
 \newcommand{\coursename}{Curs}
 \newcommand{\keywordsname}{Paraules clau}
 
@@ -108,7 +108,7 @@
      \renewcommand{\titulacioname}{Grau en Enginyeria Inform\`atica}
      \renewcommand{\tfgname}{Treball fi de grau}
      \renewcommand{\authorname}{Autor}
-     \renewcommand{\tutorname}{Tutor}
+     \renewcommand{\tutorname}{Tutores}
      \renewcommand{\coursename}{Curs}
      \renewcommand{\keywordsname}{Paraules clau}
      \renewcommand{\algorithmname}{Algorisme}
@@ -122,7 +122,7 @@
      \renewcommand{\titulacioname}{M\'aster en Big Data Analytics}
      \renewcommand{\tfgname}{Trabajo de fin de M\'aster}
      \renewcommand{\authorname}{Autor}
-     \renewcommand{\tutorname}{Tutor}
+     \renewcommand{\tutorname}{Tutores}
      \renewcommand{\coursename}{Curso}
      \renewcommand{\keywordsname}{Palabras clave}
      \renewcommand{\abstractname}{Abstract}
@@ -138,7 +138,7 @@
      \renewcommand{\titulacioname}{Degree in Computer Engineering}
      \renewcommand{\tfgname}{Degree final work}
      \renewcommand{\authorname}{Author}
-     \renewcommand{\tutorname}{Tutor}
+     \renewcommand{\tutorname}{Tutores}
      \renewcommand{\coursename}{Course}
      \renewcommand{\keywordsname}{Key words}
      \renewcommand{\algorithmname}{Algorithm}
