@@ -1038,14 +1038,14 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         Si se generan 100.000.000 puntos multidimensionales, la memoria de la maquina referida anteriormente no es suficiente para cargar toda la estructura {\tt numpy}. Así que el algoritmo {\tt numpy} tendría que hacer {\em swapping} de datos entre la memoria y disco, volviendo la ejecución ineficiente y lenta. 
         
-        Cuando el volumen de datos es exageradamente grande, se necesitan herramientas adecuadas para procesarlos. En este caso de estudio, se necesita guardar una gran cantidad de datos de la simulación Gaussiana en un repositorio, con buenas prestaciones de escritura y de lectura. Y, por otro lado, se necesita gran capacidad de procesamiento para calcular la distancia Euclídea a todos los puntos de esa simulación, de forma a encontrar el más cercano. Las herramientas Big Data dan respuesta a estos requerimientos y, por lo tanto, viabilizan la solución propuesta en este estudio. Para resolver los problemas de almacenamiento y de procesamiento se han elegido las herramientas MongoDB y Spark, respectivamente.
+        Cuando el volumen de datos es exageradamente grande, se necesitan herramientas adecuadas para procesarlos. En este caso de estudio, se necesita guardar una gran cantidad de datos de la simulación Gaussiana en un repositorio, con buenas prestaciones de escritura y de lectura. Y, por otro lado, se necesita gran capacidad de procesamiento para calcular la distancia Euclídea a todos los puntos de esa simulación, de forma a encontrar el más cercano. Las herramientas Big Data dan respuesta a estos requerimientos y, por lo tanto, viabilizan la solución propuesta en este estudio. Para resolver los problemas de almacenamiento y de procesamiento se han elegido las herramientas {\em MongoDB} y {\em Apache Spark}, respectivamente.
         
         \subsection{MongoDB}
-        MongoDB es una base de datos NoSQL. El concepto de NoSQL está relacionado con la abdicación de las reglas básicas de las bases de datos relacionales. Por ejemplo, en NoSQL, se suprime el uso de {\em joins} y {\em foreign keys}, en virtude de la rapidez de escritura y acceso a los datos. Justamente los {\em joins} y {\em foreign keys} son dos de los pilares de las bases de datos relacionales, que sustentan la integridad relacional. 
+        {\em MongoDB} es una base de datos NoSQL. El concepto de NoSQL está relacionado con la abdicación de las reglas básicas de las bases de datos relacionales. Por ejemplo, en NoSQL, se suprime el uso de {\em joins} y {\em foreign keys}, en virtude de la rapidez de escritura y acceso a los datos. Justamente los {\em joins} y {\em foreign keys} son dos de los pilares de las bases de datos relacionales, que sustentan la integridad relacional. 
         
-        Como referido en su documentación, MongoDB es una base de datos {\em open-source} que ofrece alto rendimiento, alta disponibilidad y escalado automático. En nuestro caso, la más importante característica es el alto rendimiento de persistencia y lectura para grandes cantidades de datos. 
+        Como referido en su documentación, {\em MongoDB} es una base de datos {\em open-source} que ofrece alto rendimiento, alta disponibilidad y escalado automático. En nuestro caso, la más importante característica es el alto rendimiento de persistencia y lectura para grandes cantidades de datos. 
         
-        Los registros en MongoDB se llaman documentos y tienen formato JSON, con inmediata correspondencia con los diccionarios de Python. Así que el uso de Python ha facilitado bastante la introducción de MongoDB en el proyecto. Cada documento en MongoDB debe contener todos los datos necesarios por la aplicación, aunque para eso se cree información redundante. Con esto se obtienen lecturas muy rápidas, porque no hay necesidad de cruzar información. La verbosidad de los documentos debe ser bien pensada antes de crearlos - aunque la estructura de los datos es flexible en NoSQL. La aplicación se ha de encargar de la integridad de los datos, quitando también esa carga al motor de base de datos.
+        Los registros en {\em MongoDB} se llaman documentos y tienen formato JSON, con inmediata correspondencia con los diccionarios de Python. Así que el uso de Python ha facilitado bastante la introducción de {\em MongoDB} en el proyecto. Cada documento en {\em MongoDB} debe contener todos los datos necesarios por la aplicación, aunque para eso se cree información redundante. Con esto se obtienen lecturas muy rápidas, porque no hay necesidad de cruzar información. La verbosidad de los documentos debe ser bien pensada antes de crearlos - aunque la estructura de los datos es flexible en NoSQL. La aplicación se ha de encargar de la integridad de los datos, quitando también esa carga al motor de base de datos.
         
         Los documentos se organizan en un nivel superior, las colecciones. En esta implementación se usan las colecciones:
         \begin{itemize}
@@ -1055,7 +1055,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         \item {\tt generated} - simulación con ARIMA
         \end{itemize}
         
-        Todas las colecciones (excepto {\tt data}) almacenan datos de la proyección al espacio reducido y la respectiva inversión al espacio original. La distinción se hace a través del campo {\tt type}, que puede tener valores {\tt component} o {\tt inverse}. Con esto hacemos uso de las facilidades de MongoDB en lo que respecta a esquema de datos flexible y verbosidad de los documentos con redundancia. 
+        Todas las colecciones (excepto {\tt data}) almacenan datos de la proyección al espacio reducido y la respectiva inversión al espacio original. La distinción se hace a través del campo {\tt type}, que puede tener valores {\tt component} o {\tt inverse}. Con esto hacemos uso de las facilidades de {\em MongoDB} en lo que respecta a esquema de datos flexible y verbosidad de los documentos con redundancia. 
         
         En los códigos ~\ref{lst:generated_component} y ~\ref{lst:generated_inverse} podemos ver ejemplos de documentos de tipo {\tt component} y de tipo {\tt inverse} de la colección {\tt generated}:
         \begin{lstlisting}[language=Python, caption=Documento de tipo {\tt component}., label={lst:generated_component}]
@@ -1093,7 +1093,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         En la misma colección conviven dos estructuras de datos muy diferentes. Al leer estos datos, en cada documento, tenemos acceso a toda la información necesaria por la aplicación. Para acelerar el acceso a los documentos de un determinado tipo, se ha creado un índice en el campo {\tt type}.
         
-        Aparte de cumplir con la función de repositorio de datos de todas las partes del proceso, MongoDB se está usando como {\em buffer} para la generación de gráficos en tiempo real. Los nuevos puntos simulados (con ARIMA y posterior búsqueda en los datos Gaussianos) se van guardando en MongoDB progresivamente. De esta forma, se consigue una arquitectura {\em decoupled}, que permite que otro programa vaya leyendo esos datos y representando en gráficos con {\tt matplotlib}. 
+        Aparte de cumplir con la función de repositorio de datos de todas las partes del proceso, {\em MongoDB} se está usando como {\em buffer} para la generación de gráficos en tiempo real. Los nuevos puntos simulados (con ARIMA y posterior búsqueda en los datos Gaussianos) se van guardando en {\em MongoDB} progresivamente. De esta forma, se consigue una arquitectura {\em decoupled}, que permite que otro programa vaya leyendo esos datos y representando en gráficos con {\tt matplotlib}. 
         
         En la Figura~\ref{fig:matplotlib} se pueden ejemplos de la herramienta creada para generación de gráficos en tiempo real, para la segunda componente (gráfico~\ref{fig:c1_matplotlib}) y para los datos invertidos de \(ACPx\) (gráfico~\ref{fig:ACPx_matplotlib}). 
         
@@ -1101,12 +1101,12 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
             \centering
             \begin{subfigure}[h]{0.7\textwidth}
                 \includegraphics[width=\textwidth]{matplotlib/c1_matplotlib_1.png}
-                \caption{Componente 2.}
+                \caption{Datos de la componente 2.}
                 \label{fig:c1_matplotlib}
             \end{subfigure}
             \begin{subfigure}[h]{0.7\textwidth}
                 \includegraphics[width=\textwidth]{matplotlib/ACPx_matplotlib_1.png}
-                \caption{ACPx.}
+                \caption{Datos invertidos de ACPx.}
                 \label{fig:ACPx_matplotlib}
             \end{subfigure}
             \caption{Gráficos de simulación en tiempo real.}
@@ -1139,7 +1139,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 	
 	{\em Spark} tiene varias librerías construidas sobre el motor principal. Un ejemplo es {\tt MLlib}, una librería para {\em Machine Learning}, que se ha usado para la generación de los puntos de simulación Gaussiana, a través de {\tt RandomRDDs} del módulo {\tt pyspark.mllib.random}. 
 	
-	Otra librería es {\tt Spark SQL}, que ha sido de utilidad para crear {\tt DataFrames} y así interactuar fácilmente con MongoDB. En este caso, a través de un conector, se habilita la combinación de las dos herramientas para que la persistencia pueda se haga de forma distribuida.
+	Otra librería es {\tt Spark SQL}, que ha sido de utilidad para crear {\tt DataFrames} y así interactuar fácilmente con {\em MongoDB}. En este caso, a través de un conector, se habilita la combinación de las dos herramientas para que la persistencia pueda se haga de forma distribuida.
         
  
 % Conclusiones
