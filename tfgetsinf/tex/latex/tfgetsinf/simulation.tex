@@ -546,7 +546,6 @@ P-value:  1
         \label{fig:component_x}
     \end{figure}
     
-    
     Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(sin - 1\) con ruido \(0.05\) sería el representado en la Figura~\ref{fig:col5_inverse_all}. La señal invertida conserva aceptablemente la forma de la función sinusoidal original a lo largo del tiempo. Además se mantiene dentro de los límites de la inversión de la respectiva simulación Gaussiana para la misma característica (Figura~\ref{fig:col5_inverse_gaussian}). De todas formas, la calidad de la simulación es configurable, a través del ajuste de numero de componentes, como quedó claro en el estudio de la Figura~\ref{fig:col5_inverted_nipals_n_components}.
 
     \begin{figure}[H]
@@ -1207,7 +1206,39 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
  
 % Conclusiones
 \chapter{Conclusiones}
-TODO
+
+El modelo PCA ({\em Principal Component Analysis}) se puede usar para predecir datos futuros de una forma bastante directa. Aparte del cálculo de las componentes principales, PCA calcula también las proyecciones de los datos a lo largo de esas componentes en ele espacio más reducido. Se pueden substituir los valores de las proyecciones por nuevos valores aleatorios y re-proyectar al espacio original, para obtener valores nuevos, simulados, de las características originales. Ésta constituye la base que sustenta este estudio.
+
+Aparte de las capacidades de simulación que ofrece PCA, también cumple un importante papel en la reducción de ruido y redundancias de la señal. PCA reduce los datos a lo esencial, siendo que la primera componente es la que mayor varianza explica, la segunda componente es la que mayor varianza explica quitando la primera, y así sucesivamente. Así que es de esperar que las ultimas componentes no contengan información tan relevante, pero si el ruido y redundancias de la señal. 
+
+PCA se puede calcular también a través de SVD ({\em Singular Value Decomposition}) o con el método NIPALS ({\em Non-linear Iterative Partial Least Squares}). Los resultados obtenidos con las varias formas de cálculo de PCA son los mismos. El método NIPALS, usado en este estudio, es una versión iterativa de cálculo de PCA, útil para {\em datasets} grandes. Mientras los otros métodos hacen el cálculo todo de una vez (toda la matriz de varianzas-covarianzas), NIPALS solo calcula las primeras componentes principales iterativamente. Aunque el {\em dataset} de este estudio no es grande, se ha comprobado el mejor rendimiento del algoritmo de NIPALS frente a SVD de {\tt numpy} y PCA de {\tt scikit-learn}.
+
+Se ha verificado que cuantos más componentes se usen, más parecidos son los datos invertidos a los datos originales. Pero también, al introducir más componentes, mayor es el ruido de la señal. En el ejemplo con datos controlados queda patente ese efecto. Esta constatación nos puede servir como ajuste para el proceso implementado.
+
+El estadístico \(T^2\) ({\em T-squared}) de Hotelling ha sido de gran utilidad para validar la similitud de las poblaciones original y invertida de PCA. Es de suma importancia la validación de la población generada al invertir la simulación con distribución Gaussiana, pues esta es la fundación de la simulación final. Con la introducción de series temporales, los resultados de \(T^2\) dejan de ser válidos, probablemente porque en la predicción se están usando los datos de los últimos instantes de la serie y, luego, la población generada ya no es igual a la original. Así, la contribución de \(T^2\) de Hotelling termina en la validación de la simulación Gaussiana.
+
+El análisis de series temporales ha sido la parte más extensa del estudio. Sobre todo, porque hay varios pasos de transformación y verificación visual hasta conseguir la estacionaridad y los parámetros adecuados de ARIMA. Y todo esto para cada componente. Para entender bien el proceso, se han realizado con todos los pasos de forma manual, aplicando varios métodos de diferenciación y analizando gráficamente los resultados. También se han usado gráficos para la determinación de los parámetros de las partes AR (auto-regresiva) y MA (media móvil). En fases más avanzadas, se ha pasado a automatizar todo el proceso de análisis de las series temporales, usando un algoritmo exhaustivo que prueba todas las combinaciones de parámetros hasta conseguir el menor RMSE ({\em root mean square error}).
+
+
+
+
+
+
+
+
+Poca cantidad de datos. Datos con discrepancias grandes en el mismo día. Huecos grandes entre días.
+Preparación de datos - fechas, líneas vacías.
+Timeseries - transformar serie en estacionaria. Uso de pandas. Mejor predecir un solo día, porque diferentes días corresponden a diferentes pruebas/estados de la maquina. Predicción ARIMA 1 día tiende para infinito; con SARIMAX tiende para la media. Darle realismo con ruido.
+Simulación con búsqueda Gaussiana. Tiene q funcionar teniendo en cuenta los resultados de Hotelling.
+Prueba con juguete validad la solución.
+Ajustando numero de componentes podemos tener mejores resultados.
+Otros ajustes ayudan a mejorar.
+Big Data juege un papel fundamental, pus viabiliza la solución Gaussiana.
+
+
+
+
+
 
 % Trabajos futuros
 \chapter{Trabajos futuros}
