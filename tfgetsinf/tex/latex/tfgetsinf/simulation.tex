@@ -1228,8 +1228,9 @@ Cuántos más datos de simulación Gaussiana mejor, pues se encontrarán puntos 
 
 % Trabajos futuros
 \chapter{Trabajos futuros}
+Se considera importante como trabajo futuro la experimentación con diferente numero de componentes, especialmente si se incrementa ese numero. El objetivo es verificar la calidad de la simulación con mayor numero de componentes. En el mismo ámbito, se puede ajustar el error introducido en las predicciones antes de buscar en la simulación Gaussiana. 
 
-ARIMA: añadirle el ruido residual a la predicción y realizar la predicción del siguiente valor con el valor de la predicción actual que incluye el ruido.
+Las ejecuciones con {\em Apache Spark} se hicieron en una sola maquina, con generación de 1.000.000 puntos de distribución Gaussiana. Sería interesante lanzar el proceso completo en un {\em cluster}, con generación de mucho mayor numero de puntos. Además se están simulando 2000 puntos con ARIMA, lo que se podría incrementar también en un {\em cluster}.
 
 \begin{thebibliography}{10}
 
