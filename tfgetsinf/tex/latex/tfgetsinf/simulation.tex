@@ -1155,7 +1155,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         En la misma colección conviven dos estructuras de datos muy diferentes. Al leer estos datos, en cada documento, tenemos acceso a toda la información necesaria por la aplicación. Para acelerar el acceso a los documentos de un determinado tipo, se ha creado un índice en el campo {\tt type}.
         
-        Aparte de cumplir con la función de repositorio de datos de todas las partes del proceso, {\em MongoDB} se está usando como {\em buffer} para la generación de gráficos en tiempo real. Los nuevos puntos simulados (con ARIMA y posterior búsqueda en los datos Gaussianos) se van guardando en {\em MongoDB} progresivamente. De esta forma, se consigue una arquitectura {\em decoupled}, que permite que otro programa vaya leyendo esos datos y representando en gráficos con {\tt matplotlib}. 
+        Aparte de cumplir con la función de repositorio de datos de todas las partes del proceso, {\em MongoDB} se está usando como {\em buffer} para la generación de gráficos en tiempo real. Los nuevos puntos simulados (con ARIMA y posterior búsqueda en los datos Gaussianos) se van guardando en {\em MongoDB} progresivamente. De esta forma, se consigue una arquitectura {\em decoupled}, que permite que otro programa vaya leyendo esos datos y representando en gráficos con {\tt matplotlib}. Se utiliza un cursor para ir obteniendo los nuevos datos del repositorio.
         
         En la Figura~\ref{fig:matplotlib} se pueden ejemplos de la herramienta creada para generación de gráficos en tiempo real, para la segunda componente (gráfico~\ref{fig:c1_matplotlib}) y para los datos invertidos de \(ACPx\) (gráfico~\ref{fig:ACPx_matplotlib}). 
         
@@ -1228,9 +1228,27 @@ Cuántos más datos de simulación Gaussiana mejor, pues se encontrarán puntos 
 
 % Trabajos futuros
 \chapter{Trabajos futuros}
-Se considera importante como trabajo futuro la experimentación con diferente numero de componentes, especialmente si se incrementa ese numero. El objetivo es verificar la calidad de la simulación con mayor numero de componentes. En el mismo ámbito, se puede ajustar el error introducido en las predicciones antes de buscar en la simulación Gaussiana. 
+Durante el proyecto han surgido varias ideas y pruebas que no se han podido realizar. La experimentación con diferente numero de componentes es una de ellas, especialmente si se incrementa ese numero. El objetivo es verificar la calidad de la simulación con mayor numero de componentes. En el mismo ámbito, se puede ajustar el error introducido en las predicciones antes de buscar en la simulación Gaussiana. 
 
-Las ejecuciones con {\em Apache Spark} se hicieron en una sola maquina, con generación de 1.000.000 puntos de distribución Gaussiana. Sería interesante lanzar el proceso completo en un {\em cluster}, con generación de mucho mayor numero de puntos. Además se están simulando 2000 puntos con ARIMA, lo que se podría incrementar también en un {\em cluster}.
+Las ejecuciones con {\em Apache Spark} se hicieron en una sola maquina, con generación de 1.000.000 puntos de distribución Gaussiana. Sería interesante lanzar el proceso completo en un {\em cluster}, con generación de mucho mayor numero de puntos. Además se están simulando 2000 puntos con ARIMA, lo que se podría incrementar también en un {\em cluster}. 
+
+La medida de distancia usada es la Euclídea. Se han hecho también algunas pruebas con la distancia de Mahalanobis, pero no tan exhaustivas. En la ejecución distribuida no se ha llegado siquiera a implementar en {\em Spark}. Como trabajo futuro, se podría experimentar más con esa distancia para ver que efecto tiene en los resultados. Además, otra mejora que no se ha implementado en la ejecución distribuida es la búsqueda de más de un punto cercano y elección aleatoria de uno de ellos.
+
+Se ha creado un utilitario basado en {\em matplotlib} para ver la evolución de la simulación en forma gráfica. El utilitario utiliza como fuente los datos guardados en {\em MongoDB} y va diseñando dinámicamente el gráfico. Primero se cargan los datos iniciales (datos reales y simulación Gaussiana); luego, según se van calculando y guardando nuevos puntos, se van diseñando en el gráfico en tiempo real, a través de un cursor. El utilitario es válido, sin embargo tiene varias limitaciones: 
+\begin{itemize}
+\item falta de interactividad con el usuario - no es posible elegir las variables en un gráfico en ejecución.
+\item interfaz sencillo - el interfaz es el básico de {\em matplotlib}.
+\item pasividad - no es posible introducir cambios en la ejecución.
+\end{itemize}
+
+Se ha elegido {\em MongoDB} como repositorio de datos por la familiaridad con la herramienta. {\em MongoDB} guarda los datos en documentos, pero hay otros acercamientos que se podrían aplicar, como los repositorios de tipo columnar ({\em Cassandra}) o clave-valor ({\em Redis}, {\em Amazon DynamoDB}). 
+
+Los tiempos de ejecución y uso de memoria carecen de un estudio documentado. Sobre todo la parte de búsqueda de puntos en la simulación Gaussiana, que es la tarea más exigente. El estudio debería medir como evoluciona la {\em performance} de la ejecución en función de los factores de memoria, CPU, numero de nodos, espacio en disco y numero de puntos Gaussianos. Las medidas servirían para determinar las condiciones óptimas de ejecución.
+
+Los datos discrepantes encontrados en el {\em dataset} se pueden deber a diferentes estados de la máquina observada por los sensores. Por ejemplo, en fase de calentamiento es normal que las medidas evolucionen bastante, para luego tender para un equilibrio. Un apagado repentino puede provocar {\em outliers} en las mediciones. Para atenuar esos efectos, las diferentes fases (o estados) se podrían introducir en forma de variables cualitativas, de modo que los modelos pudiesen aprenderlas. 
+
+%             - Aplicación de otras técnicas de proyección.
+%             - Otros tipos de modelos de simulación, etc ...
 
 \begin{thebibliography}{10}
 
