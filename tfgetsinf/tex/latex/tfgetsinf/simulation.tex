@@ -29,6 +29,11 @@
     numbers=none,
     basicstyle=\ttfamily\small
 }
+
+\addto\captionsspanish{%
+  \renewcommand{\lstlistingname}{Código}%
+}
+
 % End text global definitions
 
 
@@ -127,11 +132,11 @@ La simulación Gaussiana necesita tener una gran cantidad de puntos para que la 
         \label{fig:pca1}
     \end{figure}    
    
-    Por ejemplo, la Figura~\ref{fig:pca1} representa un conjunto de datos de dos dimensiones con distribución Gaussiana. La flecha más grande representa la dirección de la primera componente principal de los datos. Se puede verificar a simple vista que esta es la dirección con mayor variabilidad en los datos. Si trazamos una línea imaginaria a lo largo de esa flecha (como la línea verde) y proyectamos en ella los datos, tendremos la proyección con mayor variabilidad. 
+    Por ejemplo, la figura~\ref{fig:pca1} representa un conjunto de datos de dos dimensiones con distribución Gaussiana. La flecha más grande representa la dirección de la primera componente principal de los datos. Se puede verificar a simple vista que esta es la dirección con mayor variabilidad en los datos. Si trazamos una línea imaginaria a lo largo de esa flecha (como la línea verde) y proyectamos en ella los datos, tendremos la proyección con mayor variabilidad. 
     
     La dirección de segunda componente está representada por la otra flecha. Al proyectar los datos en la línea imaginaria azul, podemos imaginar que el espectro de variabilidad es inferior al la primera.
    
-    La proyección de un punto a una línea es muy sencilla: basta con buscar el punto más cercano en esa línea. Los puntos azules en la Figura~\ref{fig:pca_projection} representan la proyección de los puntos originales en la línea.
+    La proyección de un punto a una línea es muy sencilla: basta con buscar el punto más cercano en esa línea. Los puntos azules en la figura~\ref{fig:pca_projection} representan la proyección de los puntos originales en la línea.
 
     \begin{figure}[h]
         \centering
@@ -221,7 +226,7 @@ La simulación Gaussiana necesita tener una gran cantidad de puntos para que la 
     \subsection{Estacionaridad}
     Las series temporales son diferentes de un problema de regresión normal porque son dependientes del tiempo. Así que el supuesto básico de la regresión lineal de que las observaciones son independientes no se verifica en este caso. Para poder aplicar el modelo ARIMA es necesario que la serie sea estacionaria. Una serie es estacionaria cuando la media y varianza, si existen, no cambian en función del tiempo. Como ARIMA usa los periodos anteriores para modelar el comportamiento de la serie, es importante que esta sea estable para tener más acierto. Muchas veces la estacionaridad se puede detectar visualmente, como se presenta en los ejemplos siguientes.
     
-    La Figura~\ref{fig:stationary} es un ejemplo de una serie estacionaria, donde los valores oscilan con una varianza constante alrededor de una media de aproximadamente \(69.0\). 
+    La figura~\ref{fig:stationary} es un ejemplo de una serie estacionaria, donde los valores oscilan con una varianza constante alrededor de una media de aproximadamente \(69.0\). 
     
     \begin{figure}[h]
         \centering
@@ -230,7 +235,7 @@ La simulación Gaussiana necesita tener una gran cantidad de puntos para que la 
         \label{fig:stationary}
     \end{figure}
 
-    La Figura~\ref{fig:non_stationary}, sin embargo, no presenta señales de media y varianza constantes. De hecho se detecta una ligera tendencia decreciente, lo que la hace no estacionaria. 
+    La figura~\ref{fig:non_stationary}, sin embargo, no presenta señales de media y varianza constantes. De hecho se detecta una ligera tendencia decreciente, lo que la hace no estacionaria. 
     
     \begin{figure}[h]
         \centering
@@ -252,7 +257,7 @@ La simulación Gaussiana necesita tener una gran cantidad de puntos para que la 
         \label{fig:time_serie_1}
     \end{figure}
     
-    La serie de la Figura~\ref{fig:time_serie_1} tiene una tendencia creciente, por lo que no debería ser estacionaria. Apliquemos el test de Dickey-Fuller, presente en módulo {\tt statsmodels} de Python:
+    La serie de la figura~\ref{fig:time_serie_1} tiene una tendencia creciente, por lo que no debería ser estacionaria. Apliquemos el test de Dickey-Fuller, presente en módulo {\tt statsmodels} de Python:
     
     \lstset{style=python}
     \begin{lstlisting}[caption=Test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_test_1}]
@@ -280,7 +285,7 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
     
     Siendo \(t\) un determinado punto en el tiempo. Se pueden aplicar más niveles de diferenciación, pero con un solo nivel suele ser suficiente.
     
-    Aplicando diferenciación a la serie anterior obtenemos la serie transformada representada en la Figura~\ref{fig:ts_diff} y respectivos resultados en Listing~\ref{lst:adf_test_2}.
+    Aplicando diferenciación a la serie anterior obtenemos la serie transformada representada en la figura~\ref{fig:ts_diff} y respectivos resultados en Listing~\ref{lst:adf_test_2}.
     
     \begin{figure}[h]
         \centering
@@ -313,7 +318,7 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
     
     Se ha comprobado antes que la serie necesita un nivel de diferenciación para ser estacionaria: \(d=1\). La componente I de ARIMA será tendrá, así, valor \(1\). 
     
-    Empezamos la iteración con un nivel para la componente auto-regresiva: \(p=1\), que corresponde a \(AR(1)\). El resultado del ajuste del modelo se puede ver en la Figura~\ref{fig:iterative_arima_ar_1}. La línea azul representa los datos de la serie diferenciada y la línea roja es el ajuste del modelo a esos datos. El RMSE es de \(\approx32.04\). 
+    Empezamos la iteración con un nivel para la componente auto-regresiva: \(p=1\), que corresponde a \(AR(1)\). El resultado del ajuste del modelo se puede ver en la figura~\ref{fig:iterative_arima_ar_1}. La línea azul representa los datos de la serie diferenciada y la línea roja es el ajuste del modelo a esos datos. El RMSE es de \(\approx32.04\). 
     
     \begin{figure}[h]
         \centering
@@ -322,7 +327,7 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
         \label{fig:iterative_arima_ar_1}
     \end{figure}
     
-    Pasamos a probar la componente de média móvil: \(q=1\), o \(MA(1)\). El RMSE ha bajado un poco, ahora es \(\approx31.52\) (Figura~\ref{fig:iterative_arima_ma_1}).
+    Pasamos a probar la componente de média móvil: \(q=1\), o \(MA(1)\). El RMSE ha bajado un poco, ahora es \(\approx31.52\) (figura~\ref{fig:iterative_arima_ma_1}).
     
     \begin{figure}[h]
         \centering
@@ -331,7 +336,7 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
         \label{fig:iterative_arima_ma_1}
     \end{figure}
     
-    Combinando los dos modelos anteriores es cuando tenemos realmente un modelo ARIMA completo, con las tres componentes: \(ARIMA(p, d, q)=ARIMA(1, 1, 1)\). Se puede verificar que el RMSE ha bajado mínimamente respecto al modelo anterior (Figura~\ref{fig:iterative_arima_arma_1}).
+    Combinando los dos modelos anteriores es cuando tenemos realmente un modelo ARIMA completo, con las tres componentes: \(ARIMA(p, d, q)=ARIMA(1, 1, 1)\). Se puede verificar que el RMSE ha bajado mínimamente respecto al modelo anterior (figura~\ref{fig:iterative_arima_arma_1}).
     
     \begin{figure}[h]
         \centering
@@ -340,7 +345,7 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
         \label{fig:iterative_arima_arma_1}
     \end{figure}
         
-    Obviando algunas iteraciones intermedias, pasamos al modelo con dos niveles de \(AR\) y de \(MA\): \(ARIMA(p, d, q)=ARIMA(2, 1, 2)\). El RMSE obtenido es de \(\approx25.06\), que corresponde al menor valor. Si paramos la iteración, este sería el modelo con mejor ajuste. En la Figura~\ref{fig:iterative_arima_arma_2} podemos verificar ese ajuste visualmente: la línea roja se ajusta mejor a los datos que en los gráficos anteriores.
+    Obviando algunas iteraciones intermedias, pasamos al modelo con dos niveles de \(AR\) y de \(MA\): \(ARIMA(p, d, q)=ARIMA(2, 1, 2)\). El RMSE obtenido es de \(\approx25.06\), que corresponde al menor valor. Si paramos la iteración, este sería el modelo con mejor ajuste. En la figura~\ref{fig:iterative_arima_arma_2} podemos verificar ese ajuste visualmente: la línea roja se ajusta mejor a los datos que en los gráficos anteriores.
   
     \begin{figure}[h]
         \centering
@@ -351,7 +356,7 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
     
     estadísticas, incluyendo modelos de series temporales. Particularmente útil es la funcionalidad de generar gráficas de predicción automáticamente, sin necesidad de volver los datos a la escala original (sin diferenciación), usando {\tt plot\_predict}. 
 
-    Una vez ajustado el modelo a los datos, se pueden hacer predicciones futuras. Se define el periodo de predicción y el modelo aprendido generará esos pronósticos. La Figura~\ref{fig:forecast} da un ejemplo de los resultados que se pueden obtener. 
+    Una vez ajustado el modelo a los datos, se pueden hacer predicciones futuras. Se define el periodo de predicción y el modelo aprendido generará esos pronósticos. La figura~\ref{fig:forecast} da un ejemplo de los resultados que se pueden obtener. 
 
     \begin{figure}[h]
         \centering
@@ -360,9 +365,9 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
         \label{fig:forecast}
     \end{figure}
 
-    La línea azul de la Figura~\ref{fig:forecast} representa los datos, ahora sin diferenciación. La línea verde representa la predicción después del final de la serie (llamada predicción {\em out-of-sample}). El área sombreada representa el intervalo de confianza de 5\% de la predicción. Se puede comprobar visualmente que la predicción sigue aproximadamente la tendencia de la serie. Predicciones con mayor horizonte futuro tendrán mayor incertidumbre, una vez que el modelo hará regresión de los valores futuros con los valores predichos.
+    La línea azul de la figura~\ref{fig:forecast} representa los datos, ahora sin diferenciación. La línea verde representa la predicción después del final de la serie (llamada predicción {\em out-of-sample}). El área sombreada representa el intervalo de confianza de 5\% de la predicción. Se puede comprobar visualmente que la predicción sigue aproximadamente la tendencia de la serie. Predicciones con mayor horizonte futuro tendrán mayor incertidumbre, una vez que el modelo hará regresión de los valores futuros con los valores predichos.
 
-    El modulo {\tt statsmodels} de Python tiene un conjunto de herramientas estadísticas, incluyendo modelos de series temporales. Particularmente útil es la funcionalidad de generar gráficas de predicción automáticamente, sin necesidad de volver los datos a la escala original (sin diferenciación en este caso), usando {\tt plot\_predict}. El código~\ref{lst:forecast} es el código que genera el gráfico de la Figura~\ref{fig:forecast}. El periodo de predicción está aquí definido en los parámetros {\tt start} y {\tt end}, en un total de 20 nuevos puntos desde el final de la serie ({\tt len(ts)}).
+    El modulo {\tt statsmodels} de Python tiene un conjunto de herramientas estadísticas, incluyendo modelos de series temporales. Particularmente útil es la funcionalidad de generar gráficas de predicción automáticamente, sin necesidad de volver los datos a la escala original (sin diferenciación en este caso), usando {\tt plot\_predict}. El código~\ref{lst:forecast} es el código que genera el gráfico de la figura~\ref{fig:forecast}. El periodo de predicción está aquí definido en los parámetros {\tt start} y {\tt end}, en un total de 20 nuevos puntos desde el final de la serie ({\tt len(ts)}).
 
     \begin{lstlisting}[language=Python, caption={\tt plot\_predict} de {\tt statsmodels} de Python., label={lst:forecast}]
 from statsmodels.tsa.arima_model import ARIMA
@@ -392,7 +397,7 @@ En este capítulo se exponen las pruebas realizadas y respectivos resultados.
         \item \(cos - 1\) con ruido \(0.09\)
     \end{itemize}
     
-    El ruido proporciona un toque realista a los datos sintéticos (que podrían ser provenientes de sensores) y nos servirá para comprobar la técnica de PCA. Las observaciones de, por ejemplo, \(sin - 1\) con ruido \(0.05\) serían las representadas en el gráfico de la Figura~\ref{fig:col5_original}. Se puede ver que la curva sinusoidal no es perfecta por el ruido introducido.
+    El ruido proporciona un toque realista a los datos sintéticos (que podrían ser provenientes de sensores) y nos servirá para comprobar la técnica de PCA. Las observaciones de, por ejemplo, \(sin - 1\) con ruido \(0.05\) serían las representadas en el gráfico de la figura~\ref{fig:col5_original}. Se puede ver que la curva sinusoidal no es perfecta por el ruido introducido.
     
     \begin{figure}[H]
         \centering
@@ -410,7 +415,7 @@ En este capítulo se exponen las pruebas realizadas y respectivos resultados.
         \label{fig:col5_inverted_nipals}
     \end{figure}
     
-    Veamos ahora como cambia la señal invertida conforme se van introduciendo las componentes de forma ordenada, para el mismo ejemplo de función sinusoidal. La Figura~\ref{fig:col5_inverted_nipals_n_components} representa el cambio secuencialmente. 
+    Veamos ahora como cambia la señal invertida conforme se van introduciendo las componentes de forma ordenada, para el mismo ejemplo de función sinusoidal. La figura~\ref{fig:col5_inverted_nipals_n_components} representa el cambio secuencialmente. 
     
     \begin{figure}[H]
         \begin{subfigure}[h]{0.33\textwidth}
@@ -500,7 +505,7 @@ P-value:  1
         
     Llegados a este punto, pasamos a dar un sentido temporal a la predicción. Para esto, se usarán modelos ARIMA, que aprenderán la evolución de los datos de las proyecciones a lo largo del tiempo. Una vez hecho el aprendizaje, el modelo ARIMA puede hacer predicciones futuras sobre los datos, basándose en los datos pasados. Esta predicción se hará de forma iterativa, punto por punto: en cada iteración, teniendo la predicción ARIMA de un punto nuevo para cada componente, se añade ruido residual y se busca el punto multi-dimensional más cercano en los datos simulados con distribución Gaussiana. El punto más cercano se usará para substituir los puntos predichos por ARIMA y así re-alimentar el modelo con nuevos datos. Los datos simulados serán un sub-conjunto de los datos simulados Gaussianos, que demostramos que eran válidos, por lo que la población generada por inversión al espacio original debe ser válida también.
     
-    La idea es ahora ilustrar el proceso completo: cálculo de componentes principales, simulación de datos con distribución Gaussiana y predicción con ARIMA. Para la primera componente, se obtienen los resultados representados en la Figura~\ref{fig:component_1}. En el gráfico se pueden ver todas las partes del proceso, con superposición para comparar más facilmente:
+    La idea es ahora ilustrar el proceso completo: cálculo de componentes principales, simulación de datos con distribución Gaussiana y predicción con ARIMA. Para la primera componente, se obtienen los resultados representados en la figura~\ref{fig:component_1}. En el gráfico se pueden ver todas las partes del proceso, con superposición para comparar más facilmente:
     \begin{itemize}
         \item rojo - datos de la componente.
         \item azul - simulación con distribución normal.
@@ -514,7 +519,7 @@ P-value:  1
         \label{fig:component_1}
     \end{figure}
     
-    Los gráficos de simulación de las demás componentes se representan en la Figura~\ref{fig:component_x}. Con datos controlados, el modelo ARIMA capta bien la serie y eso se traduce en una predicción estable y coherente. Además, siempre dentro de los límites de la simulación Gaussiana, como se pretendía. Las restantes componentes tienen un comportamiento idéntico.
+    Los gráficos de simulación de las demás componentes se representan en la figura~\ref{fig:component_x}. Con datos controlados, el modelo ARIMA capta bien la serie y eso se traduce en una predicción estable y coherente. Además, siempre dentro de los límites de la simulación Gaussiana, como se pretendía. Las restantes componentes tienen un comportamiento idéntico.
     
     \begin{figure}[H]
         \centering
@@ -546,7 +551,7 @@ P-value:  1
         \label{fig:component_x}
     \end{figure}
     
-    Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(sin - 1\) con ruido \(0.05\) sería el representado en la Figura~\ref{fig:col5_inverse_all}. La señal invertida conserva aceptablemente la forma de la función sinusoidal original a lo largo del tiempo. Además se mantiene dentro de los límites de la inversión de la respectiva simulación Gaussiana para la misma característica (Figura~\ref{fig:col5_inverse_gaussian}). De todas formas, la calidad de la simulación es configurable, a través del ajuste de numero de componentes, como quedó claro en el estudio de la Figura~\ref{fig:col5_inverted_nipals_n_components}.
+    Al invertir la simulación al espacio multi-dimensional, se obtienen datos también coherentes para las características originales. El ejemplo de inversión de la serie de \(sin - 1\) con ruido \(0.05\) sería el representado en la figura~\ref{fig:col5_inverse_all}. La señal invertida conserva aceptablemente la forma de la función sinusoidal original a lo largo del tiempo. Además se mantiene dentro de los límites de la inversión de la respectiva simulación Gaussiana para la misma característica (figura~\ref{fig:col5_inverse_gaussian}). De todas formas, la calidad de la simulación es configurable, a través del ajuste de numero de componentes, como quedó claro en el estudio de la figura~\ref{fig:col5_inverted_nipals_n_components}.
 
     \begin{figure}[H]
         \centering
@@ -644,7 +649,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
     \subsection{PCA iterativo - NIPALS}
     Para {\em datasets} grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
     
-    Empezamos por analizar visualmente los datos de sensores para un día determinado. Observemos el comportamiento de la variable {\em APVs} para ese día, representado en la Figura~\ref{fig:APVs_original}. 
+    Empezamos por analizar visualmente los datos de sensores para un día determinado. Observemos el comportamiento de la variable {\em APVs} para ese día, representado en la figura~\ref{fig:APVs_original}. 
     
     \begin{figure}[h]
         \centering
@@ -653,9 +658,9 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \label{fig:APVs_original}
     \end{figure}
     
-    Aplicamos el algoritmo iterativo NIPALS para calcular las 5 componentes principales, proyectando de esta forma el espacio original de 14 dimensiones (características) en un espacio más reducido de solamente 5 dimensiones. Al invertir este espacio de vuelta al espacio original se obtienen datos muy similares a los originales, como se puede comprobar informalmente en la Figura~\ref{fig:APVs_inverted_nipals}, que representa los datos invertidos para la variable {\em APVs}.
+    Aplicamos el algoritmo iterativo NIPALS para calcular las 5 componentes principales, proyectando de esta forma el espacio original de 14 dimensiones (características) en un espacio más reducido de solamente 5 dimensiones. Al invertir este espacio de vuelta al espacio original se obtienen datos muy similares a los originales, como se puede comprobar informalmente en la figura~\ref{fig:APVs_inverted_nipals}, que representa los datos invertidos para la variable {\em APVs}.
     
-    Obviamente se podría usar la descomposición SVD para el cálculo de las componentes principales. Usando SVD de {\tt numpy} se obtienen los mismos resultados, que se pueden analizar informalmente en la Figura~\ref{fig:APVs_inverted_svd}. 
+    Obviamente se podría usar la descomposición SVD para el cálculo de las componentes principales. Usando SVD de {\tt numpy} se obtienen los mismos resultados, que se pueden analizar informalmente en la figura~\ref{fig:APVs_inverted_svd}. 
     
     \begin{figure}[H]
         \centering
@@ -675,7 +680,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \label{fig:APVs_inverted}
     \end{figure}    
     
-    Para algunas de las características la eficiencia de la inversión no es tan evidente. Por ejemplo, la serie de {\em H6x} empieza con una secuencia de valores alrededor de \(39.45\) y luego baja para valores alrededor de \(39.30\), como representado en la Figura~\ref{fig:H6x_original}. 
+    Para algunas de las características la eficiencia de la inversión no es tan evidente. Por ejemplo, la serie de {\em H6x} empieza con una secuencia de valores alrededor de \(39.45\) y luego baja para valores alrededor de \(39.30\), como representado en la figura~\ref{fig:H6x_original}. 
     
     \begin{figure}[h]
         \centering
@@ -684,7 +689,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \label{fig:H6x_original}
     \end{figure}    
     
-    La inversión, sea con NIPALS (Figura~\ref{fig:H6x_inverted_nipals}) o con SVD (Figura~\ref{fig:H6x_inverted_svd}), aunque no tan evidente, también demuestra esa tendencia. Además se puede verificar que los datos invertidos se mantienen dentro del rango de los límites de los valores originales (\(39.20-39.60\)).
+    La inversión, sea con NIPALS (figura~\ref{fig:H6x_inverted_nipals}) o con SVD (figura~\ref{fig:H6x_inverted_svd}), aunque no tan evidente, también demuestra esa tendencia. Además se puede verificar que los datos invertidos se mantienen dentro del rango de los límites de los valores originales (\(39.20-39.60\)).
 
     \begin{figure}[h]
         \centering
@@ -704,7 +709,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
         \label{fig:H6x_inverted}
     \end{figure}
     
-    Otras características son todavía menos evidentes. Con 5 componentes, los resultados de la inversión de {\em ACPx} son muy poco claros. En un análisis visual, da incluso la sensación de que no corresponde a la misma característica. Véase el gráfico de los datos originales en la Figura~\ref{fig:ACPx_original} y respectiva re-proyección al espacio original en la Figura~\ref{fig:ACPx_inverted}.
+    Otras características son todavía menos evidentes. Con 5 componentes, los resultados de la inversión de {\em ACPx} son muy poco claros. En un análisis visual, da incluso la sensación de que no corresponde a la misma característica. Véase el gráfico de los datos originales en la figura~\ref{fig:ACPx_original} y respectiva re-proyección al espacio original en la figura~\ref{fig:ACPx_inverted}.
 
     \begin{figure}[h]
         \centering
@@ -733,9 +738,9 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
     
     Aunque parecen datos diferentes, hay algunas propiedades que sí son coherentes, como los límites mínimo y máximo. Los datos originales oscilan principalmente dentro del rango \(3.25-3.40\) y los datos invertidos también. Además, los datos invertidos no contemplan los dos puntos originales que parecen {\em outliers}, con valores de \(\approx 3.14\), probablemente ruido.
     
-    En este caso, es importante destacar la elección del numero de componentes. Esa decisión se formalizará más adelante, con el test estadístico. De momento, podemos concluir que, con 5 componentes, los datos invertidos de {\em ACPx} que vemos en la Figura~\ref{fig:ACPx_inverted_nipals} son probablemente la información relevante de la señal. Al final la variabilidad que modelan las últimas componentes es el ruido y quizás en {\em ACPx} hay más ruido que información importante.
+    En este caso, es importante destacar la elección del numero de componentes. Esa decisión se formalizará más adelante, con el test estadístico. De momento, podemos concluir que, con 5 componentes, los datos invertidos de {\em ACPx} que vemos en la figura~\ref{fig:ACPx_inverted_nipals} son probablemente la información relevante de la señal. Al final la variabilidad que modelan las últimas componentes es el ruido y quizás en {\em ACPx} hay más ruido que información importante.
     
-    Si se calculan más componentes, los resultados se aproximarán más a la realidad, pues se añade a los datos el posible ruido de la señal, que en principio estará contenido en las últimas componentes de la proyección. Sin embargo, aunque el ajuste sea mejor, se pierde generalización del modelo y también la eliminación de ruido. Los resultados de la proyección con 14 componentes se pueden comprobar en la Figura~\ref{fig:ACPx_inverted_nipals_pca14}.
+    Si se calculan más componentes, los resultados se aproximarán más a la realidad, pues se añade a los datos el posible ruido de la señal, que en principio estará contenido en las últimas componentes de la proyección. Sin embargo, aunque el ajuste sea mejor, se pierde generalización del modelo y también la eliminación de ruido. Los resultados de la proyección con 14 componentes se pueden comprobar en la figura~\ref{fig:ACPx_inverted_nipals_pca14}.
     
     \begin{figure}[H]
         \centering
@@ -771,7 +776,7 @@ Denominator df:  119782
 P-value:  1
     \end{lstlisting}
     
-    Si el valor del estadístico es significativo (valor alto) significa que ha encontrado bastantes diferencias entre las poblaciones, por lo que podemos rechazar la hipótesis nula. En el caso demostrado en el Código~\ref{lst:t2_test}, el resultado del estadístico es poco significativo (cercano a cero), así que podemos aceptar la hipótesis nula. La interpretación es que las poblaciones {\tt data} y {\tt inverted\_data} son iguales, con un grado de confianza alta ({\tt p-value=1}). 
+    Si el valor del estadístico es significativo (valor alto) significa que ha encontrado bastantes diferencias entre las poblaciones, por lo que podemos rechazar la hipótesis nula. En el caso demostrado en el código~\ref{lst:t2_test}, el resultado del estadístico es poco significativo (cercano a cero), así que podemos aceptar la hipótesis nula. La interpretación es que las poblaciones {\tt data} y {\tt inverted\_data} son iguales, con un grado de confianza alta ({\tt p-value=1}). 
     
     Se ha aplicado el test \(T^2\) de Hotelling exhaustivamente para los varios números de componentes posibles. Los resultados se encuentran en la tabla~\ref{table:t2_test}.
     
@@ -832,7 +837,7 @@ for i in range(N_COMPONENTS):
     generated_gaussian[:, i] = np.random.normal(mus[i], sigmas[i], GAUSSIAN_SIZE)
     \end{lstlisting}
     
-    La Figura~\ref{fig:component_0_gaussian} da una idea gráfica de la simulación con distribución Gaussiana para la componente 1. En verde vemos los datos de la componente y en azul los datos generados. Las líneas gris representan la media, mínimo, máximo y algunas desviaciones típicas. Los datos generados se mantienen dentro de los límites de la serie de la componente.
+    La figura~\ref{fig:component_0_gaussian} da una idea gráfica de la simulación con distribución Gaussiana para la componente 1. En verde vemos los datos de la componente y en azul los datos generados. Las líneas gris representan la media, mínimo, máximo y algunas desviaciones típicas. Los datos generados se mantienen dentro de los límites de la serie de la componente.
 
     \begin{figure}[H]
         \centering
@@ -841,7 +846,7 @@ for i in range(N_COMPONENTS):
         \label{fig:component_0_gaussian}
     \end{figure}   
     
-    Las simulaciones para las demás componentes se representan en la secuencia de gráficos de la Figura~\ref{fig:component_gaussian}.
+    Las simulaciones para las demás componentes se representan en la secuencia de gráficos de la figura~\ref{fig:component_gaussian}.
     
     \begin{figure}[H]
         \centering
@@ -873,7 +878,7 @@ for i in range(N_COMPONENTS):
         \label{fig:component_gaussian}
     \end{figure}
  
-    Una vez generados los nuevos datos de las componentes, se re-proyectan al espacio original y se obtiene la nueva población multivariante, simulada. La Figura~\ref{fig:inverse_gaussian_APHu} da un ejemplo de la re-proyección usando la simulación Gaussiana, para la variable {\em APHu}.
+    Una vez generados los nuevos datos de las componentes, se re-proyectan al espacio original y se obtiene la nueva población multivariante, simulada. La figura~\ref{fig:inverse_gaussian_APHu} da un ejemplo de la re-proyección usando la simulación Gaussiana, para la variable {\em APHu}.
     
     \begin{figure}[H]
         \centering
@@ -945,7 +950,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         Así se obtiene el valor de la componente \(d\) de \(ARIMA(p, d, q)\). Para el cálculo de las componentes AR (\(p\)) y MA (\(q\)) de ARIMA se usa un algoritmo que calcula exhaustivamente todas las combinaciones y respectivo {\em root mean squared error} (RMSE). El modelo con menor RMSE es el elegido para esa componente.
         
         \subsection{Predicción ARIMA con PCA de todo el {\em dataset}}
-        En una primera instancia, y en fases siguientes entendido como erróneo, se ha aplicado el cálculo de PCA a todo el {\em dataset} mientras que la serie temporal se construía sobre un solo día. Si la serie la vamos a aprender sobre un día es conveniente que la proyección sea también sobre ese día. Sin embargo, parece relevante enseñar las primeras predicciones ARIMA para el día 2015-10-06. La Figura~\ref{fig:arima_c1_all_dataset} representa los gráficos de ajuste y predicción para la componente 1.
+        En una primera instancia, y en fases siguientes entendido como erróneo, se ha aplicado el cálculo de PCA a todo el {\em dataset} mientras que la serie temporal se construía sobre un solo día. Si la serie la vamos a aprender sobre un día es conveniente que la proyección sea también sobre ese día. Sin embargo, parece relevante enseñar las primeras predicciones ARIMA para el día 2015-10-06. La figura~\ref{fig:arima_c1_all_dataset} representa los gráficos de ajuste y predicción para la componente 1.
         
         \begin{figure}[H]
             \centering
@@ -965,10 +970,10 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
             \label{fig:arima_c1_all_dataset}
         \end{figure}
 
-        En el gráfico de predicción {\em in-sample} (Figura~\ref{fig:arima_c1_all_dataset_fit}), podemos ver que el modelo se ajusta bastante bien a la serie de la componente. En el gráfico de predicción {\em out-of-sample} ((Figura~\ref{fig:arima_c1_all_dataset_pred})), vemos que los valores siguen una tendencia creciente, que seguirá hasta infinito. 
+        En el gráfico de predicción {\em in-sample} (figura~\ref{fig:arima_c1_all_dataset_fit}), podemos ver que el modelo se ajusta bastante bien a la serie de la componente. En el gráfico de predicción {\em out-of-sample} ((figura~\ref{fig:arima_c1_all_dataset_pred})), vemos que los valores siguen una tendencia creciente, que seguirá hasta infinito. 
         
         \subsection{Predicción ARIMA con PCA de un día}
-        El cálculo de PCA debe hacerse sobre los datos del día de la serie y no sobre todo el {\em dataset} como visto en la sección anterior. Con esta corrección, los gráficos de predicción ya no se deterioran y tienden para la media de los datos. La  Figura~\ref{fig:arima_c1_one_day_pred} da cuenta de ese efecto - en azul vemos los datos de la componente y en verde la predicción {\em out-of-sample}.
+        El cálculo de PCA debe hacerse sobre los datos del día de la serie y no sobre todo el {\em dataset} como visto en la sección anterior. Con esta corrección, los gráficos de predicción ya no se deterioran y tienden para la media de los datos. La  figura~\ref{fig:arima_c1_one_day_pred} da cuenta de ese efecto - en azul vemos los datos de la componente y en verde la predicción {\em out-of-sample}.
         
         \begin{figure}[H]
             \centering
@@ -999,7 +1004,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
 	
 	Siguiendo la recomendación de los desarrolladores de {\tt statsmodels}, se ha adoptado {\tt SARIMAX}, del módulo {\tt statsmodels.tsa.statespace.sarimax}. Este modelo está basado en ARIMA pero es más completo y mejor mantenido y además permite modelar la parte estacional de la serie e introducir variables exógenas. Con {\tt SARIMAX} evitamos el paso de volver a entrenar el modelo completo, que mejora bastante el rendimiento de cada iteración.
 	
-	Antes de pasar a la implementación con búsqueda en los puntos Gaussianos, se presentan las pruebas de predicción con la estrategia de re-alimentación del modelo {\tt SARIMAX}. La predicción sin ruido tiende rápidamente para valores constantes como se puede verificar en la Figura~\ref{fig:c1_pred_refeed_no_gaussian_no_noise}. El gráfico de la predicción con ruido (~\ref{fig:c1_no_gaussian_distance}) muestra una tendencia positiva para la primera componente, al contrario de las tendencias que se han visto hasta ahora para esa misma componente. No hay nada de errado, simplemente son pruebas distintas donde el cálculo de PCA tiene valores inversos, que no afecta los resultados. Se verifica que, con ruido, la simulación es más realista y parece que tiene una estabilidad creciente con una ligera curvatura. Lo que no parece correcto son los picos y cambios de tendencia.
+	Antes de pasar a la implementación con búsqueda en los puntos Gaussianos, se presentan las pruebas de predicción con la estrategia de re-alimentación del modelo {\tt SARIMAX}. La predicción sin ruido tiende rápidamente para valores constantes como se puede verificar en la figura~\ref{fig:c1_pred_refeed_no_gaussian_no_noise}. El gráfico de la predicción con ruido (~\ref{fig:c1_no_gaussian_distance}) muestra una tendencia positiva para la primera componente, al contrario de las tendencias que se han visto hasta ahora para esa misma componente. No hay nada de errado, simplemente son pruebas distintas donde el cálculo de PCA tiene valores inversos, que no afecta los resultados. Se verifica que, con ruido, la simulación es más realista y parece que tiene una estabilidad creciente con una ligera curvatura. Lo que no parece correcto son los picos y cambios de tendencia.
 	
         \begin{figure}[H]
             \centering
@@ -1022,10 +1027,10 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         \item Se han generado 1.000.000 puntos con distribución normal.
         \item Se han predicho 1000 puntos con ARIMA, uno a uno para cada componente: \(p = \{c_{1}, c_{2}, c_{3}, c_{4}, c_{5}\}\), donde \(c_{x}\) es la predicción de la componente \(x\). Para cada punto \(p\), se busca el más cercano en los puntos Gaussianos. Se re-alimenta el modelo con este nuevo punto, para la siguiente iteración de predicción.
         \item Se han verificado los puntos simulados transformados y todos pertenecen todos al conjunto de puntos Gaussianos. Así que el resultado de Hotelling T2 debería ser bueno.
-        \item Se está introduciendo ruido (valor aleatorio con desviación del error del modelo y media 0), que da un toque realista a la simulación. Si no se añade, la predicción tiende para valores constantes - eso hace que el punto más cercano sea siempre el mismo, como sucede en la Figura~\ref{fig:c1_no_gaussian_distance}.
+        \item Se está introduciendo ruido (valor aleatorio con desviación del error del modelo y media 0), que da un toque realista a la simulación. Si no se añade, la predicción tiende para valores constantes - eso hace que el punto más cercano sea siempre el mismo, como sucede en la figura~\ref{fig:c1_no_gaussian_distance}.
         \end{itemize}
 
-	Los gráficos de los resultados de simulación para la primera componente se presentan en la Figura~\ref{fig:c1_simulation_arima_gaussian} y para las demás componentes en la Figura~\ref{fig:simulation_arima_gaussian}. La leyenda es:
+	Los gráficos de los resultados de simulación para la primera componente se presentan en la figura~\ref{fig:c1_simulation_arima_gaussian} y para las demás componentes en la figura~\ref{fig:simulation_arima_gaussian}. La leyenda es:
 	\begin{itemize}
         \item verde -  datos reales de la componente.
 	\item azul - datos generados con SARIMAX y búsqueda de puntos en los datos Gaussianos.
@@ -1120,6 +1125,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         Todas las colecciones (excepto {\tt data}) almacenan datos de la proyección al espacio reducido y la respectiva inversión al espacio original. La distinción se hace a través del campo {\tt type}, que puede tener valores {\tt component} o {\tt inverse}. Con esto hacemos uso de las facilidades de {\em MongoDB} en lo que respecta a esquema de datos flexible y verbosidad de los documentos con redundancia. 
         
         En los códigos ~\ref{lst:generated_component} y ~\ref{lst:generated_inverse} podemos ver ejemplos de documentos de tipo {\tt component} y de tipo {\tt inverse} de la colección {\tt generated}:
+        
         \begin{lstlisting}[language=Python, caption=Documento de tipo {\tt component}., label={lst:generated_component}]
     {
         "_id" : ObjectId("58a0442befb6f73ad7c8efb2"),
@@ -1132,7 +1138,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
     }
         \end{lstlisting}
 
-        \begin{lstlisting}[language=Python, caption=Documento de tipo {\tt inverse}., label={lst:generated_inverse}]
+        \begin{lstlisting}[language=Python, captionpos=b, caption=Documento de tipo {\tt inverse}., label={lst:generated_inverse}]
     {
         "_id" : ObjectId("586fd37cefb6f73b6808b23d"),
         "H5x" : 37.97450920399996,
@@ -1157,7 +1163,7 @@ timeseries_sample_diff = timeseries_sample.sub(timeseries_sample.shift())
         
         Aparte de cumplir con la función de repositorio de datos de todas las partes del proceso, {\em MongoDB} se está usando como {\em buffer} para la generación de gráficos en tiempo real. Los nuevos puntos simulados (con ARIMA y posterior búsqueda en los datos Gaussianos) se van guardando en {\em MongoDB} progresivamente. De esta forma, se consigue una arquitectura {\em decoupled}, que permite que otro programa vaya leyendo esos datos y representando en gráficos con {\tt matplotlib}. Se utiliza un cursor para ir obteniendo los nuevos datos del repositorio.
         
-        En la Figura~\ref{fig:matplotlib} se pueden ejemplos de la herramienta creada para generación de gráficos en tiempo real, para la segunda componente (gráfico~\ref{fig:c1_matplotlib}) y para los datos invertidos de \(ACPx\) (gráfico~\ref{fig:ACPx_matplotlib}). 
+        En la figura~\ref{fig:matplotlib} se pueden ejemplos de la herramienta creada para generación de gráficos en tiempo real, para la segunda componente (gráfico~\ref{fig:c1_matplotlib}) y para los datos invertidos de \(ACPx\) (gráfico~\ref{fig:ACPx_matplotlib}). 
         
         \begin{figure}[H]
             \centering
