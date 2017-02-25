@@ -5,7 +5,7 @@
 \select@language {spanish}
 \contentsline {chapter}{\'{I}ndice general}{\es@scroman {v}}{section*.1}
 \contentsline {chapter}{\'{I}ndice de figuras}{\es@scroman {vii}}{section*.2}
-\contentsline {chapter}{\'Indice de tablas}{\es@scroman {vii}}{section*.3}
+\contentsline {chapter}{\'Indice de tablas}{\es@scroman {viii}}{section*.3}
 \noindent \hrulefill \par 
 \contentsline {chapter}{\numberline {1}Introducci\IeC {\'o}n}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}Estructura del documento}{1}{section.1.1}
