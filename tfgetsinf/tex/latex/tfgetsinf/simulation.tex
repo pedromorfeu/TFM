@@ -494,7 +494,7 @@ En este capítulo se exponen las pruebas realizadas y respectivos resultados.
         \label{fig:col5_inverted_gaussian}
     \end{figure}
     
-    El test \(T^2\) de Hotelling corrobora que la población generada es similar a la original, como indica el código R~\ref{lst:t2_test_gaussian}. El estadístico asume que las poblaciones son similares (hipótesis nula) - en este caso su valor es poco significativo, así que podemos rechazar su hipótesis nula y afirmar que las poblaciones son similares. Además, el p-valor ({\tt P-value}) indica un grado de confianza alto en esa evaluación.
+    El test \(T^2\) de Hotelling corrobora que la población generada es similar a la original, como indica el código R~\ref{lst:t2_test_gaussian}. El estadístico asume que las poblaciones son similares (hipótesis nula) - en este caso el valor del estadístico es poco significativo, así que podemos aceptar su hipótesis nula y afirmar que las poblaciones son similares. Además, el p-valor ({\tt P-value}) indica un grado de confianza alto en esa evaluación.
     
     \begin{lstlisting}[language=S, caption=Test \(T^2\) de Hotelling en R., label={lst:t2_test_gaussian}]
 > res <- hotelling.test(x = data, y = inverted_data)
@@ -505,7 +505,7 @@ Denominator df:  100991
 P-value:  1
     \end{lstlisting}
     
-    De esta forma, queda demostrada la validez de la simulación con distribución Gaussiana sobre las proyecciones en las componentes principales.
+    De esta forma, queda demostrada la validez de la simulación con distribución Gaussiana sobre las proyecciones en las componentes principales. El problema es que la simulación no está dotada de sentido temporal.
         
     Llegados a este punto, pasamos a dar un sentido temporal a la predicción. Para esto, se usarán modelos ARIMA, que aprenderán la evolución de los datos de las proyecciones a lo largo del tiempo. Una vez hecho el aprendizaje, el modelo ARIMA puede hacer predicciones futuras sobre los datos, basándose en los datos pasados. Esta predicción se hará de forma iterativa, punto por punto: en cada iteración, teniendo la predicción ARIMA de un punto nuevo para cada componente, se añade ruido residual y se busca el punto multi-dimensional más cercano en los datos simulados con distribución Gaussiana. El punto más cercano se usará para substituir los puntos predichos por ARIMA y así re-alimentar el modelo con nuevos datos. Los datos simulados serán un sub-conjunto de los datos simulados Gaussianos, que demostramos que eran válidos, por lo que la población generada por inversión al espacio original debe ser válida también.
     
