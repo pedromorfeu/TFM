@@ -125,7 +125,7 @@
      \renewcommand{\tutorname}{Tutores}
      \renewcommand{\coursename}{Curso}
      \renewcommand{\keywordsname}{Palabras clave}
-     \renewcommand{\abstractname}{Abstract}
+     \renewcommand{\abstractname}{Resumen}
      \renewcommand{\tablename}{Tabla}
      \renewcommand{\listtablename}{\'Indice de tablas}
      \renewcommand{\algorithmname}{Algoritmo}
