@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.4)  28 FEB 2017 23:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.4)  1 MAR 2017 00:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1851,47 +1851,41 @@ File: images/arima_log_212.png Graphic file (type png)
 Package pdftex.def Info: images/arima_log_212.png used on input line 355.
 (pdftex.def)             Requested size: 298.75264pt x 128.45602pt.
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<images/arima_log_forecast.png, id=449, 881.694pt x 358.4592pt>
+LaTeX Info: Redefining \. on input line 359.
+LaTeX Info: Redefining \% on input line 359.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 359.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 359.
+ [15 <./images/arima_log_110.png> <./images/arima_log_011.png> <./images/arima_
+log_111.png>] <images/arima_log_forecast.png, id=456, 881.694pt x 358.4592pt>
 File: images/arima_log_forecast.png Graphic file (type png)
 
 <use images/arima_log_forecast.png>
 Package pdftex.def Info: images/arima_log_forecast.png used on input line 364.
 (pdftex.def)             Requested size: 298.75264pt x 121.45882pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-LaTeX Info: Redefining \. on input line 370.
-LaTeX Info: Redefining \% on input line 370.
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 370.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 370.
-[15 <./images/arima_log_110.png> <./images/arima_log_011.png> <./images/arima_l
-og_111.png>]
 LaTeX Info: Redefining \. on input line 384.
 LaTeX Info: Redefining \% on input line 384.
 Package babel Info: Redefining spanish shorthand <<
@@ -3601,7 +3595,7 @@ ts/type1/public/cm-super/sftt1095.pfb></usr/local/texlive/2016/texmf-dist/fonts
 urw/palatino/uplbi8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/pa
 latino/uplr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/palatino/
 uplri8a.pfb>
-Output written on simulation.pdf (56 pages, 5674247 bytes).
+Output written on simulation.pdf (56 pages, 5674261 bytes).
 PDF statistics:
  1008 PDF objects out of 1200 (max. 8388607)
  810 compressed objects within 9 object streams

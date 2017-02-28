@@ -303,7 +303,7 @@ p-value 0.071121
 Confidence levels {'1%': -3.48250, '5%': -2.88440, '10%': -2.57896}
     \end{lstlisting}
     
-    El test de Dickey-Fuller demuestra que el p-valor ha bajado considerablemente, para valores casi inferiores a \(0.10\), por lo que podemos decir con un 90\% de confianza que la serie es estacionaria ahora. El análisis visual también permite verificar que la tendencia se ha eliminado.
+    El test de Dickey-Fuller demuestra que el p-valor ha bajado considerablemente, para valores casi inferiores a \(0.10\), por lo que podemos decir con un 90\% de confianza que la serie es estacionaria ahora. El análisis visual permite verificar que la tendencia se ha eliminado y la varianza parece constante.
     
     \subsection{Parámetros del modelo y predicción}
     
@@ -350,7 +350,7 @@ Confidence levels {'1%': -3.48250, '5%': -2.88440, '10%': -2.57896}
         
     Obviando algunas iteraciones intermedias, pasamos al modelo con dos niveles de \(AR\) y de \(MA\): \(ARIMA(p, d, q)=ARIMA(2, 1, 2)\). El RMSE obtenido es de \(0.0848\), que corresponde al menor valor. Si paramos la iteración, este sería el modelo con mejor ajuste. En la figura~\ref{fig:iterative_arima_arma_2} podemos verificar ese ajuste visualmente: la línea roja se ajusta mejor a los datos que en los gráficos anteriores.
   
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \includegraphics[width=0.7\textwidth]{arima_log_212.png}
         \caption{ARIMA iterativo: AR(2) y MA(2).}
