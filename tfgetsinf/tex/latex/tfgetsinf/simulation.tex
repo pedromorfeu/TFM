@@ -255,7 +255,7 @@ La simulación Gaussiana necesita tener una gran cantidad de puntos para que la 
     
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.7\textwidth]{time_serie_1.png}
+        \includegraphics[width=0.7\textwidth]{timeseries_log.png}
         \caption{Ejemplo de serie para aplicar el test de Dickey-Fuller.}
         \label{fig:time_serie_1}
     \end{figure}
@@ -273,14 +273,12 @@ print('Confidence levels', dftest[4])
     
     \lstset{style=python}
     \begin{lstlisting}[caption=Resultados del test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_res_1}]
-Test Statistic 0.815368879206
-p-value 0.991880243438
-Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': -2.5787700591715979}
+Test Statistic -1.717017
+p-value 0.422367
+Confidence levels {'1%': -3.48168, '5%': -2.88404, '10%': -2.57877}
     \end{lstlisting}
     
-    Los resultados del código~\ref{lst:adf_test_1} demuestran que la hipótesis nula no puede ser descartada, una vez que {\em p-value} es cercano a 1. El resultado del estadístico lo confirma también: para que se descarte la hipótesis nula, el valor del estadístico debe ser inferior a alguno de los valores de los intervalos de confianza.
-    
-%    Transformations such as logarithms can help to stabilize the variance of a time series. Differencing can help stabilize the mean of a time series by removing changes in the level of a time series, and so eliminating trend and seasonality.
+    Los resultados del código~\ref{lst:adf_test_1} demuestran que la hipótesis nula no puede ser descartada, una vez que {\em p-value} no es cercano a 0. El resultado del estadístico lo confirma también: para que se descarte la hipótesis nula, el valor del estadístico debe ser inferior a alguno de los valores de los intervalos de confianza.
     
     La serie tendrá que ser transformada hasta ser estacionaria. Transformaciones como logaritmos pueden ayudar a estabilizar la varianza de la serie temporal. Otra de las técnicas más comunes para conseguir la estacionaridad es la diferenciación, que consiste en calcular las diferencias entre observaciones consecutivas. La diferenciación ayuda a estabilizar la media de la serie, eliminando la tendencia y la estacionalidad. El primer nivel de diferenciación de la serie \(y\) se define por:
     
@@ -290,16 +288,7 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
     
     Siendo \(t\) un determinado punto en el tiempo. Se pueden aplicar más niveles de diferenciación, pero con un solo nivel suele ser suficiente.
     
-    Si aplicamos el logaritmo a la serie anterior podemos verificar que los valores altos son más penalizados que los valores bajos, como indica la nueva escala presente en la figura~\ref{fig:timeseries_log}.
-    
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.7\textwidth]{timeseries_log.png}
-        \caption{Ejemplo de aplicación de logaritmo a la serie.}
-        \label{fig:timeseries_log}
-    \end{figure}
-    
-    Aplicando ahora diferenciación, obtenemos la serie transformada representada en la figura~\ref{fig:timeseries_log_diff} y respectivos resultados en el código~\ref{lst:adf_test_2}.
+    Aplicando diferenciación a la serie anterior, obtenemos la serie transformada representada en la figura~\ref{fig:timeseries_log_diff} y respectivos resultados en el código~\ref{lst:adf_test_2}.
     
     \begin{figure}[h]
         \centering
@@ -309,12 +298,12 @@ Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': 
     \end{figure}
     
     \begin{lstlisting}[caption=Resultados del test de Dickey-Fuller de {\tt statsmodels} de Python., label={lst:adf_test_2}]
-Test Statistic -2.82926682417
-p-value 0.0542132902838
-Confidence levels {'1%': -3.4816817173418295, '5%': -2.8840418343195267, '10%': -2.5787700591715979}
+Test Statistic -2.717131
+p-value 0.071121
+Confidence levels {'1%': -3.48250, '5%': -2.88440, '10%': -2.57896}
     \end{lstlisting}
     
-    El test de Dickey-Fuller demuestra que el p-valor ha bajado considerablemente, para valores casi inferiores a \(0.05\), por lo que podemos decir con un 95\% de confianza que la serie es estacionaria ahora. El análisis visual también permite verificar que la tendencia se ha eliminado.
+    El test de Dickey-Fuller demuestra que el p-valor ha bajado considerablemente, para valores casi inferiores a \(0.10\), por lo que podemos decir con un 90\% de confianza que la serie es estacionaria ahora. El análisis visual también permite verificar que la tendencia se ha eliminado.
     
     \subsection{Parámetros del modelo y predicción}
     
