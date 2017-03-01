@@ -50,7 +50,7 @@ else:
                    index_col="Tiempoinicio", skip_blank_lines=True, na_values="")
 
 
-data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
+#data = pd.read_csv("ip_gen.txt", index_col="Tiempoinicio", parse_dates=[0])
 
 print(type(data))
 print(data.columns)
@@ -81,7 +81,7 @@ data = data.resample(TS_FREQUENCY).mean().interpolate()
 save_matrix("data.csv", data.values, data.columns)
 
 #save_data_plot(_data=data, _filename="original")
-save_plot_per_column(data.values, data.columns, "_original", FIGURES_FOLDER)
+#save_plot_per_column(data.values, data.columns, "_original", FIGURES_FOLDER)
 
 
 raw = data.values
@@ -111,7 +111,7 @@ new_X = pca.fit_transform(X)
 IX = pca.inverse_transform(new_X) + np.mean(raw, axis=0)
 print_matrix("IX", IX)
 save_matrix("inverted_pca.csv", IX, data.columns)
-save_plot_per_column(IX, data.columns, "_inverted_pca", FIGURES_FOLDER)
+#save_plot_per_column(IX, data.columns, "_inverted_pca", FIGURES_FOLDER)
 
 
 # We could of course use SVD ...
@@ -217,7 +217,7 @@ XXX = np.dot(nipals_T, nipals_P.T) + np.mean(raw, axis=0)
 print_matrix("XXX", XXX)
 save_matrix("inverted_nipals_" + str(N_COMPONENTS) + ".csv", XXX, data.columns)
 
-save_plot_per_column(XXX, data.columns, "_inverted_nipals", FIGURES_FOLDER)
+#save_plot_per_column(XXX, data.columns, "_inverted_nipals", FIGURES_FOLDER)
 
 
 # confirm inverted values
@@ -229,7 +229,7 @@ save_matrix("xxx_xx.csv", XXX/XX, data.columns)
 np.array_equal(np.round(XXX, 2), np.round(XX, 2))
 
 
-save_plot_per_column(nipals_T, [str(i) for i in range(N_COMPONENTS)], "_component", FIGURES_FOLDER)
+#save_plot_per_column(nipals_T, [str(i) for i in range(N_COMPONENTS)], "_component", FIGURES_FOLDER)
 
 
 ### Generate Gaussian data
@@ -248,7 +248,7 @@ print_matrix("generated_gaussian", generated_gaussian)
 #save_matrix("generated_gaussian.csv", generated_gaussian, [x for x in range(N_COMPONENTS)])
 
 
-save_plot_per_component_gaussian(N_COMPONENTS, generated_gaussian, nipals_T, ["component" + str(i) for i in range(N_COMPONENTS)])
+#save_plot_per_component_gaussian(N_COMPONENTS, generated_gaussian, nipals_T, ["component" + str(i) for i in range(N_COMPONENTS)])
 
 
 
@@ -259,14 +259,14 @@ print_matrix("inverse_gaussian", inverse_gaussian)
 save_matrix("inverse_X_gaussian.csv", inverse_gaussian, data.columns)
 
 
-
-save_plot_per_component_gaussian(len(data.columns), inverse_gaussian, data.values, data.columns, _suffix="_inverted_gaussian")
-
-
-exit()
+#save_plot_per_component_gaussian(len(data.columns), inverse_gaussian, data.values, data.columns, _suffix="_inverted_gaussian")
 
 
-save_plot_per_column(inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_inverse_gaussian", FIGURES_FOLDER)
+#save_plot_per_column(inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_inverse_gaussian", FIGURES_FOLDER)
+
+
+correlation = np.round(np.corrcoef(nipals_T), 2)
+
 
 
 ### Time series
@@ -462,7 +462,7 @@ for i in range(NEW_DATA_SIZE):
 print(str(datetime.now()), "Done iterative prediction")
 
 
-save_plot_per_component(N_COMPONENTS, generated_gaussian, timeseries_samples, models_iterative)
+#save_plot_per_component(N_COMPONENTS, generated_gaussian, timeseries_samples, models_iterative)
 
 
 # distribution of generated_X isn't normal; however, generated_gaussian is
@@ -476,8 +476,8 @@ print_matrix("XX", inverse)
 save_matrix("inverse_X.csv", inverse, data.columns)
 
 
-save_plot_per_column(inverse, data.columns, "_inverse", FIGURES_FOLDER)
-save_mixed_plots_per_column(data.values, inverse, inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_mixed", FIGURES_FOLDER)
+#save_plot_per_column(inverse, data.columns, "_inverse", FIGURES_FOLDER)
+#save_mixed_plots_per_column(data.values, inverse, inverse_gaussian[:NEW_DATA_SIZE, :], data.columns, "_mixed", FIGURES_FOLDER)
 
 
 # PCA also has two very important outputs we should calculate:
