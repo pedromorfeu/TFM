@@ -222,7 +222,7 @@ La simulación Gaussiana necesita tener una gran cantidad de puntos para que la 
     
     ARIMA significa ({\em Autoregressive Integrated Moving Average}) y, junto con ({\em Exponential Smoothing}), es uno de los métodos más populares de análisis de series temporales. ARIMA incorpora formalmente la dependencia entre observaciones sucesivas en el modelo, mientras {\em Exponential Smoothing}) no lo hace de forma tan eficiente.
     
-    La componente AR ({\em Autoregressive} - auto-regresiva) del modelo ARIMA se refiere al uso de observaciones anteriores en una ecuación regresiva para predecir valores futuros. A esta componente se asocia un parámetro \(p\), que corresponde al numero de puntos anteriores a incluir en el modelo. La componente MA ({\em Moving Average} - media móvil) representa el error del modelo como combinación de términos de error anteriores. El parámetro asociado es \(q\) y corresponde al numero de términos de error anteriores a usar. La componente I ({\em Integrated}) indica la diferenciación de los datos, que corresponde a calcular la diferencia entre los valores y sus antecesores. El parámetro \(d\) es el numero de diferenciaciones a aplicar en el modelo. De esta forma, los modelos ARIMA son generalmente definidos por \(ARIMA(p, d, q)\).
+    La componente AR ({\em Autoregressive} - auto-regresiva) del modelo ARIMA se refiere al uso de observaciones anteriores en una ecuación regresiva para predecir valores futuros. A esta componente se asocia un parámetro \(p\), que corresponde al número de puntos anteriores a incluir en el modelo. La componente MA ({\em Moving Average} - media móvil) representa el error del modelo como combinación de términos de error anteriores. El parámetro asociado es \(q\) y corresponde al número de términos de error anteriores a usar. La componente I ({\em Integrated}) indica la diferenciación de los datos, que corresponde a calcular la diferencia entre los valores y sus antecesores. El parámetro \(d\) es el número de diferenciaciones a aplicar en el modelo. De esta forma, los modelos ARIMA son generalmente definidos por \(ARIMA(p, d, q)\).
     
     Es importante resaltar que el modelo \(ARIMA(p, d, q)\) asume que la serie no tiene variación estacional y tendencia. Potencialmente es necesario eliminar esas características antes de crear el modelo. Esto nos lleva al concepto de {\em stationarity} (estacionaridad).
     
@@ -385,7 +385,7 @@ fig = results.plot_predict(start=len(ts)-1, end=len(ts)+20, dynamic=True, ax=ax,
 En este capítulo se exponen las pruebas realizadas y respectivos resultados. 
 
     % Simulación con datos controlados
-    \section{Simulación con datos controlados}
+    \section{Simulación con datos controlados} \label{toy_example}
     Para dar una visión general e ilustrar la solución propuesta en su totalidad, empezaremos con un ejemplo sencillo. Para esto, se ha creado un {\em dataset} fictício y controlado, constituido por las siguientes funciones de senos y cosenos con ruido, que supondremos como datos de nuestros sensores a nivel multidimensional:
     
     \begin{itemize}
@@ -408,7 +408,7 @@ En este capítulo se exponen las pruebas realizadas y respectivos resultados.
         \label{fig:col5_original}
     \end{figure}
 
-    Para comprobar la viabilidad de PCA, se procede al cálculo de un determinado numero de componentes - en el ejemplo empezamos con 5 componentes. Posteriormente se procede a la inmediata inversión (sin generar datos nuevos) al espacio original. Usando el mismo ejemplo de \(sin - 1\) con ruido \(0.05\), el gráfico~\ref{fig:col5_inverted_nipals} muestra la re-proyección de la misma función sinusoidal al espacio original, después de haber sido proyectada en el espacio reducido de 5 componentes. Se demuestra que no solo la inversión se hace correctamente como también se reduce el ruido de la señal.
+    Para comprobar la viabilidad de PCA, se procede al cálculo de un determinado número de componentes - en el ejemplo empezamos con 5 componentes. Posteriormente se procede a la inmediata inversión (sin generar datos nuevos) al espacio original. Usando el mismo ejemplo de \(sin - 1\) con ruido \(0.05\), el gráfico~\ref{fig:col5_inverted_nipals} muestra la re-proyección de la misma función sinusoidal al espacio original, después de haber sido proyectada en el espacio reducido de 5 componentes. Se demuestra que no solo la inversión se hace correctamente como también se reduce el ruido de la señal.
 
     \begin{figure}[H]
         \centering
@@ -468,11 +468,11 @@ En este capítulo se exponen las pruebas realizadas y respectivos resultados.
             \caption{8 componentes.}
             \label{fig:col5_inverted_nipals8}
         \end{subfigure}
-        \caption{Inversión de \(sin - 1\) con ruido \(0.05\) según el numero de componentes.}
+        \caption{Inversión de \(sin - 1\) con ruido \(0.05\) según el número de componentes.}
         \label{fig:col5_inverted_nipals_n_components}
     \end{figure}
     
-    En la secuencia podemos verificar que, según se van añadiendo componentes, la señal va ganando forma y ruido más parecidos a la señal real. Con pocas componentes, la señal es menos parecida a la real, pero mantiene la forma, media y los límites aceptablemente. Cuando el numero de componentes es más cercano al máximo (gráficos~\ref{fig:col5_inverted_nipals7} y ~\ref{fig:col5_inverted_nipals8}), el modelo PCA es capaz de explicar incluso el ruido, siendo la inversión muy similar a la señal original. 
+    En la secuencia podemos verificar que, según se van añadiendo componentes, la señal va ganando forma y ruido más parecidos a la señal real. Con pocas componentes, la señal es menos parecida a la real, pero mantiene la forma, media y los límites aceptablemente. Cuando el número de componentes es más cercano al máximo (gráficos~\ref{fig:col5_inverted_nipals7} y ~\ref{fig:col5_inverted_nipals8}), el modelo PCA es capaz de explicar incluso el ruido, siendo la inversión muy similar a la señal original. 
     
     Estando sustentada la viabilidad de PCA sobre los datos controlados, la idea es ahora producir datos simulados con distribución Gaussiana sobre las proyecciones y comprobar que la población invertida sigue manteniendo la similitud con la población original. A través de la media y desviación típica de las proyecciones de cada componente, se producen datos aleatorios con distribución Gaussiana. En el gráfico~\ref{fig:component_1_gaussian} podemos ver, en verde, los valores de proyección de la primera componente; y, en azul, datos simulados con distribución normal para esa componente. Además, en gris se representan los límites minimo y maximo, media y algunas desviaciones típicas de los valores de la Gaussiana.
 
@@ -573,7 +573,7 @@ P-value:  1
         \label{fig:col5_inverse_all}
     \end{figure}
 
-    Se verifica que, con datos controlados, el proceso completo con PCA y ARIMA tiene resultados coherentes. La calidad de los datos es un factor muy importante para el análisis. Las señales originales de los sensores contienen muchas veces datos anómalos, como {\em outliers}, que afectan en gran medida el resultado de la aplicación de técnicas de {\em Machine Learning}. Lo interesante en este estudio es que aporta algunos ajustes que permiten minimizar esos efectos, por ejemplo, cambiar el numero de componentes, aumentar el numero de puntos de la simulación Gaussiana o introducir factores de atenuación de la predicción.
+    Se verifica que, con datos controlados, el proceso completo con PCA y ARIMA tiene resultados coherentes. La calidad de los datos es un factor muy importante para el análisis. Las señales originales de los sensores contienen muchas veces datos anómalos, como {\em outliers}, que afectan en gran medida el resultado de la aplicación de técnicas de {\em Machine Learning}. Lo interesante en este estudio es que aporta algunos ajustes que permiten minimizar esos efectos, por ejemplo, cambiar el número de componentes, aumentar el número de puntos de la simulación Gaussiana o introducir factores de atenuación de la predicción.
     
 
     % Dataset
@@ -649,7 +649,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
     
     % NIPALS
     \subsection{PCA iterativo - NIPALS}
-    Para {\em datasets} grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el numero de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
+    Para {\em datasets} grandes, el algoritmo iterativo NIPALS ofrece mejor rendimiento, al determinar solamente el número de componentes definido. SVD calcularía la matriz de varianzas-covarianzas para todos los componentes, lo que exigiría mucha memoria y CPU. Aunque en este caso el {\em dataset} es pequeño, usaremos el algoritmo iterativo NIPALS.
     
     Empezamos por analizar visualmente los datos de sensores para un día determinado. Observemos el comportamiento de la variable {\em APVs} para ese día, representado en la figura~\ref{fig:APVs_original}. 
     
@@ -740,7 +740,7 @@ data$Tiempoinicio <- as.POSIXct(data$Tiempoinicio, format="%d-%b-%Y %H:%M:%S")
     
     Aunque parecen datos diferentes, hay algunas propiedades que sí son coherentes, como los límites mínimo y máximo. Los datos originales oscilan principalmente dentro del rango \(3.25-3.40\) y los datos invertidos también. Además, los datos invertidos no contemplan los dos puntos originales que parecen {\em outliers}, con valores de \(\approx 3.14\), probablemente ruido.
     
-    En este caso, es importante destacar la elección del numero de componentes. Esa decisión se formalizará más adelante, con el test estadístico. De momento, podemos concluir que, con 5 componentes, los datos invertidos de {\em ACPx} que vemos en la figura~\ref{fig:ACPx_inverted_nipals} son probablemente la información relevante de la señal. Al final la variabilidad que modelan las últimas componentes es el ruido y quizás en {\em ACPx} hay más ruido que información importante.
+    En este caso, es importante destacar la elección del número de componentes. Esa decisión se formalizará más adelante, con el test estadístico. De momento, podemos concluir que, con 5 componentes, los datos invertidos de {\em ACPx} que vemos en la figura~\ref{fig:ACPx_inverted_nipals} son probablemente la información relevante de la señal. Al final la variabilidad que modelan las últimas componentes es el ruido y quizás en {\em ACPx} hay más ruido que información importante.
     
     Si se calculan más componentes, los resultados se aproximarán más a la realidad, pues se añade a los datos el posible ruido de la señal, que en principio estará contenido en las últimas componentes de la proyección. Sin embargo, aunque el ajuste sea mejor, se pierde generalización del modelo y también la eliminación de ruido. Los resultados de la proyección con 14 componentes se pueden comprobar en la figura~\ref{fig:ACPx_inverted_nipals_pca14}.
     
@@ -780,7 +780,7 @@ P-value:  1
     
     Si el valor del estadístico es significativo (valor alto) significa que ha encontrado bastantes diferencias entre las poblaciones, por lo que podemos rechazar la hipótesis nula. En el caso demostrado en el código~\ref{lst:t2_test}, el resultado del estadístico es poco significativo (cercano a cero), así que podemos aceptar la hipótesis nula. La interpretación es que las poblaciones {\tt data} y {\tt inverted\_data} son iguales, con un grado de confianza alta ({\tt p-value=1}).
     
-    Se ha aplicado el test \(T^2\) de Hotelling exhaustivamente para los varios números de componentes posibles. Los resultados se encuentran en la tabla~\ref{table:t2_test}. Es interesante verificar que, incluso con una única componente, se obtiene una población invertida similar a la original - esto se debe a que la primera componente es la que mayor variabilidad total explica.
+    Se ha aplicado el test \(T^2\) de Hotelling exhaustivamente para los varios números de componentes posibles. Los resultados se encuentran en la tabla~\ref{table:t2_test}. Es interesante verificar que, incluso con una única componente, se obtiene una población invertida similar a la original, lo que tiene sentido si pensamos que la primera componente es la que mayor variabilidad total explica.
     
     \begin{table}
          \centering
@@ -823,7 +823,9 @@ P-value:  1
     
     Se ha usado un pequeño factor aleatorio con distribución normal para ocupar valores vacíos en determinadas variables. Por esa razón los resultados pueden variar y ser algo incoherentes (por ejemplo, con 9 componentes tenemos mayor valor del estadístico que con 1 componente). De todas formas, el objetivo de este análisis exhaustivo es verificar que la inversión de NIPALS es correcta - podemos afirmar que sí, pues el estadístico presenta valores poco significativos y los p-valor son altos. 
     
-    Aunque los p-valor sean altos (cercanos a 1), se detecta una tendencia para ser inferior a 1 a partir de un determinado numero de componentes (en la tabla ~\ref{table:t2_test} sería a partir de 9 componentes que el p-valor empieza a dar señales de bajada). Probablemente, esa variación se debe a la introducción del ruido a partir de ese numero de componentes. En base a este estudio, se ha decidido usar 5 componentes para el cálculo de PCA.
+    Aunque los p-valor sean altos (cercanos a 1), se detecta una tendencia para ser inferior a 1 a partir de un determinado número de componentes (en la tabla ~\ref{table:t2_test} sería a partir de 9 componentes que el p-valor empieza a dar señales de bajada). Probablemente esa variación se debe a la introducción del ruido de la señal a partir de determinado número de componentes. Con más componentes, se espera mayor ruido y, por consiguiente, una señal invertida más realista, lo que ha quedado patente en la sección  \ref{toy_example} \textit{Simulación con datos controlados}, figura~\ref{fig:col5_inverted_nipals_n_components}.
+
+    En base al estudio realizado con el test \(T^2\) de Hotelling, se ha decidido usar 5 componentes para el cálculo de PCA.
 
     % Gaussiana
     \subsection{Simulación con distribución Gaussiana}
@@ -916,7 +918,7 @@ P-value:  0
     
     % ARIMA
     \section{ARIMA}
-    Una vez determinado el numero de componentes a usar y realizadas las primeras simulaciones con distribución normal, el siguiente paso consiste en construir series temporales sobre cada una de las componentes para simular con cierto sentido temporal. El objetivo es que los datos generados tengan forma de serie temporal. Para poder aplicar los modelos ARIMA introducidos anteriormente hay que preparar y estudiar los datos previamente. Una vez preparada la serie, se pasa a la predicción del comportamiento futuro, la simulación propiamente dicha.
+    Una vez determinado el número de componentes a usar y realizadas las primeras simulaciones con distribución normal, el siguiente paso consiste en construir series temporales sobre cada una de las componentes para simular con cierto sentido temporal. El objetivo es que los datos generados tengan forma de serie temporal. Para poder aplicar los modelos ARIMA introducidos anteriormente hay que preparar y estudiar los datos previamente. Una vez preparada la serie, se pasa a la predicción del comportamiento futuro, la simulación propiamente dicha.
         
         % Preparación
         \subsection{Preparación de la serie temporal}
@@ -1229,14 +1231,14 @@ El análisis de series temporales ha sido la parte más extensa del estudio. Sob
 
 El uso de {\tt pandas} ha sido fundamental para el análisis de series temporales. Este {\em framework} facilita bastante la tarea de procesamiento de series, proporcionando, por ejemplo, métodos para interpolación y cambio de frecuencia de muestreo. Otro {\em framework}, {\\tt statsmodels}, se ha encargado de la parte de entrenamiento y predicción de modelos ARIMA. Las primeras predicciones ARIMA se han hecho erróneamente para todo el {\em dataset} y tiendían para infinito. Las predicciones de un día tendían a la media, lo que se acercaba más al resultado pretendido, pero carecían de realismo. La solución encontrada, y que encaja bien en el marco de Big Data, es la búsqueda de puntos cercanos a los puntos predichos por ARIMA en la simulación con distribución Gaussiana, que se ha probado ser correcta. De esta forma, conseguimos contener los datos dentro de los límites y dar un toque realista con la introducción de ruido.
 
-El ejemplo con datos controlados ha servido bastante para validar la solución propuesta. Con los datos ficticios se consigue una visión más clara sobre todo el proceso, sobre todo porque los datos del {\em dataset} real tienen muchas discrepancias que influyen negativamente. En la simulación controlada podemos verificar que ARIMA capta bien la serie y es capaz de mantener aceptablemente la forma de las ondas sinusoidales, siempre dentro de los límites de la simulación Gaussiana. Los ajustes de ruido, numero de componentes y cantidad de datos Gaussianos dictarán aquí la calidad de la simulación.
+El ejemplo con datos controlados ha servido bastante para validar la solución propuesta. Con los datos ficticios se consigue una visión más clara sobre todo el proceso, sobre todo porque los datos del {\em dataset} real tienen muchas discrepancias que influyen negativamente. En la simulación controlada podemos verificar que ARIMA capta bien la serie y es capaz de mantener aceptablemente la forma de las ondas sinusoidales, siempre dentro de los límites de la simulación Gaussiana. Los ajustes de ruido, número de componentes y cantidad de datos Gaussianos dictarán aquí la calidad de la simulación.
 
 Cuántos más datos de simulación Gaussiana mejor, pues se encontrarán puntos cercanos más precisos. La cantidad de datos de simulación Gaussiana debe ser del orden de millones o miles de millones. Big Data tiene un papel fundamental en esta coyuntura, pues hace viable la solución. Los métodos tradicionales de programación y almacenamiento se revelan ineficientes frente a cantidades ingentes de datos. En este estudio, las herramientas Big Data {\em MongoDB} y {\em Apache Spark} dan respuesta a los problemas de escalado y almacenamiento. La introducción de estas herramientas, sobre todo favorecida por el uso de Python como lenguaje de programación principal, no ha supuesto gran dificultad técnica.
 
 
 % Trabajos futuros
 \chapter{Trabajos futuros}
-Durante el proyecto han surgido varias ideas y pruebas que no se han podido realizar. La experimentación con diferente numero de componentes es una de ellas, especialmente si se incrementa ese numero. El objetivo es verificar la calidad de la simulación con mayor numero de componentes. En el mismo ámbito, se puede ajustar el error introducido en las predicciones antes de buscar en la simulación Gaussiana. 
+Durante el proyecto han surgido varias ideas y pruebas que no se han podido realizar. La experimentación con diferente número de componentes es una de ellas, especialmente si se incrementa ese número. El objetivo es verificar la calidad de la simulación con mayor número de componentes. En el mismo ámbito, se puede ajustar el error introducido en las predicciones antes de buscar en la simulación Gaussiana. 
 
 Las ejecuciones con {\em Apache Spark} se hicieron en una sola maquina, con generación de 1.000.000 puntos de distribución Gaussiana. Sería interesante lanzar el proceso completo en un {\em cluster}, con generación de un número mayor de puntos. Además, se están simulando 2000 puntos con ARIMA, lo que se podría incrementar también en un {\em cluster}. 
 
@@ -1251,7 +1253,7 @@ Se ha creado un utilitario basado en {\tt matplotlib} para ver la evolución de 
 
 Se ha elegido {\em MongoDB} como repositorio de datos por la familiaridad con la herramienta. {\em MongoDB} guarda los datos en documentos, pero hay otros acercamientos que se podrían aplicar, como los repositorios de tipo columnar ({\em Cassandra}) o clave-valor ({\em Redis}, {\em Amazon DynamoDB}). 
 
-Los tiempos de ejecución y uso de memoria carecen de un estudio documentado. Sobre todo la parte de búsqueda de puntos en la simulación Gaussiana, que es la tarea más exigente. El estudio debería medir como evoluciona la {\em performance} de la ejecución en función de los factores de memoria, CPU, numero de nodos, espacio en disco y numero de puntos Gaussianos. Las medidas servirían para determinar las condiciones óptimas de ejecución.
+Los tiempos de ejecución y uso de memoria carecen de un estudio documentado. Sobre todo la parte de búsqueda de puntos en la simulación Gaussiana, que es la tarea más exigente. El estudio debería medir como evoluciona la {\em performance} de la ejecución en función de los factores de memoria, CPU, número de nodos, espacio en disco y número de puntos Gaussianos. Las medidas servirían para determinar las condiciones óptimas de ejecución.
 
 Los datos discrepantes encontrados en el {\em dataset} se pueden deber a diferentes estados de la máquina observada por los sensores. Por ejemplo, en fase de calentamiento es normal que las medidas evolucionen bastante, para luego tender para un equilibrio. Un apagado repentino puede provocar {\em outliers} en las mediciones. Para atenuar esos efectos, las diferentes fases (o estados) se podrían introducir en forma de variables cualitativas, de modo que los modelos pudiesen aprenderlas. 
 
