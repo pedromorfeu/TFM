@@ -35,9 +35,9 @@
 \contentsline {subsection}{\numberline {5.4.4}Predicci\IeC {\'o}n ARIMA con PCA de un d\IeC {\'\i }a}{34}{subsection.5.4.4}
 \contentsline {subsection}{\numberline {5.4.5}Simulaci\IeC {\'o}n con b\IeC {\'u}squeda de puntos cercanos de la Gaussiana}{34}{subsection.5.4.5}
 \contentsline {section}{\numberline {5.5}Big Data}{38}{section.5.5}
-\contentsline {subsection}{\numberline {5.5.1}Repositorio de datos - MongoDB}{38}{subsection.5.5.1}
-\contentsline {subsection}{\numberline {5.5.2}Procesamiento distribuido - Spark}{39}{subsection.5.5.2}
-\contentsline {subsection}{\numberline {5.5.3}Visualizaci\IeC {\'o}n - matplotlib}{41}{subsection.5.5.3}
+\contentsline {subsection}{\numberline {5.5.1}Repositorio de datos - {\em MongoDB}}{38}{subsection.5.5.1}
+\contentsline {subsection}{\numberline {5.5.2}Procesamiento distribuido - {\em Apache Spark}}{39}{subsection.5.5.2}
+\contentsline {subsection}{\numberline {5.5.3}Visualizaci\IeC {\'o}n - {\tt matplotlib}}{41}{subsection.5.5.3}
 \contentsline {chapter}{\numberline {6}Conclusiones}{45}{chapter.6}
 \contentsline {chapter}{\numberline {7}Trabajos futuros}{47}{chapter.7}
 \contentsline {chapter}{Bibliograf\'{\i }a}{49}{chapter*.46}

@@ -30,7 +30,7 @@
 \BOOKMARK [2][-]{subsection.5.4.5}{Simulaci\363n con b\372squeda de puntos cercanos de la Gaussiana}{section.5.4}% 30
 \BOOKMARK [1][-]{section.5.5}{Big Data}{chapter.5}% 31
 \BOOKMARK [2][-]{subsection.5.5.1}{Repositorio de datos - MongoDB}{section.5.5}% 32
-\BOOKMARK [2][-]{subsection.5.5.2}{Procesamiento distribuido - Spark}{section.5.5}% 33
+\BOOKMARK [2][-]{subsection.5.5.2}{Procesamiento distribuido - Apache Spark}{section.5.5}% 33
 \BOOKMARK [2][-]{subsection.5.5.3}{Visualizaci\363n - matplotlib}{section.5.5}% 34
 \BOOKMARK [0][-]{chapter.6}{Conclusiones}{}% 35
 \BOOKMARK [0][-]{chapter.7}{Trabajos futuros}{}% 36
