@@ -22,7 +22,8 @@ except ImportError as e:
 # Initialize SparkContext
 conf = SparkConf()\
     .setAppName("SparkSimulation")\
-    .setMaster("local[*]")\
+    .setMaster("local[4]")\
+    .set("spark.driver.host", "localhost")\
     .set("spark.mongodb.input.uri", "mongodb://127.0.0.1/simulation.gaussian?readPreference=primaryPreferred")\
     .set("spark.mongodb.output.uri", "mongodb://127.0.0.1/simulation.gaussian")
 
