@@ -1,0 +1,3 @@
+# Launch spark_simulation:
+../spark-1.6.2-bin-hadoop2.6/bin/spark-submit --master local[4] spark_simulation.py
+

@@ -23,13 +23,15 @@ except ImportError as e:
     print ("Can not import Spark Modules", e)
 
 
-print(locale.getdefaultlocale())
 if platform == "win32":
     # Windows locale:
     locale.setlocale(locale.LC_TIME, "spanish")
 else:
     # MacOS locale:
     locale.setlocale(locale.LC_TIME, "es_ES")
+
+#print(locale.getdefaultlocale())
+print(locale.getlocale(locale.LC_TIME))
 
 
 def getOS():
