@@ -7,16 +7,17 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import pymongo
 from pymongo import MongoClient
+import sys
 
 
 SORT_ID_ASCENDING = ("_id", pymongo.ASCENDING)
 MAX_GAUSSIAN = 2000
 # Possible values: "component", "inverse"
-POINT_TYPE = "inverse"
+POINT_TYPE = sys.argv[1]
 # Possible values:
 # - for type "component": cX, where X is the component index (zero-based)
 # - for type "inverse": APHu APVs ACPv ZSx  ZUs  H7x  H1x  H2x  H6x  H3x  H4x  H5x  ACPx Svo
-FIELD = "APHu"
+FIELD = sys.argv[2]
 
 
 client = MongoClient("mongodb://localhost:27017")
